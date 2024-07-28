@@ -1,0 +1,67 @@
+{
+  "version": 2,
+  "dgSpecHash": "YRwKz54LncZA0ehP7DX6XWMJxHwTx6DLGH46WsaF+X/a2XYEsj+nqaIyK85MAdjcxuH5w284kvQuan/EzZAA+g==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\fb859\\source\\repos\\DynamicWin\\DynamicWin\\DynamicWin.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\fb859\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.9\\microsoft.netcore.platforms.3.1.9.nupkg.sha512",
+    "C:\\Users\\fb859\\.nuget\\packages\\microsoft.win32.systemevents\\4.7.0\\microsoft.win32.systemevents.4.7.0.nupkg.sha512",
+    "C:\\Users\\fb859\\.nuget\\packages\\opentk\\3.1.0\\opentk.3.1.0.nupkg.sha512",
+    "C:\\Users\\fb859\\.nuget\\packages\\opentk.glcontrol\\3.1.0\\opentk.glcontrol.3.1.0.nupkg.sha512",
+    "C:\\Users\\fb859\\.nuget\\packages\\skiasharp\\2.88.8\\skiasharp.2.88.8.nupkg.sha512",
+    "C:\\Users\\fb859\\.nuget\\packages\\skiasharp.nativeassets.macos\\2.88.8\\skiasharp.nativeassets.macos.2.88.8.nupkg.sha512",
+    "C:\\Users\\fb859\\.nuget\\packages\\skiasharp.nativeassets.win32\\2.88.8\\skiasharp.nativeassets.win32.2.88.8.nupkg.sha512",
+    "C:\\Users\\fb859\\.nuget\\packages\\skiasharp.views\\2.88.8\\skiasharp.views.2.88.8.nupkg.sha512",
+    "C:\\Users\\fb859\\.nuget\\packages\\skiasharp.views.desktop.common\\2.88.8\\skiasharp.views.desktop.common.2.88.8.nupkg.sha512",
+    "C:\\Users\\fb859\\.nuget\\packages\\skiasharp.views.forms\\2.88.8\\skiasharp.views.forms.2.88.8.nupkg.sha512",
+    "C:\\Users\\fb859\\.nuget\\packages\\skiasharp.views.forms.wpf\\2.88.8\\skiasharp.views.forms.wpf.2.88.8.nupkg.sha512",
+    "C:\\Users\\fb859\\.nuget\\packages\\skiasharp.views.gtk2\\2.88.8\\skiasharp.views.gtk2.2.88.8.nupkg.sha512",
+    "C:\\Users\\fb859\\.nuget\\packages\\skiasharp.views.windowsforms\\2.88.8\\skiasharp.views.windowsforms.2.88.8.nupkg.sha512",
+    "C:\\Users\\fb859\\.nuget\\packages\\skiasharp.views.wpf\\2.88.8\\skiasharp.views.wpf.2.88.8.nupkg.sha512",
+    "C:\\Users\\fb859\\.nuget\\packages\\system.drawing.common\\4.7.3\\system.drawing.common.4.7.3.nupkg.sha512",
+    "C:\\Users\\fb859\\.nuget\\packages\\xamarin.forms\\4.8.0.1821\\xamarin.forms.4.8.0.1821.nupkg.sha512",
+    "C:\\Users\\fb859\\.nuget\\packages\\xamarin.forms.platform.wpf\\4.8.0.1821\\xamarin.forms.platform.wpf.4.8.0.1821.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Das Paket \"OpenTK 3.1.0\" wurde nicht mit dem Projektzielframework \"net8.0-windows7.0\", sondern mit \".NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1\" wiederhergestellt. Dieses Paket ist mit Ihrem Projekt möglicherweise nicht vollständig kompatibel.",
+      "libraryId": "OpenTK",
+      "targetGraphs": [
+        "net8.0-windows7.0"
+      ]
+    },
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Das Paket \"OpenTK.GLControl 3.1.0\" wurde nicht mit dem Projektzielframework \"net8.0-windows7.0\", sondern mit \".NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1\" wiederhergestellt. Dieses Paket ist mit Ihrem Projekt möglicherweise nicht vollständig kompatibel.",
+      "libraryId": "OpenTK.GLControl",
+      "targetGraphs": [
+        "net8.0-windows7.0"
+      ]
+    },
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Das Paket \"SkiaSharp.Views 2.88.8\" wurde nicht mit dem Projektzielframework \"net8.0-windows7.0\", sondern mit \".NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1\" wiederhergestellt. Dieses Paket ist mit Ihrem Projekt möglicherweise nicht vollständig kompatibel.",
+      "libraryId": "SkiaSharp.Views",
+      "targetGraphs": [
+        "net8.0-windows7.0"
+      ]
+    },
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Das Paket \"SkiaSharp.Views.Gtk2 2.88.8\" wurde nicht mit dem Projektzielframework \"net8.0-windows7.0\", sondern mit \".NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1\" wiederhergestellt. Dieses Paket ist mit Ihrem Projekt möglicherweise nicht vollständig kompatibel.",
+      "libraryId": "SkiaSharp.Views.Gtk2",
+      "targetGraphs": [
+        "net8.0-windows7.0"
+      ]
+    }
+  ]
+}

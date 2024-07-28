@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Import Project="$(NuGetPackageRoot)xamarin.forms\4.8.0.1821\buildTransitive\Xamarin.Forms.targets" Condition="Exists('$(NuGetPackageRoot)xamarin.forms\4.8.0.1821\buildTransitive\Xamarin.Forms.targets')" />
+    <Import Project="$(NuGetPackageRoot)skiasharp.views.forms\2.88.8\build\netcoreapp3.1\SkiaSharp.Views.Forms.targets" Condition="Exists('$(NuGetPackageRoot)skiasharp.views.forms\2.88.8\build\netcoreapp3.1\SkiaSharp.Views.Forms.targets')" />
+  </ImportGroup>
+</Project>

@@ -1,0 +1,103 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\fb859\\source\\repos\\DynamicWin\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A65D4F15-99DA-4085-8099-06078E67F4EB}|DynamicWin\\DynamicWin.csproj|c:\\users\\fb859\\source\\repos\\dynamicwin\\dynamicwin\\mycustomcontrol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A65D4F15-99DA-4085-8099-06078E67F4EB}|DynamicWin\\DynamicWin.csproj|solutionrelative:dynamicwin\\mycustomcontrol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A65D4F15-99DA-4085-8099-06078E67F4EB}|DynamicWin\\DynamicWin.csproj|c:\\users\\fb859\\source\\repos\\dynamicwin\\dynamicwin\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A65D4F15-99DA-4085-8099-06078E67F4EB}|DynamicWin\\DynamicWin.csproj|solutionrelative:dynamicwin\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A65D4F15-99DA-4085-8099-06078E67F4EB}|DynamicWin\\DynamicWin.csproj|c:\\users\\fb859\\source\\repos\\dynamicwin\\dynamicwin\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{A65D4F15-99DA-4085-8099-06078E67F4EB}|DynamicWin\\DynamicWin.csproj|solutionrelative:dynamicwin\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A65D4F15-99DA-4085-8099-06078E67F4EB}|DynamicWin\\DynamicWin.csproj|c:\\users\\fb859\\source\\repos\\dynamicwin\\dynamicwin\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A65D4F15-99DA-4085-8099-06078E67F4EB}|DynamicWin\\DynamicWin.csproj|solutionrelative:dynamicwin\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A65D4F15-99DA-4085-8099-06078E67F4EB}|DynamicWin\\DynamicWin.csproj|c:\\users\\fb859\\source\\repos\\dynamicwin\\dynamicwin\\mainform.resx||{FF4D6ACA-9352-4A5F-821E-F4D6EBDCAB11}",
+      "RelativeMoniker": "D:0:0:{A65D4F15-99DA-4085-8099-06078E67F4EB}|DynamicWin\\DynamicWin.csproj|solutionrelative:dynamicwin\\mainform.resx||{FF4D6ACA-9352-4A5F-821E-F4D6EBDCAB11}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "MainForm.resx",
+              "DocumentMoniker": "C:\\Users\\fb859\\source\\repos\\DynamicWin\\DynamicWin\\MainForm.resx",
+              "RelativeDocumentMoniker": "DynamicWin\\MainForm.resx",
+              "ToolTip": "C:\\Users\\fb859\\source\\repos\\DynamicWin\\DynamicWin\\MainForm.resx",
+              "RelativeToolTip": "DynamicWin\\MainForm.resx",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001005|",
+              "WhenOpened": "2024-07-28T10:32:38.803Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "MainForm.cs [Entwurf]",
+              "DocumentMoniker": "C:\\Users\\fb859\\source\\repos\\DynamicWin\\DynamicWin\\MainForm.cs",
+              "RelativeDocumentMoniker": "DynamicWin\\MainForm.cs",
+              "ToolTip": "C:\\Users\\fb859\\source\\repos\\DynamicWin\\DynamicWin\\MainForm.cs [Entwurf]",
+              "RelativeToolTip": "DynamicWin\\MainForm.cs [Entwurf]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-28T10:32:37.006Z",
+              "EditorCaption": " [Entwurf]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\fb859\\source\\repos\\DynamicWin\\DynamicWin\\Program.cs",
+              "RelativeDocumentMoniker": "DynamicWin\\Program.cs",
+              "ToolTip": "C:\\Users\\fb859\\source\\repos\\DynamicWin\\DynamicWin\\Program.cs",
+              "RelativeToolTip": "DynamicWin\\Program.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA0AAAAsAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-28T10:32:33.592Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MyCustomControl.cs",
+              "DocumentMoniker": "C:\\Users\\fb859\\source\\repos\\DynamicWin\\DynamicWin\\MyCustomControl.cs",
+              "RelativeDocumentMoniker": "DynamicWin\\MyCustomControl.cs",
+              "ToolTip": "C:\\Users\\fb859\\source\\repos\\DynamicWin\\DynamicWin\\MyCustomControl.cs",
+              "RelativeToolTip": "DynamicWin\\MyCustomControl.cs",
+              "ViewState": "AQIAAA0AAAAAAAAAAADwvyAAAABYAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-28T10:31:13.682Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MainForm.cs",
+              "DocumentMoniker": "C:\\Users\\fb859\\source\\repos\\DynamicWin\\DynamicWin\\MainForm.cs",
+              "RelativeDocumentMoniker": "DynamicWin\\MainForm.cs",
+              "ToolTip": "C:\\Users\\fb859\\source\\repos\\DynamicWin\\DynamicWin\\MainForm.cs",
+              "RelativeToolTip": "DynamicWin\\MainForm.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABsAAAAyAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-28T10:30:38.464Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
