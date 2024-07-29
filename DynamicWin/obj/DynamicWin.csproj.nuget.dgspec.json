@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\fb859\\source\\repos\\DynamicWin\\DynamicWin\\DynamicWin.csproj": {}
+    "C:\\Users\\fb859\\Documents\\GitHub\\DynamicWindows\\DynamicWin\\DynamicWin.csproj": {}
   },
   "projects": {
-    "C:\\Users\\fb859\\source\\repos\\DynamicWin\\DynamicWin\\DynamicWin.csproj": {
+    "C:\\Users\\fb859\\Documents\\GitHub\\DynamicWindows\\DynamicWin\\DynamicWin.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\fb859\\source\\repos\\DynamicWin\\DynamicWin\\DynamicWin.csproj",
+        "projectUniqueName": "C:\\Users\\fb859\\Documents\\GitHub\\DynamicWindows\\DynamicWin\\DynamicWin.csproj",
         "projectName": "DynamicWin",
-        "projectPath": "C:\\Users\\fb859\\source\\repos\\DynamicWin\\DynamicWin\\DynamicWin.csproj",
+        "projectPath": "C:\\Users\\fb859\\Documents\\GitHub\\DynamicWindows\\DynamicWin\\DynamicWin.csproj",
         "packagesPath": "C:\\Users\\fb859\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\fb859\\source\\repos\\DynamicWin\\DynamicWin\\obj\\",
+        "outputPath": "C:\\Users\\fb859\\Documents\\GitHub\\DynamicWindows\\DynamicWin\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\fb859\\AppData\\Roaming\\NuGet\\NuGet.Config",

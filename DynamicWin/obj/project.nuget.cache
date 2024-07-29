@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "YRwKz54LncZA0ehP7DX6XWMJxHwTx6DLGH46WsaF+X/a2XYEsj+nqaIyK85MAdjcxuH5w284kvQuan/EzZAA+g==",
+  "dgSpecHash": "TUR4LIMrOH+vRq5M+rxFNMGgsHqPiLRQZOwSrIq13t1fjoNVVbev5BubHrAgnRjBMU9Bm3+Iqao+qrieqbr/kw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\fb859\\source\\repos\\DynamicWin\\DynamicWin\\DynamicWin.csproj",
+  "projectFilePath": "C:\\Users\\fb859\\Documents\\GitHub\\DynamicWindows\\DynamicWin\\DynamicWin.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\fb859\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.9\\microsoft.netcore.platforms.3.1.9.nupkg.sha512",
     "C:\\Users\\fb859\\.nuget\\packages\\microsoft.win32.systemevents\\4.7.0\\microsoft.win32.systemevents.4.7.0.nupkg.sha512",

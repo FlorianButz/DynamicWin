@@ -34,11 +34,24 @@ namespace DynamicWin
                 canvas.DrawLine(0, 0, this.Width, this.Height, paint);
 
                 // Example of blurring
-                var blurEffect = SKImageFilter.CreateBlur(25.0f, 5.0f);
+                var blurEffect = SKImageFilter.CreateBlur(250.0f, 5.0f);
                 paint.ImageFilter = blurEffect;
 
                 // Draw a blurred rectangle
                 canvas.DrawRect(50, 50 + (float)Math.Sin(timer) * 25, 200, 200, paint);
+            }
+
+            using(var paint = new SKPaint())
+            {
+                paint.TextSize = 24;
+                paint.Color = SKColors.Yellow;
+                paint.Typeface = SKTypeface.FromFamilyName(
+                    "Arial",
+                    SKFontStyleWeight.Bold,
+                    SKFontStyleWidth.Normal,
+                    SKFontStyleSlant.Upright);
+
+                canvas.DrawText("Fancy Text", 30, 30, paint);
             }
         }
     }
