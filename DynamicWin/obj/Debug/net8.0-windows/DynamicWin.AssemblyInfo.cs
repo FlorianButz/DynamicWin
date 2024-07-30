@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DynamicWin")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+582f8c67c9065ec7d842777c89d8fb63eb10bd0e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+93791717495925825e28220e4abe4c685fd0041b")]
 [assembly: System.Reflection.AssemblyProductAttribute("DynamicWin")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DynamicWin")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

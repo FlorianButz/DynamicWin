@@ -56,7 +56,6 @@ C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\bin\Debug\net8.0-windo
 C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\bin\Debug\net8.0-windows\runtimes\win-x64\native\libSkiaSharp.dll
 C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\bin\Debug\net8.0-windows\runtimes\win-x86\native\libSkiaSharp.dll
 C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\obj\Debug\net8.0-windows\DynamicWin.csproj.AssemblyReference.cache
-C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\obj\Debug\net8.0-windows\DynamicWin.MainForm.resources
 C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\obj\Debug\net8.0-windows\DynamicWin.csproj.GenerateResource.cache
 C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\obj\Debug\net8.0-windows\DynamicWin.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\obj\Debug\net8.0-windows\DynamicWin.AssemblyInfoInputs.cache
@@ -69,3 +68,4 @@ C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\obj\Debug\net8.0-windo
 C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\obj\Debug\net8.0-windows\DynamicWin.pdb
 C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\obj\Debug\net8.0-windows\DynamicWin.genruntimeconfig.cache
 C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\obj\Debug\net8.0-windows\ref\DynamicWin.dll
+C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\obj\Debug\net8.0-windows\DynamicWin.Main.MainForm.resources
