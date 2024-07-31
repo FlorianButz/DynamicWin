@@ -52,21 +52,37 @@ namespace DynamicWin.Utils
 
         public static Vec2 operator +(Vec2 a, Vec2 b)
         {
+            if (a == null && b != null) return b;
+            else if (a != null && b == null) return a;
+            else if (a == null && b == null) return Vec2.zero;
+
             return new Vec2(a.x + b.x, a.y + b.y);
         }
 
         public static Vec2 operator *(Vec2 a, Vec2 b)
         {
+            if (a == null && b != null) return b;
+            else if (a != null && b == null) return a;
+            else if (a == null && b == null) return Vec2.zero;
+
             return new Vec2(a.x * b.x, a.y * b.y);
         }
 
         public static Vec2 operator /(Vec2 a, Vec2 b)
         {
+            if (a == null && b != null) return b;
+            else if (a != null && b == null) return a;
+            else if (a == null && b == null) return Vec2.zero;
+
             return new Vec2(a.x / b.x, a.y / b.y);
         }
 
         public static Vec2 operator -(Vec2 a, Vec2 b)
         {
+            if (a == null && b != null) return b;
+            else if (a != null && b == null) return a;
+            else if (a == null && b == null) return Vec2.zero;
+
             return new Vec2(a.x - b.x, a.y - b.y);
         }
 

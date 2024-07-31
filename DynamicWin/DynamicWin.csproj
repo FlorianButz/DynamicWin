@@ -16,4 +16,16 @@
     <PackageReference Include="SkiaSharp.Views.WPF" Version="2.88.8" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Resources\icons\search.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\Inter_24pt-ExtraBold.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\Inter_24pt-Regular.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

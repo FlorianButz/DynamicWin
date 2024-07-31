@@ -31,6 +31,9 @@ namespace DynamicWin.Main
 
             islandObject = new IslandObject();
 
+            objects.Add(new DWText(islandObject, "Test Text", Vec2.zero, UIAlignment.Center));
+            objects.Add(new DWImage(islandObject, Resources.Resources.search, Vec2.zero, new Vec2(25, 25), UIAlignment.Center));
+
             // Set up the timer
             timer = new System.Windows.Forms.Timer
             {
@@ -45,6 +48,8 @@ namespace DynamicWin.Main
         public float DeltaTime { get { return deltaTime; } private set => deltaTime = value; }
 
         Stopwatch? updateStopwatch;
+
+        int te = 0;
 
         // Called once every frame to update values
 
@@ -61,11 +66,22 @@ namespace DynamicWin.Main
 
             // Update logic here
 
+            te++;
+
             islandObject.Update(DeltaTime);
 
             foreach (UIObject uiObject in objects)
             {
                 uiObject.Update(DeltaTime);
+
+                if(te >= 100)
+                {
+                    if (uiObject.GetType() == typeof(DWText))
+                    {
+                        ((DWText)uiObject).Text = "Test End!";
+                    }
+                    te = 0;
+                }
             }
 
             // End of update
@@ -88,14 +104,9 @@ namespace DynamicWin.Main
             // Render
 
             var canvas = e.Surface.Canvas;
-            canvas.Clear(SKColors.Transparent);
-
-            var islandMask = islandObject.GetRect();
+            if (canvas == null) return;
             
-            islandMask.Deflate(new SKSize(1, 1));
-            canvas.ClipRoundRect(islandMask);
-
-            islandObject.Draw(canvas);
+            canvas.Clear(SKColors.Transparent);
 
             var paint = new SKPaint
             {
@@ -110,11 +121,33 @@ namespace DynamicWin.Main
 
             int saveState = canvas.Save();
 
+            Mask(canvas);
+            islandObject.Draw(canvas);
+
             foreach(UIObject uiObject in objects)
             {
                 canvas.RestoreToCount(saveState);
+
+                if (uiObject.maskInToIsland)
+                {
+                    Mask(canvas);
+                }
+
                 uiObject.Draw(canvas);
             }
+        }
+
+        void Mask(SKCanvas canvas)
+        {
+            var islandMask = GetMask();
+            canvas.ClipRoundRect(islandMask);
+        }
+
+        public SKRoundRect GetMask()
+        {
+            var islandMask = islandObject.GetRect();
+            islandMask.Deflate(new SKSize(1, 1));
+            return islandMask;
         }
     }
 

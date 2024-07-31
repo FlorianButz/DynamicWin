@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 
 namespace DynamicWin.UI
 {
-    internal abstract class UIObject
+    internal class UIObject
     {
         private UIObject? parent;
 
-        private Vec2 position;
-        private Vec2 localPosition;
+        private Vec2 position = Vec2.zero;
+        private Vec2 localPosition = Vec2.zero;
         private Vec2 anchor = new Vec2(0.5f, 0.5f);
-        private Vec2 size;
+        private Vec2 size = Vec2.one;
         private Col color = Col.White;
 
         public Vec2 Position { get => GetPosition() + localPosition; set => position = value; }
@@ -30,6 +30,7 @@ namespace DynamicWin.UI
 
         public UIAlignment alignment = UIAlignment.TopCenter;
 
+        protected float localBlurAmount = 0f;
         public float blurAmount = 0f;
         public float roundRadius = 0f;
         public bool maskInToIsland = true;
@@ -81,7 +82,7 @@ namespace DynamicWin.UI
             else
             {
                 Vec2 parentDim = parent.Size;
-                Vec2 parentPos = parent.GetPosition();
+                Vec2 parentPos = parent.Position;
 
                 switch (alignment)
                 {
@@ -118,6 +119,11 @@ namespace DynamicWin.UI
             return Vec2.zero;
         }
 
+        public float GetBlur()
+        {
+            return Math.Max(blurAmount, localBlurAmount);
+        }
+
         public virtual void Update(float deltaTime)
         {
             var rect = SKRect.Create(RendererMain.CursorPosition.X, RendererMain.CursorPosition.Y, 1, 1);
@@ -140,12 +146,13 @@ namespace DynamicWin.UI
                 Style = SKPaintStyle.Fill,
                 Color = Color.Value(),
                 IsAntialias = true,
-                IsDither = true
+                IsDither = true,
+                FilterQuality = SKFilterQuality.High
             };
 
-            if(blurAmount != 0f)
+            if(GetBlur() != 0f)
             {
-                var blur = SKImageFilter.CreateBlur(blurAmount, blurAmount);
+                var blur = SKImageFilter.CreateBlur(GetBlur(), GetBlur());
                 paint.ImageFilter = blur;
             }
 
