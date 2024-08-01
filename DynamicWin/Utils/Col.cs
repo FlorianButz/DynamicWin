@@ -21,6 +21,16 @@ namespace DynamicWin.Utils
             this.a = a;
         }
 
+        public static Col Lerp(Col a, Col b, float t)
+        {
+            return new Col(
+                Mathf.Lerp(a.r, b.r, t),
+                Mathf.Lerp(a.g, b.g, t),
+                Mathf.Lerp(a.b, b.b, t),
+                Mathf.Lerp(a.a, b.a, t)
+                ); ;
+        }
+
         public SkiaSharp.SKColor Value()
         {
             return new SkiaSharp.SKColor(

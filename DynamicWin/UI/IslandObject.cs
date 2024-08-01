@@ -1,4 +1,5 @@
-﻿using DynamicWin.Utils;
+﻿using DynamicWin.UI.Menu;
+using DynamicWin.Utils;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
@@ -31,24 +32,32 @@ namespace DynamicWin.UI
             LocalPosition = new Vec2(0, 15f);
 
             scaleSecondOrder = new SecondOrder(Size, secondOrderValuesExpand.X, secondOrderValuesExpand.Y, 0.1f);
+            expandInteractionRect = 20;
         }
 
         public override void Update(float deltaTime)
         {
             base.Update(deltaTime);
 
-            Size = scaleSecondOrder.Update(deltaTime, currSize);
-
             if (IsHovering)
-                currSize = new Vec2(450, 100);
+                currSize = MenuManager.Instance.ActiveMenu.IslandSizeBig();
             else
-                currSize = new Vec2(250, 50);
+                currSize = MenuManager.Instance.ActiveMenu.IslandSize();
+
+            Size = scaleSecondOrder.Update(deltaTime, currSize);
         }
 
         public override void Draw(SKCanvas canvas)
         {
             var paint = GetPaint();
+
             canvas.DrawRoundRect(GetRect(), paint);
+        }
+
+        public override SKRoundRect GetRect()
+        {
+            var rect = base.GetRect();
+            return rect;
         }
     }
 }

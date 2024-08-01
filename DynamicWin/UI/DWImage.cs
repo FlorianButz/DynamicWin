@@ -21,9 +21,7 @@ namespace DynamicWin.UI
 
         public override void Draw(SKCanvas canvas)
         {
-            base.Draw(canvas);
-
-            canvas.DrawBitmap(Resources.Resources.search, new SKRect(Position.X, Position.Y, Size.X, Size.Y), GetPaint());
+            canvas.DrawBitmap(image, SKRect.Create(Position.X, Position.Y, Size.X, Size.Y), GetPaint());
         }
     }
 }

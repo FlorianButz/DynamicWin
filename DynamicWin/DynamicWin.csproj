@@ -20,6 +20,9 @@
     <None Update="Resources\icons\search.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Resources\icons\test.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Resources\Inter_24pt-ExtraBold.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

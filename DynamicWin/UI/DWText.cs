@@ -15,6 +15,13 @@ namespace DynamicWin.UI
 
         public float textSize = 24;
 
+        private Vec2 textBounds;
+
+        public Vec2 TextBounds { get {
+                if (textBounds == null) return Vec2.zero;
+                return textBounds;
+            } }
+
         public DWText(UIObject? parent, string text, Vec2 position, UIAlignment alignment = UIAlignment.TopCenter) : base(parent, position, Vec2.zero, alignment)
         {
             this.Text = text;
@@ -32,6 +39,8 @@ namespace DynamicWin.UI
             // Measure the height of the text
             var fontMetrics = paint.FontMetrics;
             Size.Y = fontMetrics.Descent + fontMetrics.Ascent;
+
+            textBounds = new Vec2(paint.MeasureText(text), fontMetrics.Descent + fontMetrics.Ascent);
 
             canvas.DrawText(text, new SKPoint(Position.X, Position.Y), paint);
         }

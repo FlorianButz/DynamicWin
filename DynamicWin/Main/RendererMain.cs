@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Windows.Forms;
 using DynamicWin.UI;
+using DynamicWin.UI.Menu;
+using DynamicWin.UI.Menu.Menus;
 using DynamicWin.Utils;
 using SkiaSharp;
 using SkiaSharp.Views.Desktop;
@@ -8,13 +10,14 @@ using SkiaSharp.Views.Desktop;
 namespace DynamicWin.Main
 {
 
-    public class RendererMain : SKControl
+    internal class RendererMain : SKControl
     {
         private System.Windows.Forms.Timer timer;
 
         private IslandObject islandObject;
+        public IslandObject MainIsland { get => islandObject; }
 
-        List<UIObject> objects = new List<UIObject>();
+        private List<UIObject> objects { get { return MenuManager.Instance.ActiveMenu.UiObjects; } }
 
         public static Vec2 ScreenDimensions { get => new Vec2(instance.Width, instance.Height); }
         public static Vec2 CursorPosition { get => new Vec2(Cursor.Position.X, Cursor.Position.Y); }
@@ -24,15 +27,15 @@ namespace DynamicWin.Main
 
         public RendererMain()
         {
+            MenuManager m = new MenuManager();
+
             instance = this;
 
             SetStyle(ControlStyles.SupportsTransparentBackColor, true);
             BackColor = Color.Transparent;
 
             islandObject = new IslandObject();
-
-            objects.Add(new DWText(islandObject, "Test Text", Vec2.zero, UIAlignment.Center));
-            objects.Add(new DWImage(islandObject, Resources.Resources.search, Vec2.zero, new Vec2(25, 25), UIAlignment.Center));
+            m.ActiveMenu = new TestMenu();
 
             // Set up the timer
             timer = new System.Windows.Forms.Timer
@@ -42,6 +45,7 @@ namespace DynamicWin.Main
             timer.Tick += (sender, args) => Update();
             timer.Tick += (sender, args) => Render();
             timer.Start();
+
         }
 
         float deltaTime = 0f;
@@ -59,7 +63,6 @@ namespace DynamicWin.Main
             {
                 updateStopwatch.Stop();
                 deltaTime = updateStopwatch.ElapsedMilliseconds / 1000f;
-                System.Diagnostics.Debug.WriteLine(deltaTime);
             }
             else
                 deltaTime = 1f / 1000f;
@@ -68,13 +71,13 @@ namespace DynamicWin.Main
 
             te++;
 
-            islandObject.Update(DeltaTime);
+            islandObject.UpdateCall(DeltaTime);
 
             foreach (UIObject uiObject in objects)
             {
-                uiObject.Update(DeltaTime);
+                uiObject.UpdateCall(DeltaTime);
 
-                if(te >= 100)
+                if (te >= 100)
                 {
                     if (uiObject.GetType() == typeof(DWText))
                     {
@@ -107,22 +110,10 @@ namespace DynamicWin.Main
             if (canvas == null) return;
             
             canvas.Clear(SKColors.Transparent);
-
-            var paint = new SKPaint
-            {
-                Style = SKPaintStyle.Fill,
-                Color = SKColors.Firebrick,
-                IsAntialias = true,
-                IsDither = true
-            };
-
-            var rect = SKRect.Create(CursorPosition.X, CursorPosition.Y, 5, 5);
-            canvas.DrawRect(rect, paint);
-
             int saveState = canvas.Save();
 
             Mask(canvas);
-            islandObject.Draw(canvas);
+            islandObject.DrawCall(canvas);
 
             foreach(UIObject uiObject in objects)
             {
@@ -133,7 +124,7 @@ namespace DynamicWin.Main
                     Mask(canvas);
                 }
 
-                uiObject.Draw(canvas);
+                uiObject.DrawCall(canvas);
             }
         }
 
