@@ -1,8 +1,10 @@
 ﻿using System.Diagnostics;
+using System.Drawing;
 using System.Windows.Forms;
 using DynamicWin.UI;
 using DynamicWin.UI.Menu;
 using DynamicWin.UI.Menu.Menus;
+using DynamicWin.UI.UIElements;
 using DynamicWin.Utils;
 using SkiaSharp;
 using SkiaSharp.Views.Desktop;
@@ -28,6 +30,7 @@ namespace DynamicWin.Main
         public RendererMain()
         {
             MenuManager m = new MenuManager();
+            Theme theme = new Theme();
 
             instance = this;
 
@@ -35,7 +38,7 @@ namespace DynamicWin.Main
             BackColor = Color.Transparent;
 
             islandObject = new IslandObject();
-            m.ActiveMenu = new TestMenu();
+            m.Init();
 
             // Set up the timer
             timer = new System.Windows.Forms.Timer
@@ -53,8 +56,6 @@ namespace DynamicWin.Main
 
         Stopwatch? updateStopwatch;
 
-        int te = 0;
-
         // Called once every frame to update values
 
         private new void Update()
@@ -67,24 +68,18 @@ namespace DynamicWin.Main
             else
                 deltaTime = 1f / 1000f;
 
-            // Update logic here
+            // Update Menu
 
-            te++;
+            if (MenuManager.Instance.ActiveMenu != null)
+                MenuManager.Instance.ActiveMenu.Update();
+
+            // Update logic here
 
             islandObject.UpdateCall(DeltaTime);
 
             foreach (UIObject uiObject in objects)
             {
                 uiObject.UpdateCall(DeltaTime);
-
-                if (te >= 100)
-                {
-                    if (uiObject.GetType() == typeof(DWText))
-                    {
-                        ((DWText)uiObject).Text = "Test End!";
-                    }
-                    te = 0;
-                }
             }
 
             // End of update
@@ -100,6 +95,8 @@ namespace DynamicWin.Main
             Invalidate();
         }
 
+        public int canvasWithoutClip;
+
         protected override void OnPaintSurface(SKPaintSurfaceEventArgs e)
         {
             base.OnPaintSurface(e);
@@ -108,16 +105,16 @@ namespace DynamicWin.Main
 
             var canvas = e.Surface.Canvas;
             if (canvas == null) return;
-            
             canvas.Clear(SKColors.Transparent);
-            int saveState = canvas.Save();
 
-            Mask(canvas);
+            canvasWithoutClip = canvas.Save();
+
+            if(islandObject.maskInToIsland) Mask(canvas);
             islandObject.DrawCall(canvas);
 
             foreach(UIObject uiObject in objects)
             {
-                canvas.RestoreToCount(saveState);
+                canvas.RestoreToCount(canvasWithoutClip);
 
                 if (uiObject.maskInToIsland)
                 {
@@ -126,6 +123,8 @@ namespace DynamicWin.Main
 
                 uiObject.DrawCall(canvas);
             }
+
+            canvas.Flush();
         }
 
         void Mask(SKCanvas canvas)

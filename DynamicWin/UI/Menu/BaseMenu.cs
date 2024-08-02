@@ -1,4 +1,6 @@
-﻿using DynamicWin.Utils;
+﻿using DynamicWin.Main;
+using DynamicWin.UI.UIElements;
+using DynamicWin.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,20 +9,27 @@ using System.Threading.Tasks;
 
 namespace DynamicWin.UI.Menu
 {
-    internal class BaseMenu
+    internal class BaseMenu : IDisposable
     {
-        private List<UIObject> uiObjects;
+        private List<UIObject> uiObjects = new List<UIObject>();
 
         public List<UIObject> UiObjects { get { return uiObjects; } }
 
         public BaseMenu()
         {
-            uiObjects = InitializeMenu();
+            uiObjects = InitializeMenu(RendererMain.Instance.MainIsland);
         }
 
-        public virtual Vec2 IslandSize() { return new Vec2(250, 25); }
-        public virtual Vec2 IslandSizeBig() { return new Vec2(500, 50); }
+        public virtual Vec2 IslandSize() { return new Vec2(200, 45); }
+        public virtual Vec2 IslandSizeBig() { return IslandSize(); }
 
-        public virtual List<UIObject> InitializeMenu() { return new List<UIObject>(); }
+        public virtual List<UIObject> InitializeMenu(IslandObject island) { return new List<UIObject>(); }
+
+        public virtual void Update() { }
+
+        public void Dispose()
+        {
+            uiObjects.Clear();
+        }
     }
 }

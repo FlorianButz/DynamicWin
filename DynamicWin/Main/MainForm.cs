@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DynamicWin.UI.Menu;
+using DynamicWin.UI.Menu.Menus;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -34,6 +36,39 @@ namespace DynamicWin.Main
                 Dock = DockStyle.Fill
             };
             Controls.Add(customControl);
+
+            this.AllowDrop = true;
+            this.DragEnter += MainForm_DragEnter;
+            this.DragDrop += MainForm_DragDrop;
+            this.DragLeave += MainForm_DragLeave;
+            this.DragOver += MainForm_DragOver;
+        }
+
+        private void MainForm_DragOver(object? sender, DragEventArgs e)
+        {
+            
+        }
+
+        private void MainForm_DragEnter(object? sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Copy;
+
+            if (!(MenuManager.Instance.ActiveMenu is DropFileMenu))
+            {
+                MenuManager.OpenMenu(new DropFileMenu());
+            }
+        }
+
+        private void MainForm_DragDrop(object? sender, DragEventArgs e)
+        {
+            DropFileMenu.Drop(e);
+
+            MenuManager.Instance.QueueOpenMenu(new HomeMenu());
+        }
+
+        private void MainForm_DragLeave(object? sender, EventArgs e)
+        {
+            MenuManager.OpenMenu(new HomeMenu());
         }
 
         protected override void OnLoad(EventArgs e)

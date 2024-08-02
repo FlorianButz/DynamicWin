@@ -12,6 +12,7 @@
       }
     ],
     "configProperties": {
+      "Windows.ApplicationModel.DataTransfer.DragDrop.ExternalSupport": true,
       "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization": true
     }
   }

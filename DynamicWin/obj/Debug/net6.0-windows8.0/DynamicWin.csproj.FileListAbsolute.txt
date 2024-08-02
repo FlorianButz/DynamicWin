@@ -1,0 +1,1 @@
+C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\obj\Debug\net6.0-windows8.0\DynamicWin.csproj.AssemblyReference.cache

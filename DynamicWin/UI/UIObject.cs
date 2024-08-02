@@ -20,7 +20,7 @@ namespace DynamicWin.UI
         private Vec2 size = Vec2.one;
         private Col color = Col.White;
 
-        public Vec2 RawPosition { get => position + localPosition; }
+        public Vec2 RawPosition { get => position; }
         public Vec2 Position { get => GetPosition() + localPosition; set => position = value; }
         public Vec2 LocalPosition { get => localPosition; set => localPosition = value; }
         public Vec2 Anchor { get => anchor; set => anchor = value; }
@@ -42,6 +42,7 @@ namespace DynamicWin.UI
         private List<UIObject> localObjects = new List<UIObject>();
 
         private bool isEnabled = true;
+        public bool IsEnabled { get => isEnabled; set => SetActive(value); }
 
         protected void AddLocalObject(UIObject obj)
         {
@@ -61,6 +62,86 @@ namespace DynamicWin.UI
             this.position = position;
             this.size = size;
             this.alignment = alignment;
+        }
+
+        public Vec2 GetScreenPosFromRawPosition(Vec2 position, Vec2 Size = null, UIAlignment alignment = UIAlignment.None, UIObject parent = null)
+        {
+            if (parent == null) parent = this.parent;
+            if (Size == null) Size = this.Size;
+            if (alignment == UIAlignment.None) alignment = this.alignment;
+
+            if (parent == null)
+            {
+                Vec2 screenDim = RendererMain.ScreenDimensions;
+                switch (alignment)
+                {
+                    case UIAlignment.TopLeft:
+                        return new Vec2(position.X - (Size.X * Anchor.X),
+                            position.Y - (Size.Y * Anchor.Y));
+                    case UIAlignment.TopCenter:
+                        return new Vec2(position.X + screenDim.X / 2 - (Size.X * Anchor.X),
+                            position.Y - (Size.Y * Anchor.Y));
+                    case UIAlignment.TopRight:
+                        return new Vec2(position.X + screenDim.X - (Size.X * Anchor.X),
+                            position.Y - (Size.Y * Anchor.Y));
+                    case UIAlignment.MiddleLeft:
+                        return new Vec2(position.X - (Size.X * Anchor.X),
+                            position.Y + screenDim.Y / 2 - (Size.Y * Anchor.Y));
+                    case UIAlignment.Center:
+                        return new Vec2(position.X + screenDim.X / 2 - (Size.X * Anchor.X),
+                            position.Y + screenDim.Y / 2 - (Size.Y * Anchor.Y));
+                    case UIAlignment.MiddleRight:
+                        return new Vec2(position.X + screenDim.X - (Size.X * Anchor.X),
+                            position.Y + screenDim.Y / 2 - (Size.Y * Anchor.Y));
+                    case UIAlignment.BottomLeft:
+                        return new Vec2(position.X - (Size.X * Anchor.X),
+                            position.Y + screenDim.Y - (Size.Y * Anchor.Y));
+                    case UIAlignment.BottomCenter:
+                        return new Vec2(position.X + screenDim.X / 2 - (Size.X * Anchor.X),
+                            position.Y + screenDim.Y - (Size.Y * Anchor.Y));
+                    case UIAlignment.BottomRight:
+                        return new Vec2(position.X + screenDim.X - (Size.X * Anchor.X),
+                            position.Y + screenDim.Y - (Size.Y * Anchor.Y));
+                }
+            }
+            else
+            {
+                Vec2 parentDim = parent.Size;
+                Vec2 parentPos = parent.Position;
+
+                switch (alignment)
+                {
+                    case UIAlignment.TopLeft:
+                        return new Vec2(parentPos.X + position.X - (Size.X * Anchor.X),
+                            parentPos.Y + position.Y - (Size.Y * Anchor.Y));
+                    case UIAlignment.TopCenter:
+                        return new Vec2(parentPos.X + position.X + parentDim.X / 2 - (Size.X * Anchor.X),
+                            parentPos.Y + position.Y - (Size.Y * Anchor.Y));
+                    case UIAlignment.TopRight:
+                        return new Vec2(parentPos.X + position.X + parentDim.X - (Size.X * Anchor.X),
+                            parentPos.Y + position.Y - (Size.Y * Anchor.Y));
+                    case UIAlignment.MiddleLeft:
+                        return new Vec2(parentPos.X + position.X - (Size.X * Anchor.X),
+                            parentPos.Y + position.Y + parentDim.Y / 2 - (Size.Y * Anchor.Y));
+                    case UIAlignment.Center:
+                        return new Vec2(parentPos.X + position.X + parentDim.X / 2 - (Size.X * Anchor.X),
+                            parentPos.Y + position.Y + parentDim.Y / 2 - (Size.Y * Anchor.Y));
+                    case UIAlignment.MiddleRight:
+                        return new Vec2(parentPos.X + position.X + parentDim.X - (Size.X * Anchor.X),
+                            parentPos.Y + position.Y + parentDim.Y / 2 - (Size.Y * Anchor.Y));
+                    case UIAlignment.BottomLeft:
+                        return new Vec2(parentPos.X + position.X - (Size.X * Anchor.X),
+                            parentPos.Y + position.Y + parentDim.Y - (Size.Y * Anchor.Y));
+                    case UIAlignment.BottomCenter:
+                        return new Vec2(parentPos.X + position.X + parentDim.X / 2 - (Size.X * Anchor.X),
+                            parentPos.Y + position.Y + parentDim.Y - (Size.Y * Anchor.Y));
+                    case UIAlignment.BottomRight:
+                        return new Vec2(parentPos.X + position.X + parentDim.X - (Size.X * Anchor.X),
+                            parentPos.Y + position.Y + parentDim.Y - (Size.Y * Anchor.Y));
+                }
+            }
+
+            return Vec2.zero;
         }
 
         protected virtual Vec2 GetPosition()
@@ -202,13 +283,17 @@ namespace DynamicWin.UI
                 Color = Color.Value(),
                 IsAntialias = true,
                 IsDither = true,
-                FilterQuality = SKFilterQuality.High
-            };
+                SubpixelText = true,
+                FilterQuality = SKFilterQuality.High,
+                HintingLevel = SKPaintHinting.Full,
+                IsLinearText = false
+        };
 
             if(GetBlur() != 0f)
             {
                 var blur = SKImageFilter.CreateBlur(GetBlur(), GetBlur());
                 paint.ImageFilter = blur;
+                //paint.MaskFilter = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, GetBlur());
             }
 
             return paint;
@@ -239,13 +324,17 @@ namespace DynamicWin.UI
 
         public void SetActive(bool isEnabled)
         {
-            if (toggleThread != null && toggleThread.ThreadState == ThreadState.Background) toggleThread.Interrupt();
+            if (toggleThread != null)
+            {
+                toggleThread.Interrupt();
+                toggleThread = null;
+            }
 
             toggleThread = new Thread(() =>
             {
                 Thread.CurrentThread.IsBackground = true;
 
-                int length = 175;
+                int length = 100;
 
                 for (int i = 0; i < length; i++)
                 {
@@ -258,20 +347,24 @@ namespace DynamicWin.UI
                         return;
                     }
 
+                    if (isEnabled) this.isEnabled = isEnabled;
+
 
                     if (isEnabled)
                     {
-                        float t = Mathf.LimitDecimalPoints(Easings.EaseOutQuint((float)i / length), 1);
+                        float t = Mathf.LimitDecimalPoints(Easings.EaseInCubic((float)i / length), 1);
                         localBlurAmount = Mathf.Lerp(25, 0, t);
                     }
                     else
                     {
-                        float t = Mathf.LimitDecimalPoints(Easings.EaseInQuint((float)i / length), 1);
+                        float t = Mathf.LimitDecimalPoints(Easings.EaseOutCubic((float)i / length), 1);
                         localBlurAmount = Mathf.Lerp(0, 25, t);
                     }
                 }
 
                 this.isEnabled = isEnabled;
+                toggleThread = null;
+
             });
             toggleThread.Start();
         }
@@ -303,6 +396,7 @@ namespace DynamicWin.UI
         MiddleRight,
         BottomLeft,
         BottomCenter,
-        BottomRight
+        BottomRight,
+        None
     }
 }

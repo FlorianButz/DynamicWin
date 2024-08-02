@@ -1,4 +1,5 @@
 ﻿using DynamicWin.Main;
+using DynamicWin.UI.UIElements;
 using DynamicWin.Utils;
 using System;
 using System.Collections.Generic;
@@ -10,16 +11,17 @@ namespace DynamicWin.UI.Menu.Menus
 {
     internal class TestMenu : BaseMenu
     {
-        public override List<UIObject> InitializeMenu()
+        public override List<UIObject> InitializeMenu(IslandObject island)
         {
-            var objects = base.InitializeMenu();
+            var objects = base.InitializeMenu(island);
 
-            var btn = new DWTextButton(RendererMain.Instance.MainIsland, "Hello", new Vec2(0, 0), new Vec2(125, 25), () =>
+            objects.Add(new DWText(island, "Test", Vec2.zero, UIAlignment.TopCenter));
+
+            var btn = new DWTextButton(island, "Hello", new Vec2(0, 0), new Vec2(125, 25), () =>
             {
-                System.Diagnostics.Debug.WriteLine("Clicked!");
-            }, UIAlignment.Center);
+                MenuManager.OpenOverlayMenu(new TestMenu());
 
-            btn.clickCallback += () => { MenuManager.Instance.ActiveMenu = new TestMenu(); };
+            }, UIAlignment.Center);
 
             objects.Add(btn);
 
