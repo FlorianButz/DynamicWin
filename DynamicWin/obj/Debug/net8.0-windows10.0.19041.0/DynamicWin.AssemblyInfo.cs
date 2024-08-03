@@ -14,12 +14,12 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DynamicWin")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+390f93f513d96d83e054e4ef4d2535effca727ec")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+32dd4dd93c814454eec0be82a8f8e000f23856f9")]
 [assembly: System.Reflection.AssemblyProductAttribute("DynamicWin")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DynamicWin")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 [assembly: System.Runtime.Versioning.TargetPlatformAttribute("Windows10.0.19041.0")]
-[assembly: System.Runtime.Versioning.SupportedOSPlatformAttribute("Windows10.0.19041.0")]
+[assembly: System.Runtime.Versioning.SupportedOSPlatformAttribute("Windows10.0.22000.0")]
 
 // Von der MSBuild WriteCodeFragment-Klasse generiert.
 

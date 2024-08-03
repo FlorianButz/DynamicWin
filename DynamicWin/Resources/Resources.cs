@@ -28,6 +28,16 @@ namespace DynamicWin.Resources
         public static SKBitmap BatteryLevel_Full;
         public static SKBitmap NoBattery;
 
+        public static SKBitmap Next;
+        public static SKBitmap Previous;
+        public static SKBitmap PlayPause;
+        public static SKBitmap Play;
+        public static SKBitmap Stop;
+
+        public static SKBitmap Settings;
+        public static SKBitmap Tray;
+        public static SKBitmap Widgets;
+
         public static void Load()
         {
             editIcon = LoadImg("Resources\\icons\\edit.png");
@@ -41,6 +51,16 @@ namespace DynamicWin.Resources
             BatteryLevel_75P = LoadImg("Resources\\icons\\battery\\BatteryLevel_75P.png");
             BatteryLevel_Full = LoadImg("Resources\\icons\\battery\\BatteryLevel_Full.png");
             NoBattery = LoadImg("Resources\\icons\\battery\\NoBattery.png");
+
+            Next = LoadImg("Resources\\icons\\playback\\Next.png");
+            Previous = LoadImg("Resources\\icons\\playback\\Previous.png");
+            PlayPause = LoadImg("Resources\\icons\\playback\\PlayPause.png");
+            Play = LoadImg("Resources\\icons\\playback\\Play.png");
+            Stop = LoadImg("Resources\\icons\\playback\\Stop.png");
+
+            Settings = LoadImg("Resources\\icons\\home\\Settings.png");
+            Tray = LoadImg("Resources\\icons\\home\\Tray.png");
+            Widgets = LoadImg("Resources\\icons\\home\\Widgets.png");
 
             System.Diagnostics.Debug.WriteLine("Loaded Resources");
         }

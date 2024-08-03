@@ -11,7 +11,6 @@ using SkiaSharp.Views.Desktop;
 
 namespace DynamicWin.Main
 {
-
     internal class RendererMain : SKControl
     {
         private System.Windows.Forms.Timer timer;
@@ -49,6 +48,15 @@ namespace DynamicWin.Main
             timer.Tick += (sender, args) => Render();
             timer.Start();
 
+            KeyHandler.onKeyDown += OnKeyRegistered;
+        }
+
+        void OnKeyRegistered(Keys key, KeyModifier modifier)
+        {
+            if(key == Keys.LWin && modifier.isCtrlDown)
+            {
+                islandObject.hidden = !islandObject.hidden;
+            }
         }
 
         float deltaTime = 0f;
@@ -72,6 +80,9 @@ namespace DynamicWin.Main
 
             if (MenuManager.Instance.ActiveMenu != null)
                 MenuManager.Instance.ActiveMenu.Update();
+
+            if (MenuManager.Instance.ActiveMenu is DropFileMenu && !MainForm.Instance.isDragging)
+                MenuManager.OpenMenu(new HomeMenu());
 
             // Update logic here
 
@@ -101,6 +112,7 @@ namespace DynamicWin.Main
         {
             base.OnPaintSurface(e);
 
+
             // Render
 
             var canvas = e.Surface.Canvas;
@@ -111,6 +123,8 @@ namespace DynamicWin.Main
 
             if(islandObject.maskInToIsland) Mask(canvas);
             islandObject.DrawCall(canvas);
+
+            if (MainIsland.hidden) return;
 
             foreach(UIObject uiObject in objects)
             {

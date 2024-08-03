@@ -1,0 +1,10 @@
+C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\obj\Debug\net5.0-windows10.0.17763.0\DynamicWin.csproj.AssemblyReference.cache
+C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\obj\Debug\net5.0-windows10.0.17763.0\Interop.WMPLib.dll
+C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\obj\Debug\net5.0-windows10.0.17763.0\DynamicWin.csproj.ResolveComReference.cache
+C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\obj\Debug\net5.0-windows10.0.17763.0\DynamicWin.Main.MainForm.resources
+C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\obj\Debug\net5.0-windows10.0.17763.0\DynamicWin.csproj.GenerateResource.cache
+C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\obj\Debug\net5.0-windows10.0.17763.0\DynamicWin.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\obj\Debug\net5.0-windows10.0.17763.0\DynamicWin.AssemblyInfoInputs.cache
+C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\obj\Debug\net5.0-windows10.0.17763.0\DynamicWin.AssemblyInfo.cs
+C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\obj\Debug\net5.0-windows10.0.17763.0\DynamicWin.csproj.CoreCompileInputs.cache
+C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\obj\Debug\net5.0-windows10.0.17763.0\DynamicWin.sourcelink.json

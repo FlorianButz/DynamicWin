@@ -1,11 +1,21 @@
 {
   "version": 2,
-  "dgSpecHash": "0v8hUZd7afCNiMwgEY5E0BdsaJe7ypRDwKkA1xDZhutQAKmQh7qNVuXnCOMMTgoaiQZ4vv5BUGx7NsdJk/jeUQ==",
+  "dgSpecHash": "qBmY03eivxJajQ8CAj8+lUih55OknuFxKmub58oAIcQtHpY+6Y2FA8p6r4IlYx5p7n70BA2dflJg0yZgk3GMOA==",
   "success": true,
   "projectFilePath": "C:\\Users\\fb859\\Documents\\GitHub\\DynamicWindows\\DynamicWin\\DynamicWin.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\fb859\\.nuget\\packages\\fftsharp\\2.1.0\\fftsharp.2.1.0.nupkg.sha512",
     "C:\\Users\\fb859\\.nuget\\packages\\microsoft.netcore.platforms\\3.1.9\\microsoft.netcore.platforms.3.1.9.nupkg.sha512",
+    "C:\\Users\\fb859\\.nuget\\packages\\microsoft.netcore.targets\\1.1.0\\microsoft.netcore.targets.1.1.0.nupkg.sha512",
+    "C:\\Users\\fb859\\.nuget\\packages\\microsoft.win32.registry\\4.7.0\\microsoft.win32.registry.4.7.0.nupkg.sha512",
     "C:\\Users\\fb859\\.nuget\\packages\\microsoft.win32.systemevents\\4.7.0\\microsoft.win32.systemevents.4.7.0.nupkg.sha512",
+    "C:\\Users\\fb859\\.nuget\\packages\\naudio\\2.2.1\\naudio.2.2.1.nupkg.sha512",
+    "C:\\Users\\fb859\\.nuget\\packages\\naudio.asio\\2.2.1\\naudio.asio.2.2.1.nupkg.sha512",
+    "C:\\Users\\fb859\\.nuget\\packages\\naudio.core\\2.2.1\\naudio.core.2.2.1.nupkg.sha512",
+    "C:\\Users\\fb859\\.nuget\\packages\\naudio.midi\\2.2.1\\naudio.midi.2.2.1.nupkg.sha512",
+    "C:\\Users\\fb859\\.nuget\\packages\\naudio.wasapi\\2.2.1\\naudio.wasapi.2.2.1.nupkg.sha512",
+    "C:\\Users\\fb859\\.nuget\\packages\\naudio.winforms\\2.2.1\\naudio.winforms.2.2.1.nupkg.sha512",
+    "C:\\Users\\fb859\\.nuget\\packages\\naudio.winmm\\2.2.1\\naudio.winmm.2.2.1.nupkg.sha512",
     "C:\\Users\\fb859\\.nuget\\packages\\opentk\\3.1.0\\opentk.3.1.0.nupkg.sha512",
     "C:\\Users\\fb859\\.nuget\\packages\\opentk.glcontrol\\3.1.0\\opentk.glcontrol.3.1.0.nupkg.sha512",
     "C:\\Users\\fb859\\.nuget\\packages\\skiasharp\\2.88.8\\skiasharp.2.88.8.nupkg.sha512",
@@ -19,49 +29,53 @@
     "C:\\Users\\fb859\\.nuget\\packages\\skiasharp.views.windowsforms\\2.88.8\\skiasharp.views.windowsforms.2.88.8.nupkg.sha512",
     "C:\\Users\\fb859\\.nuget\\packages\\skiasharp.views.wpf\\2.88.8\\skiasharp.views.wpf.2.88.8.nupkg.sha512",
     "C:\\Users\\fb859\\.nuget\\packages\\system.drawing.common\\4.7.3\\system.drawing.common.4.7.3.nupkg.sha512",
+    "C:\\Users\\fb859\\.nuget\\packages\\system.runtime\\4.3.0\\system.runtime.4.3.0.nupkg.sha512",
+    "C:\\Users\\fb859\\.nuget\\packages\\system.runtime.interopservices.windowsruntime\\4.3.0\\system.runtime.interopservices.windowsruntime.4.3.0.nupkg.sha512",
+    "C:\\Users\\fb859\\.nuget\\packages\\system.security.accesscontrol\\4.7.0\\system.security.accesscontrol.4.7.0.nupkg.sha512",
+    "C:\\Users\\fb859\\.nuget\\packages\\system.security.principal.windows\\4.7.0\\system.security.principal.windows.4.7.0.nupkg.sha512",
     "C:\\Users\\fb859\\.nuget\\packages\\xamarin.forms\\4.8.0.1821\\xamarin.forms.4.8.0.1821.nupkg.sha512",
     "C:\\Users\\fb859\\.nuget\\packages\\xamarin.forms.platform.wpf\\4.8.0.1821\\xamarin.forms.platform.wpf.4.8.0.1821.nupkg.sha512",
-    "C:\\Users\\fb859\\.nuget\\packages\\microsoft.windows.sdk.net.ref\\10.0.19041.31\\microsoft.windows.sdk.net.ref.10.0.19041.31.nupkg.sha512"
+    "C:\\Users\\fb859\\.nuget\\packages\\microsoft.windows.sdk.net.ref\\10.0.17763.31\\microsoft.windows.sdk.net.ref.10.0.17763.31.nupkg.sha512"
   ],
   "logs": [
     {
       "code": "NU1701",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "Das Paket \"OpenTK 3.1.0\" wurde nicht mit dem Projektzielframework \"net8.0-windows10.0.19041\", sondern mit \".NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1\" wiederhergestellt. Dieses Paket ist mit Ihrem Projekt möglicherweise nicht vollständig kompatibel.",
+      "message": "Das Paket \"OpenTK 3.1.0\" wurde nicht mit dem Projektzielframework \"net8.0-windows10.0.17763\", sondern mit \".NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1\" wiederhergestellt. Dieses Paket ist mit Ihrem Projekt möglicherweise nicht vollständig kompatibel.",
       "libraryId": "OpenTK",
       "targetGraphs": [
-        "net8.0-windows10.0.19041"
+        "net8.0-windows10.0.17763"
       ]
     },
     {
       "code": "NU1701",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "Das Paket \"OpenTK.GLControl 3.1.0\" wurde nicht mit dem Projektzielframework \"net8.0-windows10.0.19041\", sondern mit \".NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1\" wiederhergestellt. Dieses Paket ist mit Ihrem Projekt möglicherweise nicht vollständig kompatibel.",
+      "message": "Das Paket \"OpenTK.GLControl 3.1.0\" wurde nicht mit dem Projektzielframework \"net8.0-windows10.0.17763\", sondern mit \".NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1\" wiederhergestellt. Dieses Paket ist mit Ihrem Projekt möglicherweise nicht vollständig kompatibel.",
       "libraryId": "OpenTK.GLControl",
       "targetGraphs": [
-        "net8.0-windows10.0.19041"
+        "net8.0-windows10.0.17763"
       ]
     },
     {
       "code": "NU1701",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "Das Paket \"SkiaSharp.Views 2.88.8\" wurde nicht mit dem Projektzielframework \"net8.0-windows10.0.19041\", sondern mit \".NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1\" wiederhergestellt. Dieses Paket ist mit Ihrem Projekt möglicherweise nicht vollständig kompatibel.",
+      "message": "Das Paket \"SkiaSharp.Views 2.88.8\" wurde nicht mit dem Projektzielframework \"net8.0-windows10.0.17763\", sondern mit \".NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1\" wiederhergestellt. Dieses Paket ist mit Ihrem Projekt möglicherweise nicht vollständig kompatibel.",
       "libraryId": "SkiaSharp.Views",
       "targetGraphs": [
-        "net8.0-windows10.0.19041"
+        "net8.0-windows10.0.17763"
       ]
     },
     {
       "code": "NU1701",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "Das Paket \"SkiaSharp.Views.Gtk2 2.88.8\" wurde nicht mit dem Projektzielframework \"net8.0-windows10.0.19041\", sondern mit \".NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1\" wiederhergestellt. Dieses Paket ist mit Ihrem Projekt möglicherweise nicht vollständig kompatibel.",
+      "message": "Das Paket \"SkiaSharp.Views.Gtk2 2.88.8\" wurde nicht mit dem Projektzielframework \"net8.0-windows10.0.17763\", sondern mit \".NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1\" wiederhergestellt. Dieses Paket ist mit Ihrem Projekt möglicherweise nicht vollständig kompatibel.",
       "libraryId": "SkiaSharp.Views.Gtk2",
       "targetGraphs": [
-        "net8.0-windows10.0.19041"
+        "net8.0-windows10.0.17763"
       ]
     }
   ]

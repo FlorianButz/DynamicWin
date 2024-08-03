@@ -57,3 +57,6 @@ C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\obj\Debug\net8.0-windo
 C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\obj\Debug\net8.0-windows10.0.19041.0\DynamicWin.pdb
 C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\obj\Debug\net8.0-windows10.0.19041.0\DynamicWin.genruntimeconfig.cache
 C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\obj\Debug\net8.0-windows10.0.19041.0\ref\DynamicWin.dll
+C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\bin\Debug\net8.0-windows10.0.19041.0\UwpMediaControls.dll
+C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\bin\Debug\net8.0-windows10.0.19041.0\UwpMediaControls.pdb
+C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\bin\Debug\net8.0-windows10.0.19041.0\UwpMediaControls.pri

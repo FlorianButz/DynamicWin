@@ -25,7 +25,7 @@ namespace DynamicWin.UI
         public Vec2 LocalPosition { get => localPosition; set => localPosition = value; }
         public Vec2 Anchor { get => anchor; set => anchor = value; }
         public Vec2 Size { get => size; set => size = value; }
-        public Col Color { get => color; set => color = value; }
+        public Col Color { get => new Col(color.r, color.g, color.b, color.a * alpha); set => color = value; }
 
         private bool isHovering = false;
         private bool isMouseDown = false;
@@ -43,6 +43,10 @@ namespace DynamicWin.UI
 
         private bool isEnabled = true;
         public bool IsEnabled { get => isEnabled; set => SetActive(value); }
+
+
+        public float disableBlurSize = 25;
+        public float alpha = 1f;
 
         protected void AddLocalObject(UIObject obj)
         {
@@ -275,7 +279,7 @@ namespace DynamicWin.UI
             canvas.DrawRoundRect(roundRect, paint);
         }
 
-        protected virtual SKPaint GetPaint()
+        public virtual SKPaint GetPaint()
         {
             var paint = new SKPaint
             {
@@ -353,12 +357,14 @@ namespace DynamicWin.UI
                     if (isEnabled)
                     {
                         float t = Mathf.LimitDecimalPoints(Easings.EaseInCubic((float)i / length), 1);
-                        localBlurAmount = Mathf.Lerp(25, 0, t);
+                        localBlurAmount = Mathf.Lerp(disableBlurSize, 0, (float)i / length);
+                        alpha = Mathf.Lerp(0, 1, t);
                     }
                     else
                     {
                         float t = Mathf.LimitDecimalPoints(Easings.EaseOutCubic((float)i / length), 1);
-                        localBlurAmount = Mathf.Lerp(0, 25, t);
+                        localBlurAmount = Mathf.Lerp(0, disableBlurSize, (float)i / length);
+                        alpha = Mathf.Lerp(1, 0, t);
                     }
                 }
 

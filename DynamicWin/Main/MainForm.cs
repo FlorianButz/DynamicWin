@@ -1,5 +1,6 @@
 ﻿using DynamicWin.UI.Menu;
 using DynamicWin.UI.Menu.Menus;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,9 @@ namespace DynamicWin.Main
 {
     public class MainForm : Form
     {
+        private static MainForm instance;
+        public static MainForm Instance { get => instance; }
+
         private const int HWND_TOPMOST = -1;
         private const int SWP_NOSIZE = 0x0001;
         private const int SWP_NOMOVE = 0x0002;
@@ -22,6 +26,8 @@ namespace DynamicWin.Main
 
         public MainForm()
         {
+            instance = this;
+
             FormBorderStyle = FormBorderStyle.None;
             WindowState = FormWindowState.Maximized;
             TopMost = true;
@@ -44,13 +50,20 @@ namespace DynamicWin.Main
             this.DragOver += MainForm_DragOver;
         }
 
+        public bool isDragging = false;
+
         private void MainForm_DragOver(object? sender, DragEventArgs e)
         {
-            
+            //System.Diagnostics.Debug.WriteLine("DragOver");
+
+            isDragging = true;
         }
 
         private void MainForm_DragEnter(object? sender, DragEventArgs e)
         {
+            //System.Diagnostics.Debug.WriteLine("DragEnter");
+
+            isDragging = true;
             e.Effect = DragDropEffects.Copy;
 
             if (!(MenuManager.Instance.ActiveMenu is DropFileMenu))
@@ -61,6 +74,9 @@ namespace DynamicWin.Main
 
         private void MainForm_DragDrop(object? sender, DragEventArgs e)
         {
+            //System.Diagnostics.Debug.WriteLine("DragDrop");
+
+            isDragging = false;
             DropFileMenu.Drop(e);
 
             MenuManager.Instance.QueueOpenMenu(new HomeMenu());
@@ -68,6 +84,10 @@ namespace DynamicWin.Main
 
         private void MainForm_DragLeave(object? sender, EventArgs e)
         {
+            //System.Diagnostics.Debug.WriteLine("DragLeave");
+
+            isDragging = false;
+
             MenuManager.OpenMenu(new HomeMenu());
         }
 

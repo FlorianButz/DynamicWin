@@ -1,4 +1,5 @@
-﻿using DynamicWin.Utils;
+﻿using DynamicWin.Main;
+using DynamicWin.Utils;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
@@ -24,8 +25,8 @@ namespace DynamicWin.UI.Widgets
 
         public Vec2 GetWidgetSize() { return new Vec2(GetWidgetWidth(), GetWidgetHeight()); }
 
-        protected virtual float GetWidgetHeight() { return 150; }
-        protected virtual float GetWidgetWidth() { return 250; }
+        protected virtual float GetWidgetHeight() { return 100; }
+        protected virtual float GetWidgetWidth() { return 200; }
 
         public List<UIObject> InitializeWidget()
         {
@@ -39,9 +40,17 @@ namespace DynamicWin.UI.Widgets
             DrawWidget(canvas);
 
             var paint = GetPaint();
-            paint.Color = (Theme.Primary * 0.1f).Value();
 
-            canvas.DrawRoundRect(GetRect(), paint);
+            var bPaint = GetPaint();
+            bPaint.ImageFilter = SKImageFilter.CreateBlur(100, 100);
+            bPaint.BlendMode = SKBlendMode.SrcOver;
+            bPaint.Color = Col.White.Override(a: 0.4f).Value();
+
+            int canvasSave = canvas.Save();
+            canvas.ClipRoundRect(GetRect(), antialias: true);
+            canvas.DrawCircle(RendererMain.CursorPosition.X + 12.5f, RendererMain.CursorPosition.Y + 20, 35, bPaint);
+
+            canvas.RestoreToCount(canvasSave);
 
             if (isEditMode)
             {

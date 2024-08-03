@@ -25,6 +25,8 @@ namespace DynamicWin.UI.UIElements
         public Vec2 hoverScaleMulti = Vec2.one * 1.05f;
         public Vec2 clickScaleMulti = Vec2.one * 1f - 0.05f;
 
+        protected Vec2 scaleMultiplier = Vec2.one;
+
         public SecondOrder scaleSecondOrder;
 
         // Events
@@ -45,15 +47,18 @@ namespace DynamicWin.UI.UIElements
             base.Update(deltaTime);
 
             Vec2 currentSize = initialScale;
+            scaleMultiplier = Vec2.one;
 
             if (IsHovering && !IsMouseDown)
-                currentSize *= hoverScaleMulti;
+                scaleMultiplier *= hoverScaleMulti;
             else if (IsMouseDown)
-                currentSize *= clickScaleMulti;
+                scaleMultiplier *= clickScaleMulti;
             else if (!IsHovering && !IsMouseDown)
-                currentSize *= normalScaleMulti;
+                scaleMultiplier *= normalScaleMulti;
             else
-                currentSize *= normalScaleMulti;
+                scaleMultiplier *= normalScaleMulti;
+
+            currentSize *= scaleMultiplier;
 
             Size = scaleSecondOrder.Update(deltaTime, currentSize);
 

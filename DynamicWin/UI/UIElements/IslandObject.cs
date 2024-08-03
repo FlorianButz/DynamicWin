@@ -12,13 +12,15 @@ namespace DynamicWin.UI.UIElements
 {
     internal class IslandObject : UIObject
     {
-        public float topOffset = 5f;
+        public float topOffset = 15f;
 
         public SecondOrder scaleSecondOrder;
 
         public Vec2 secondOrderValuesExpand = new Vec2(3f, 0.6f);
         public Vec2 secondOrderValuesContract = new Vec2(3f, 0.9f);
 
+        public bool hidden = false;
+        
         public Vec2 currSize;
 
         public IslandObject() : base(null, Vec2.zero, new Vec2(250, 50), UIAlignment.TopCenter)
@@ -29,7 +31,7 @@ namespace DynamicWin.UI.UIElements
 
             roundRadius = 35f;
 
-            LocalPosition = new Vec2(0, 15f);
+            LocalPosition = new Vec2(0, topOffset);
 
             scaleSecondOrder = new SecondOrder(Size, secondOrderValuesExpand.X, secondOrderValuesExpand.Y, 0.1f);
             expandInteractionRect = 20;
@@ -41,18 +43,29 @@ namespace DynamicWin.UI.UIElements
         {
             base.Update(deltaTime);
 
-            if (IsHovering)
+            if (!hidden)
             {
-                scaleSecondOrder.SetValues(secondOrderValuesExpand.X, secondOrderValuesExpand.Y, 0.1f);
-                currSize = MenuManager.Instance.ActiveMenu.IslandSizeBig();
+                if (IsHovering)
+                {
+                    scaleSecondOrder.SetValues(secondOrderValuesExpand.X, secondOrderValuesExpand.Y, 0.1f);
+                    currSize = MenuManager.Instance.ActiveMenu.IslandSizeBig();
+                }
+                else
+                {
+                    scaleSecondOrder.SetValues(secondOrderValuesContract.X, secondOrderValuesContract.Y, 0.1f);
+                    currSize = MenuManager.Instance.ActiveMenu.IslandSize();
+                }
+
+                Size = scaleSecondOrder.Update(deltaTime, currSize);
+                LocalPosition.Y = Mathf.Lerp(LocalPosition.Y, topOffset, 15f * deltaTime);
             }
             else
             {
                 scaleSecondOrder.SetValues(secondOrderValuesContract.X, secondOrderValuesContract.Y, 0.1f);
-                currSize = MenuManager.Instance.ActiveMenu.IslandSize();
-            }
+                Size = scaleSecondOrder.Update(deltaTime, new Vec2(500, 25));
 
-            Size = scaleSecondOrder.Update(deltaTime, currSize);
+                LocalPosition.Y = Mathf.Lerp(LocalPosition.Y, -Size.Y + 15f, 15f * deltaTime);
+            }
         }
 
         public override void Draw(SKCanvas canvas)

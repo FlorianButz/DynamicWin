@@ -5,6 +5,7 @@ using DynamicWin.UI.Widgets.Big;
 using DynamicWin.UI.Widgets.Small;
 using DynamicWin.Utils;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace DynamicWin.UI.Menu.Menus
 {
@@ -73,6 +74,10 @@ namespace DynamicWin.UI.Menu.Menus
         UIObject smallWidgetsContainer;
         UIObject bigWidgetsContainer;
 
+        List<UIObject> bigMenuItems = new List<UIObject>();
+
+        UIObject topContainer;
+
         public override List<UIObject> InitializeMenu(IslandObject island)
         {
             var objects = base.InitializeMenu(island);
@@ -83,16 +88,63 @@ namespace DynamicWin.UI.Menu.Menus
             // Create elements
 
             smallLeftWidgets.Add(new TimeWidget(smallWidgetsContainer, Vec2.zero, UIAlignment.MiddleLeft));
+            smallLeftWidgets.Add(new SmallVisualizerWidget(smallWidgetsContainer, Vec2.zero, UIAlignment.MiddleLeft));
             smallRightWidgets.Add(new BatteryWidget(smallWidgetsContainer, Vec2.zero, UIAlignment.MiddleRight));
             smallRightWidgets.Add(new UsedDevicesWidget(smallWidgetsContainer, Vec2.zero, UIAlignment.MiddleRight));
 
             bigWidgets.Add(new MediaWidget(bigWidgetsContainer, Vec2.zero, UIAlignment.BottomCenter));
             bigWidgets.Add(new TestWidget(bigWidgetsContainer, Vec2.zero, UIAlignment.BottomCenter));
 
+            topContainer = new UIObject(island, new Vec2(0, 30), new Vec2(island.currSize.X, 50))
+            {
+                Color = Theme.IslandBackground.Inverted().Override(a: 0.035f),
+                roundRadius = 10f
+            };
+            bigMenuItems.Add(topContainer);
+
+            var widgetButton = new DWImageButton(topContainer, Resources.Resources.Widgets, new Vec2(20f, 0), new Vec2(20, 20), () =>
+            {
+            },
+            UIAlignment.MiddleLeft);
+            widgetButton.normalColor = Col.Transparent;
+            widgetButton.hoverColor = Col.Transparent;
+            widgetButton.clickColor = Theme.Primary.Override(a: 0.35f);
+            widgetButton.roundRadius = 25;
+
+            bigMenuItems.Add(widgetButton);
+
+            var trayButton = new DWImageButton(topContainer, Resources.Resources.Tray, new Vec2(50f, 0), new Vec2(20, 20), () =>
+            {
+            },
+            UIAlignment.MiddleLeft);
+            trayButton.normalColor = Col.Transparent;
+            trayButton.hoverColor = Col.Transparent;
+            trayButton.clickColor = Theme.Primary.Override(a: 0.35f);
+            trayButton.roundRadius = 25;
+
+            bigMenuItems.Add(trayButton);
+
+            var settingsButton = new DWImageButton(topContainer, Resources.Resources.Settings, new Vec2(-20f, 0), new Vec2(20, 20), () =>
+            {
+            },
+            UIAlignment.MiddleRight);
+            settingsButton.normalColor = Col.Transparent;
+            settingsButton.hoverColor = Col.Transparent;
+            settingsButton.clickColor = Theme.Primary.Override(a: 0.35f);
+            settingsButton.roundRadius = 25;
+
+            bigMenuItems.Add(settingsButton);
+
             // Add lists
 
             smallLeftWidgets.ForEach(x => objects.Add(x));
             smallRightWidgets.ForEach(x => objects.Add(x));
+
+            bigMenuItems.ForEach(x =>
+            {
+                objects.Add(x);
+                x.SilentSetActive(false);
+                });
 
             bigWidgets.ForEach(x => {
                 objects.Add(x);
@@ -102,7 +154,7 @@ namespace DynamicWin.UI.Menu.Menus
             return objects;
         }
 
-        public float topSpacing = 45;
+        public float topSpacing = 20;
         public float bigWidgetsSpacing = 15;
         int maxBigWidgetInOneRow = 2;
 
@@ -152,10 +204,13 @@ namespace DynamicWin.UI.Menu.Menus
                     smallRightWidgets.ForEach(x => x.SetActive(true));
 
                     bigWidgets.ForEach(x => x.SetActive(false));
+                    bigMenuItems.ForEach(x => x.SetActive(false));
                 }
             }
             else if (RendererMain.Instance.MainIsland.IsHovering)
             {
+                topContainer.Size = new Vec2(RendererMain.Instance.MainIsland.currSize.X - bCD, 30);
+
                 var bigContainerSize = IslandSizeBig();
                 bigContainerSize -= bCD;
                 bigWidgetsContainer.Size = bigContainerSize;
@@ -196,6 +251,7 @@ namespace DynamicWin.UI.Menu.Menus
                     smallRightWidgets.ForEach(x => x.SetActive(false));
                     
                     bigWidgets.ForEach(x => x.SetActive(true));
+                    bigMenuItems.ForEach(x => x.SetActive(true));
                 }
             }
         }

@@ -11,12 +11,16 @@ namespace DynamicWin.UI.UIElements
     internal class DWImageButton : DWButton
     {
         DWImage image;
+        public float imageScale = 0.85f;
 
         public DWImage Image { get { return image; } private set => image = value; }
 
+        Vec2 imageSize;
+
         public DWImageButton(UIObject? parent, SKBitmap sprite, Vec2 position, Vec2 size, Action clickCallback, UIAlignment alignment = UIAlignment.TopCenter) : base(parent, position, size, clickCallback, alignment)
         {
-            image = new DWImage(this, sprite, Vec2.zero, size * 0.85f, UIAlignment.Center);
+
+            image = new DWImage(this, sprite, Vec2.zero, size * imageScale, UIAlignment.Center);
             AddLocalObject(image);
         }
 
@@ -24,7 +28,7 @@ namespace DynamicWin.UI.UIElements
         {
             base.Update(deltaTime);
 
-            Image.Size = Size * 0.85f;
+            Image.Size = Size * imageScale;
         }
     }
 }

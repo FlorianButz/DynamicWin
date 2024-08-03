@@ -13,12 +13,16 @@
         "packagesPath": "C:\\Users\\fb859\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\fb859\\Documents\\GitHub\\DynamicWindows\\DynamicWin\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
           "C:\\Users\\fb859\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "net8.0-windows10.0.19041.0"
+          "net8.0-windows10.0.17763.0"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
@@ -26,8 +30,8 @@
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net8.0-windows10.0.19041": {
-            "targetAlias": "net8.0-windows10.0.19041.0",
+          "net8.0-windows10.0.17763": {
+            "targetAlias": "net8.0-windows10.0.17763.0",
             "projectReferences": {}
           }
         },
@@ -43,9 +47,21 @@
         }
       },
       "frameworks": {
-        "net8.0-windows10.0.19041": {
-          "targetAlias": "net8.0-windows10.0.19041.0",
+        "net8.0-windows10.0.17763": {
+          "targetAlias": "net8.0-windows10.0.17763.0",
           "dependencies": {
+            "FftSharp": {
+              "target": "Package",
+              "version": "[2.1.0, )"
+            },
+            "NAudio": {
+              "target": "Package",
+              "version": "[2.2.1, )"
+            },
+            "NAudio.WinForms": {
+              "target": "Package",
+              "version": "[2.2.1, )"
+            },
             "SkiaSharp": {
               "target": "Package",
               "version": "[2.88.8, )"
@@ -65,6 +81,10 @@
             "SkiaSharp.Views.WPF": {
               "target": "Package",
               "version": "[2.88.8, )"
+            },
+            "System.Runtime.InteropServices.WindowsRuntime": {
+              "target": "Package",
+              "version": "[4.3.0, )"
             }
           },
           "imports": [
@@ -81,7 +101,7 @@
           "downloadDependencies": [
             {
               "name": "Microsoft.Windows.SDK.NET.Ref",
-              "version": "[10.0.19041.31, 10.0.19041.31]"
+              "version": "[10.0.17763.31, 10.0.17763.31]"
             }
           ],
           "frameworkReferences": {

@@ -14,6 +14,7 @@
           "SkiaSharp.Views.Forms.WPF": "2.88.8",
           "SkiaSharp.Views.WPF": "2.88.8",
           "PresentationCore": "8.0.0.0",
+          "UwpMediaControls": "1.0.0.0",
           "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.31"
         },
         "runtime": {
@@ -231,6 +232,14 @@
           }
         }
       },
+      "UwpMediaControls/1.0.0.0": {
+        "runtime": {
+          "UwpMediaControls.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
       "System.Xaml/8.0.0.0": {
         "runtime": {
           "System.Xaml.dll": {
@@ -388,6 +397,11 @@
       "hashPath": "xamarin.forms.platform.wpf.4.8.0.1821.nupkg.sha512"
     },
     "PresentationCore/8.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "UwpMediaControls/1.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""

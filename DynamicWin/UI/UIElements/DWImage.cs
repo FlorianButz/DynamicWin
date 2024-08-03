@@ -17,7 +17,8 @@ namespace DynamicWin.UI.UIElements
 
         public SKBitmap Image { get { return image; } set => image = value; }
 
-        bool dynamicColor;
+        public bool dynamicColor;
+        public bool dynamicAutoColor;
 
         public DWImage(UIObject? parent, SKBitmap sprite, Vec2 position, Vec2 size, UIAlignment alignment = UIAlignment.TopCenter, bool dynamicColor = false) : base(parent, position, size, alignment)
         {
@@ -29,7 +30,8 @@ namespace DynamicWin.UI.UIElements
         {
             base.Update(deltaTime);
 
-            if(dynamicColor) Color = Theme.TextMain;
+            if(dynamicAutoColor)
+                if(dynamicColor) Color = Theme.TextMain;
         }
 
         public override void Draw(SKCanvas canvas)
@@ -39,15 +41,17 @@ namespace DynamicWin.UI.UIElements
             if(dynamicColor)
             {
                 var imageFilter = SKImageFilter.CreateBlendMode(SKBlendMode.DstIn,
-                    SKImageFilter.CreateColorFilter(SKColorFilter.CreateBlendMode(Color.Value(), SKBlendMode.Darken)));
+                    SKImageFilter.CreateColorFilter(SKColorFilter.CreateBlendMode(Color.Override(a: 1f).Value(), SKBlendMode.Darken)));
 
                 if (GetBlur() != 0f)
                 {
                     var blur = SKImageFilter.CreateBlur(GetBlur(), GetBlur());
-                    paint.ImageFilter = blur;
 
-                    var composedFilter = SKImageFilter.CreateCompose(blur, imageFilter);
-                    paint.ImageFilter = composedFilter;
+                    if (blur != null && imageFilter != null)
+                    {
+                        var composedFilter = SKImageFilter.CreateCompose(blur, imageFilter);
+                        paint.ImageFilter = composedFilter;
+                    }
                 }
                 else
                     paint.ImageFilter = imageFilter;

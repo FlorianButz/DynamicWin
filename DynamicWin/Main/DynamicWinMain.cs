@@ -1,5 +1,7 @@
 using DynamicWin.Resources;
+using DynamicWin.Utils;
 using System.Diagnostics;
+using Windows.Media;
 
 namespace DynamicWin.Main
 {
@@ -10,8 +12,12 @@ namespace DynamicWin.Main
         {
             Resources.Resources.Load();
 
+            KeyHandler.Start();
+
             ApplicationConfiguration.Initialize();
             Application.Run(new MainForm());
+
+            KeyHandler.Stop();
         }
 
         private static readonly DateTime Jan1st1970 = new DateTime

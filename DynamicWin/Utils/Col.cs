@@ -50,6 +50,11 @@ namespace DynamicWin.Utils
                 (byte)(a * 255));
         }
 
+        public Col Inverted()
+        {
+            return new Col(1f - r, 1f - g, 1f - g, a);
+        }
+
         public static Col operator *(Col a, float b)
         {
             return new Col(a.r * b, a.g * b, a.b * b);
