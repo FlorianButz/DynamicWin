@@ -1,4 +1,5 @@
-﻿using SkiaSharp;
+﻿using DynamicWin.UI.Menu.Menus;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -37,6 +38,15 @@ namespace DynamicWin.Resources
         public static SKBitmap Settings;
         public static SKBitmap Tray;
         public static SKBitmap Widgets;
+        public static SKBitmap FileIcon;
+
+        private static HomeMenu homeMenu;
+        public static HomeMenu HomeMenu { get => homeMenu; }
+
+        public static void CreateStaticMenus()
+        {
+            homeMenu = new HomeMenu();
+        }
 
         public static void Load()
         {
@@ -61,6 +71,7 @@ namespace DynamicWin.Resources
             Settings = LoadImg("Resources\\icons\\home\\Settings.png");
             Tray = LoadImg("Resources\\icons\\home\\Tray.png");
             Widgets = LoadImg("Resources\\icons\\home\\Widgets.png");
+            FileIcon = LoadImg("Resources\\icons\\home\\File.png");
 
             System.Diagnostics.Debug.WriteLine("Loaded Resources");
         }

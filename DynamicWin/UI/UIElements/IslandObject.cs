@@ -23,6 +23,9 @@ namespace DynamicWin.UI.UIElements
         
         public Vec2 currSize;
 
+        public enum IslandMode { Island, Notch };
+        public IslandMode mode;
+
         public IslandObject() : base(null, Vec2.zero, new Vec2(250, 50), UIAlignment.TopCenter)
         {
             currSize = Size;
@@ -36,7 +39,7 @@ namespace DynamicWin.UI.UIElements
             scaleSecondOrder = new SecondOrder(Size, secondOrderValuesExpand.X, secondOrderValuesExpand.Y, 0.1f);
             expandInteractionRect = 20;
 
-            maskInToIsland = true;
+            maskInToIsland = false;
         }
 
         public override void Update(float deltaTime)
@@ -71,13 +74,47 @@ namespace DynamicWin.UI.UIElements
         public override void Draw(SKCanvas canvas)
         {
             var paint = GetPaint();
+            paint.IsAntialias = false;
 
             paint.Color = Theme.IslandBackground.Value();
             canvas.DrawRoundRect(GetRect(), paint);
 
-            paint.IsStroke = true;
-            paint.Color = SKColors.Wheat;
-            canvas.DrawRoundRect(GetInteractionRect(), paint);
+            if(mode == IslandMode.Notch)
+            {
+                var path = new SKPath();
+
+                var awidth = (float)(Math.Max(Size.Magnitude / 12, 50));
+                var aheight = (float)(Math.Max(Size.Magnitude / 6, 25));
+
+                { // Left
+                    var x = Position.X - awidth;
+
+                    path.MoveTo(x - awidth, 0);
+                    path.CubicTo(
+                        x + 0, 0,
+                        x + awidth, 0,
+                        x + awidth, aheight);
+                    path.LineTo(x + awidth, 0);
+                    path.LineTo(x + 0, 0);
+                }
+
+                { // Right
+                    var x = Position.X + Size.X + awidth;
+
+                    path.MoveTo(x + awidth, 0);
+                    path.CubicTo(
+                        x - 0, 0,
+                        x - awidth, 0,
+                        x - awidth, aheight);
+                    path.LineTo(x - awidth, 0);
+                    path.LineTo(x - 0, 0);
+                }
+
+                var r = SKRect.Create(Position.X, 0, Size.X, (Position.Y - topOffset) + topOffset + Size.Y / 2);
+                path.AddRect(r);
+
+                canvas.DrawPath(path, paint);
+            }
         }
 
         public override SKRoundRect GetInteractionRect()
@@ -85,7 +122,7 @@ namespace DynamicWin.UI.UIElements
             var rect = SKRect.Create(Position.X, Position.Y, Size.X, Size.Y);
 
             if(IsHovering)
-                rect.Inflate(expandInteractionRect + 150, expandInteractionRect + 35);
+                rect.Inflate(expandInteractionRect + 5, expandInteractionRect + 5);
 
             rect.Inflate(expandInteractionRect, expandInteractionRect);
             var r = new SKRoundRect(rect, roundRadius);

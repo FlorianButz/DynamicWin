@@ -18,7 +18,7 @@ namespace DynamicWin.Main
         private IslandObject islandObject;
         public IslandObject MainIsland { get => islandObject; }
 
-        private List<UIObject> objects { get { return MenuManager.Instance.ActiveMenu.UiObjects; } }
+        private List<UIObject> objects { get => MenuManager.Instance.ActiveMenu.UiObjects; }
 
         public static Vec2 ScreenDimensions { get => new Vec2(instance.Width, instance.Height); }
         public static Vec2 CursorPosition { get => new Vec2(Cursor.Position.X, Cursor.Position.Y); }
@@ -26,29 +26,42 @@ namespace DynamicWin.Main
         private static RendererMain instance;
         public static RendererMain Instance { get { return instance; } }
 
+        public Vec2 renderOffset = Vec2.zero;
+
         public RendererMain()
         {
-            MenuManager m = new MenuManager();
-            Theme theme = new Theme();
+                MenuManager m = new MenuManager();
+                Theme theme = new Theme();
 
-            instance = this;
+                instance = this;
 
-            SetStyle(ControlStyles.SupportsTransparentBackColor, true);
-            BackColor = Color.Transparent;
+                SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+                BackColor = Color.Transparent;
 
-            islandObject = new IslandObject();
-            m.Init();
+                islandObject = new IslandObject();
+                m.Init();
 
-            // Set up the timer
-            timer = new System.Windows.Forms.Timer
-            {
-                Interval = 6
-            };
-            timer.Tick += (sender, args) => Update();
-            timer.Tick += (sender, args) => Render();
-            timer.Start();
+                // Set up the timer
+                timer = new System.Windows.Forms.Timer
+                {
+                    Interval = 6
+                };
+                timer.Tick += (sender, args) => Update();
+                timer.Tick += (sender, args) => Render();
+                timer.Start();
 
-            KeyHandler.onKeyDown += OnKeyRegistered;
+                KeyHandler.onKeyDown += OnKeyRegistered;
+
+                {
+                    MainForm.Instance.DragEnter += MainForm.Instance.MainForm_DragEnter;
+                    MainForm.Instance.DragDrop += MainForm.Instance.MainForm_DragDrop;
+                    MainForm.Instance.DragLeave += MainForm.Instance.MainForm_DragLeave;
+                    MainForm.Instance.DragOver += MainForm.Instance.MainForm_DragOver;
+
+                    MainForm.Instance.MouseWheel += MainForm.Instance.OnScroll;
+                }
+
+                isInitialized = true;
         }
 
         void OnKeyRegistered(Keys key, KeyModifier modifier)
@@ -82,7 +95,7 @@ namespace DynamicWin.Main
                 MenuManager.Instance.ActiveMenu.Update();
 
             if (MenuManager.Instance.ActiveMenu is DropFileMenu && !MainForm.Instance.isDragging)
-                MenuManager.OpenMenu(new HomeMenu());
+                MenuManager.OpenMenu(Resources.Resources.HomeMenu);
 
             // Update logic here
 
@@ -108,10 +121,13 @@ namespace DynamicWin.Main
 
         public int canvasWithoutClip;
 
+        bool isInitialized = false;
+
         protected override void OnPaintSurface(SKPaintSurfaceEventArgs e)
         {
             base.OnPaintSurface(e);
 
+            if (!isInitialized) return;
 
             // Render
 
@@ -135,6 +151,7 @@ namespace DynamicWin.Main
                     Mask(canvas);
                 }
 
+                canvas.Translate(renderOffset.X, renderOffset.Y);
                 uiObject.DrawCall(canvas);
             }
 

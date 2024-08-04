@@ -1,6 +1,7 @@
 ﻿using DynamicWin.UI.Menu;
 using DynamicWin.UI.Menu.Menus;
 using Microsoft.VisualBasic;
+using OpenTK.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,8 @@ namespace DynamicWin.Main
     {
         private static MainForm instance;
         public static MainForm Instance { get => instance; }
+
+        public static Action<System.Windows.Forms.MouseEventArgs> onScrollEvent;
 
         private const int HWND_TOPMOST = -1;
         private const int SWP_NOSIZE = 0x0001;
@@ -43,23 +46,24 @@ namespace DynamicWin.Main
             };
             Controls.Add(customControl);
 
-            this.AllowDrop = true;
-            this.DragEnter += MainForm_DragEnter;
-            this.DragDrop += MainForm_DragDrop;
-            this.DragLeave += MainForm_DragLeave;
-            this.DragOver += MainForm_DragOver;
+            MainForm.Instance.AllowDrop = true;
+        }
+
+        public void OnScroll(object? sender, System.Windows.Forms.MouseEventArgs e)
+        {
+            onScrollEvent?.Invoke(e);
         }
 
         public bool isDragging = false;
 
-        private void MainForm_DragOver(object? sender, DragEventArgs e)
+        public void MainForm_DragOver(object? sender, DragEventArgs e)
         {
             //System.Diagnostics.Debug.WriteLine("DragOver");
 
             isDragging = true;
         }
 
-        private void MainForm_DragEnter(object? sender, DragEventArgs e)
+        public void MainForm_DragEnter(object? sender, DragEventArgs e)
         {
             //System.Diagnostics.Debug.WriteLine("DragEnter");
 
@@ -72,23 +76,23 @@ namespace DynamicWin.Main
             }
         }
 
-        private void MainForm_DragDrop(object? sender, DragEventArgs e)
+        public void MainForm_DragDrop(object? sender, DragEventArgs e)
         {
             //System.Diagnostics.Debug.WriteLine("DragDrop");
 
             isDragging = false;
             DropFileMenu.Drop(e);
 
-            MenuManager.Instance.QueueOpenMenu(new HomeMenu());
+            MenuManager.Instance.QueueOpenMenu(Resources.Resources.HomeMenu);
         }
 
-        private void MainForm_DragLeave(object? sender, EventArgs e)
+        public void MainForm_DragLeave(object? sender, EventArgs e)
         {
             //System.Diagnostics.Debug.WriteLine("DragLeave");
 
             isDragging = false;
 
-            MenuManager.OpenMenu(new HomeMenu());
+            MenuManager.OpenMenu(Resources.Resources.HomeMenu);
         }
 
         protected override void OnLoad(EventArgs e)
@@ -96,6 +100,14 @@ namespace DynamicWin.Main
             base.OnLoad(e);
             SetStyle(ControlStyles.SupportsTransparentBackColor, true);
             BackColor = Color.Transparent;
+        }
+
+        internal void StartDrag(string file)
+        {
+            return;
+
+            DoDragDrop(new DataObject(DataFormats.FileDrop, new string[] { String.Join(file, "") }), DragDropEffects.Copy);
+            //RendererMain.Instance.MainIsland.hidden = true;
         }
     }
 }

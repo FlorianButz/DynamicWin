@@ -28,10 +28,9 @@ namespace DynamicWin.UI.Menu
 
         public void Init()
         {
-            activeMenu = new HomeMenu();
+            Resources.Resources.CreateStaticMenus();
+            activeMenu = Resources.Resources.HomeMenu;
         }
-
-        Thread menuThread;
 
         public static void OpenMenu(BaseMenu newActiveMenu)
         {
@@ -52,173 +51,141 @@ namespace DynamicWin.UI.Menu
         {
             new Thread(() =>
             {
-                Thread.CurrentThread.IsBackground = true;
+                    BaseMenu lastMenu = activeMenu;
 
-                BaseMenu lastMenu = activeMenu;
+                    SetActiveMenu(newActiveMenu);
+                    int timeMillis = (int)(time * 1000);
 
-                SetActiveMenu(newActiveMenu);
-                int timeMillis = (int)(time * 1000);
+                    Thread.Sleep(timeMillis);
 
-                Thread.Sleep(timeMillis);
-
-                if (lastMenu == null) throw new NullReferenceException();
-                SetActiveMenu(lastMenu);
+                    if (lastMenu == null) throw new NullReferenceException();
+                    SetActiveMenu(lastMenu);
 
             }).Start();
         }
 
         List<BaseMenu> menuLoadQueue = new List<BaseMenu>();
 
+        Animator menuAnimatorIn;
+        Animator menuAnimatorOut;
+
         private void SetActiveMenu(BaseMenu newActiveMenu)
         {
-            if (menuThread != null)
-            {
-                /*if(activeMenu != newActiveMenu)
-                    menuLoadQueue = newActiveMenu;*/
-                menuThread.Interrupt();
-                menuThread = null;
-                return;
-            }
+            if (menuAnimatorIn != null && menuAnimatorIn.IsRunning) return;
+            if (menuAnimatorOut != null && menuAnimatorOut.IsRunning) return;
 
             onMenuChange?.Invoke(activeMenu, newActiveMenu);
 
-            menuThread = new Thread(() =>
+            float yOffset = RendererMain.Instance.MainIsland.Size.Y * 0.75f;
+
+            int length = 250;
+
+            List<UIObject> currentObjects = new List<UIObject>(activeMenu.UiObjects);
+
             {
-                Thread.CurrentThread.IsBackground = true;
+                menuAnimatorOut = new Animator(length, 1);
 
-                int lengthI = 85;
-                int lengthO = 85;
-                float yOffset = RendererMain.Instance.MainIsland.Size.Y;
+                currentObjects = new List<UIObject>(activeMenu.UiObjects);
 
-                if(activeMenu != null)
+                menuAnimatorOut.onAnimationUpdate += (t) =>
                 {
-                    List<UIObject> currentObjects = new List<UIObject>(activeMenu.UiObjects);
-
-                    Vec2[] startPositions = new Vec2[currentObjects.Count];
-                    
-                    for(int x = 0; x < currentObjects.Count; x++)
-                    {
-                        startPositions[x] = currentObjects[x].RawPosition;
-                    }
-
-                    for (int i = 0; i < lengthI; i++)
-                    {
-                        try
-                        {
-                            Thread.Sleep(1);
-                        }
-                        catch (ThreadInterruptedException e)
-                        {
-                            activeMenu = newActiveMenu;
-
-                            for (int x = 0; x < currentObjects.Count; x++)
-                            {
-                                currentObjects[x].Position = startPositions[x];
-                            }
-
-                            return;
-                        }
-
-                        float t = Easings.EaseInQuint((float)i / lengthI);
-
-                        int y = 0;
-                        currentObjects.ForEach(obj =>
-                        {
-                            if (obj != null)
-                            {
-                                obj.blurAmount = Mathf.Lerp(0, 35, t);
-                                obj.Position = startPositions[y] + new Vec2(0, yOffset * t);
-                                y++;
-                            }
-                        });
-                    }
-
-                    for (int x = 0; x < currentObjects.Count; x++)
-                    {
-                        currentObjects[x].Position = startPositions[x];
-                    }
+                    float tEased = Easings.EaseOutCubic(t);
 
                     currentObjects.ForEach(obj =>
                     {
-                        obj.DestroyCall();
+                        if (obj != null)
+                        {
+                            obj.blurAmount = Mathf.Lerp(35, 0, tEased);
+                        }
                     });
-                }
 
-                activeMenu = newActiveMenu;
+                    RendererMain.Instance.renderOffset.Y = Mathf.Lerp(-yOffset, 0, tEased);
+                };
 
+                menuAnimatorOut.onAnimationEnd += () =>
                 {
-                    List<UIObject> currentObjects = new List<UIObject>(activeMenu.UiObjects);
+                    activeMenu = newActiveMenu;
 
-                    Vec2[] startPositions = new Vec2[currentObjects.Count];
+                    RendererMain.Instance.renderOffset.Y = 0;
+                    LoadMenuEnd();
 
-                    for (int x = 0; x < currentObjects.Count; x++)
-                    {
-                        startPositions[x] = currentObjects[x].RawPosition;
-                        currentObjects[x].Position -= new Vec2(0, yOffset);
-                    }
+                    return;
+                };
+            }
 
-                    for (int i = 0; i < lengthO; i++)
-                    {
-                        try
-                        {
-                            Thread.Sleep(1);
-                        }
-                        catch (ThreadInterruptedException e)
-                        {
-                            activeMenu = newActiveMenu;
+            if (activeMenu != null)
+            {
+                menuAnimatorIn = new Animator(length, 1);
 
-                            for (int x = 0; x < currentObjects.Count; x++)
-                            {
-                                currentObjects[x].Position = startPositions[x];
-                            }
-
-                            return;
-                        }
-
-                        float t = Easings.EaseOutQuint((float)i / lengthO);
-
-                        int y = 0;
-                        currentObjects.ForEach(obj =>
-                        {
-                            if (obj != null)
-                            {
-                                obj.blurAmount = Mathf.Lerp(35, 0, t);
-
-                                obj.Position = startPositions[y] - new Vec2(0, yOffset * (1f - t));
-                                y++;
-                            }
-                        });
-                    }
-
-                    for (int x = 0; x < currentObjects.Count; x++)
-                    {
-                        currentObjects[x].Position = startPositions[x];
-                    }
-                }
-
-                menuThread = null;
-                onMenuChangeEnd?.Invoke(activeMenu);
-
-                if (menuLoadQueue.Count != 0)
+                menuAnimatorIn.onAnimationUpdate += (t) =>
                 {
-                    var queueObj = menuLoadQueue[0];
+                    float tEased = Easings.EaseInCubic(t);
 
-                    if (queueObj == activeMenu)
+                    currentObjects.ForEach(obj =>
                     {
-                        menuLoadQueue.Remove(queueObj);
+                        if (obj != null)
+                        {
+                            obj.blurAmount = Mathf.Lerp(0, 35, tEased);
+                        }
+                    });
+
+                    RendererMain.Instance.renderOffset.Y = Mathf.Lerp(0, yOffset, tEased);
+                };
+
+                menuAnimatorIn.onAnimationEnd += () =>
+                {
+                    activeMenu = newActiveMenu;
+
+                    RendererMain.Instance.renderOffset.Y = -yOffset;
+
+                    currentObjects = new List<UIObject>(activeMenu.UiObjects);
+                    currentObjects.ForEach(obj =>
+                    {
+                        if (obj != null)
+                        {
+                            obj.blurAmount = 35;
+                        }
+                    });
+                    
+                    if(menuAnimatorOut == null)
+                    {
+                        LoadMenuEnd();
                         return;
                     }
-                    else OpenMenu(queueObj);
-                    
+
+                    menuAnimatorOut.Start();
+                };
+            }
+
+            if (menuAnimatorIn == null) menuAnimatorOut.Start();
+            else menuAnimatorIn.Start();
+        }
+
+        void LoadMenuEnd()
+        {
+            onMenuChangeEnd?.Invoke(activeMenu);
+
+            if (menuLoadQueue.Count != 0)
+            {
+                var queueObj = menuLoadQueue[0];
+
+                if (queueObj == activeMenu)
+                {
                     menuLoadQueue.Remove(queueObj);
+                    return;
                 }
-            });
-            menuThread.Start();
+                else OpenMenu(queueObj);
+
+                menuLoadQueue.Remove(queueObj);
+            }
+
+            menuAnimatorIn = null;
+            menuAnimatorOut = null;
         }
 
         public void QueueOpenMenu(BaseMenu menu)
         {
-            if (menuThread == null) OpenMenu(menu);
+            if (menuAnimatorIn == null && menuAnimatorOut == null) OpenMenu(menu);
             else
             {
                 menuLoadQueue.Add(menu);

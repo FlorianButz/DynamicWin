@@ -26,10 +26,7 @@ namespace DynamicWin.UI.Menu.Menus
 
             if (fileList != null && fileList.Length > 0)
             {
-                foreach (var item in fileList)
-                {
-                    System.Diagnostics.Debug.WriteLine("Dropped file: " + item);
-                }
+                Tray.AddFiles(fileList);
             }
         }
 

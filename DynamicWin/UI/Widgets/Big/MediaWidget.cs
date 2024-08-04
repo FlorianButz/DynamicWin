@@ -69,7 +69,7 @@ namespace DynamicWin.UI.Widgets.Big
             };
             AddLocalObject(prev);
 
-            audioVisualizer = new AudioVisualizer(this, new Vec2(0, 30), new Vec2(125, 25), fftLength: 16)
+            audioVisualizer = new AudioVisualizer(this, new Vec2(0, 30), new Vec2(125, 25), length: 16)
             {
                 divisor = 1.35f
             };

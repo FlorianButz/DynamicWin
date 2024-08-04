@@ -54,47 +54,45 @@ namespace DynamicWin.UI.UIElements
             canvas.DrawText(text, new SKPoint(Position.X, Position.Y), paint);
         }
 
-        Thread changeTextThread;
+        Animator changeTextAnim;
 
         private void SetText(string text)
         {
             if (this.text == text) return;
+            if (changeTextAnim != null && changeTextAnim.IsRunning) return;
 
             float ogTextSize = textSize;
 
-            if (changeTextThread != null) return;
+            changeTextAnim = new Animator(450, 1);
 
-            changeTextThread = new Thread(() =>
+            changeTextAnim.onAnimationUpdate += (x) =>
             {
-                Thread.CurrentThread.IsBackground = true;
-
-                int length = 150;
-
-                for (int i = 0; i < length; i++)
+                if(x <= 0.5f)
                 {
-                    Thread.Sleep(1);
-
-                    float t = Easings.EaseInQuint((float)i / length);
+                    float t = Easings.EaseInQuint(x * 2);
 
                     textSize = Mathf.Lerp(ogTextSize, ogTextSize * 1.5f, t);
-                    localBlurAmount = Mathf.Lerp(0, 5, t);
+                    localBlurAmount = Mathf.Lerp(0, 10, t);
+                    alpha = Mathf.Lerp(1, 0, x);
                 }
-
-                this.text = text;
-
-                for (int i = 0; i < length; i++)
+                else
                 {
-                    Thread.Sleep(1);
+                    this.text = text;
 
-                    float t = Easings.EaseOutQuint((float)i / length);
+                    float t = Easings.EaseOutQuint((x - 0.5f) * 2);
 
-                    textSize = Mathf.Lerp(ogTextSize / 1.5f, ogTextSize, t);
-                    localBlurAmount = Mathf.Lerp(5, 0, t);
+                    textSize = Mathf.Lerp(ogTextSize / 2.5f, ogTextSize, t);
+                    localBlurAmount = Mathf.Lerp(10, 0, t);
+                    alpha = Mathf.Lerp(0, 1, x);
                 }
+            };
 
-                changeTextThread = null;
-            });
-            changeTextThread.Start();
+            changeTextAnim.Start();
+            changeTextAnim.onAnimationEnd += () =>
+            {
+                this.text = text;
+                textSize = ogTextSize;
+            };
         }
     }
 }

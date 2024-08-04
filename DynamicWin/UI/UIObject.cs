@@ -45,7 +45,7 @@ namespace DynamicWin.UI
         public bool IsEnabled { get => isEnabled; set => SetActive(value); }
 
 
-        public float disableBlurSize = 25;
+        public float disableBlurSize = 50;
         public float alpha = 1f;
 
         protected void AddLocalObject(UIObject obj)
@@ -236,14 +236,19 @@ namespace DynamicWin.UI
             var rect = SKRect.Create(RendererMain.CursorPosition.X, RendererMain.CursorPosition.Y, 1, 1);
             isHovering = GetInteractionRect().Contains(rect);
 
-            if(IsHovering && !IsMouseDown && Control.MouseButtons.HasFlag(MouseButtons.Left))
+            if (IsHovering && !IsMouseDown && Control.MouseButtons.HasFlag(MouseButtons.Left))
             {
                 IsMouseDown = true;
                 OnMouseDown();
-            }else if (IsMouseDown && !Control.MouseButtons.HasFlag(MouseButtons.Left))
+            }
+            else if (IsHovering && IsMouseDown && !Control.MouseButtons.HasFlag(MouseButtons.Left))
             {
                 IsMouseDown = false;
                 OnMouseUp();
+            }
+            else if (IsMouseDown && !Control.MouseButtons.HasFlag(MouseButtons.Left))
+            {
+                IsMouseDown = false;
             }
 
             Update(deltaTime);
@@ -284,14 +289,14 @@ namespace DynamicWin.UI
             var paint = new SKPaint
             {
                 Style = SKPaintStyle.Fill,
-                Color = Color.Value(),
+                Color = this.Color.Value(),
                 IsAntialias = true,
                 IsDither = true,
                 SubpixelText = true,
                 FilterQuality = SKFilterQuality.High,
                 HintingLevel = SKPaintHinting.Full,
                 IsLinearText = false
-        };
+            };
 
             if(GetBlur() != 0f)
             {
@@ -301,6 +306,11 @@ namespace DynamicWin.UI
             }
 
             return paint;
+        }
+
+        public Col GetColor(Col col)
+        {
+            return new Col(col.r, col.g, col.b, col.a * alpha);
         }
 
         public void DestroyCall() 
@@ -319,60 +329,47 @@ namespace DynamicWin.UI
 
         public virtual void OnMouseUp() { }
 
-        Thread toggleThread;
-
         public void SilentSetActive(bool isEnabled)
         {
             this.isEnabled = isEnabled;
         }
 
+        Animator toggleAnim;
+
         public void SetActive(bool isEnabled)
         {
-            if (toggleThread != null)
-            {
-                toggleThread.Interrupt();
-                toggleThread = null;
-            }
+            if(this.isEnabled == isEnabled) return;
+            if (toggleAnim != null && toggleAnim.IsRunning) toggleAnim.Stop();
 
-            toggleThread = new Thread(() =>
-            {
-                Thread.CurrentThread.IsBackground = true;
-
-                int length = 100;
-
-                for (int i = 0; i < length; i++)
-                {
-                    try
-                    {
-                        Thread.Sleep(1);
-                    }catch(ThreadInterruptedException e)
-                    {
-                        this.isEnabled = isEnabled;
-                        return;
-                    }
-
-                    if (isEnabled) this.isEnabled = isEnabled;
-
-
-                    if (isEnabled)
-                    {
-                        float t = Mathf.LimitDecimalPoints(Easings.EaseInCubic((float)i / length), 1);
-                        localBlurAmount = Mathf.Lerp(disableBlurSize, 0, (float)i / length);
-                        alpha = Mathf.Lerp(0, 1, t);
-                    }
-                    else
-                    {
-                        float t = Mathf.LimitDecimalPoints(Easings.EaseOutCubic((float)i / length), 1);
-                        localBlurAmount = Mathf.Lerp(0, disableBlurSize, (float)i / length);
-                        alpha = Mathf.Lerp(1, 0, t);
-                    }
-                }
-
+            if(isEnabled)
                 this.isEnabled = isEnabled;
-                toggleThread = null;
 
-            });
-            toggleThread.Start();
+            toggleAnim = new Animator(250, 1);
+            toggleAnim.onAnimationUpdate += (t) =>
+            {
+                if(t >= 0.5f) this.isEnabled = isEnabled;
+
+                if (isEnabled)
+                {
+                    var tEased = Easings.EaseOutCubic(t);
+
+                    localBlurAmount = Mathf.Lerp(disableBlurSize, 0, tEased);
+                    alpha = Mathf.Lerp(0, 1, tEased);
+                }
+                else
+                {
+                    var tEased = Easings.EaseOutCubic(t);
+
+                    localBlurAmount = Mathf.Lerp(0, disableBlurSize, tEased);
+                    alpha = Mathf.Lerp(1, 0, tEased);
+                }
+            };
+            toggleAnim.onAnimationEnd += () =>
+            {
+                this.isEnabled = isEnabled;
+            };
+
+            toggleAnim.Start();
         }
 
         public virtual SKRoundRect GetRect()

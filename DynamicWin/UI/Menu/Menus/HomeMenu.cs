@@ -68,6 +68,9 @@ namespace DynamicWin.UI.Menu.Menus
                 // Set the container height to the total height of all rows
                 size.Y = Math.Max(size.Y, sizeTogetherBiggest);
             }
+
+            if (!isWidgetMode) size.Y = 250;
+
             return size;
         }
 
@@ -77,6 +80,11 @@ namespace DynamicWin.UI.Menu.Menus
         List<UIObject> bigMenuItems = new List<UIObject>();
 
         UIObject topContainer;
+
+        DWTextImageButton widgetButton;
+        DWTextImageButton trayButton;
+
+        Tray tray;
 
         public override List<UIObject> InitializeMenu(IslandObject island)
         {
@@ -102,8 +110,9 @@ namespace DynamicWin.UI.Menu.Menus
             };
             bigMenuItems.Add(topContainer);
 
-            var widgetButton = new DWImageButton(topContainer, Resources.Resources.Widgets, new Vec2(20f, 0), new Vec2(20, 20), () =>
+            widgetButton = new DWTextImageButton(topContainer, Resources.Resources.Widgets, "Widgets", new Vec2(75 / 2 + 5, 0), new Vec2(75, 20), () =>
             {
+                isWidgetMode = true;
             },
             UIAlignment.MiddleLeft);
             widgetButton.normalColor = Col.Transparent;
@@ -113,8 +122,9 @@ namespace DynamicWin.UI.Menu.Menus
 
             bigMenuItems.Add(widgetButton);
 
-            var trayButton = new DWImageButton(topContainer, Resources.Resources.Tray, new Vec2(50f, 0), new Vec2(20, 20), () =>
+            trayButton = new DWTextImageButton(topContainer, Resources.Resources.Tray, "Tray", new Vec2(105, 0), new Vec2(50, 20), () =>
             {
+                isWidgetMode = false;
             },
             UIAlignment.MiddleLeft);
             trayButton.normalColor = Col.Transparent;
@@ -126,6 +136,7 @@ namespace DynamicWin.UI.Menu.Menus
 
             var settingsButton = new DWImageButton(topContainer, Resources.Resources.Settings, new Vec2(-20f, 0), new Vec2(20, 20), () =>
             {
+                MenuManager.OpenMenu(new SettingsMenu());
             },
             UIAlignment.MiddleRight);
             settingsButton.normalColor = Col.Transparent;
@@ -135,10 +146,21 @@ namespace DynamicWin.UI.Menu.Menus
 
             bigMenuItems.Add(settingsButton);
 
+            tray = new Tray(island, new Vec2(0, -bCD / 2), Vec2.zero, UIAlignment.BottomCenter);
+            tray.Anchor.Y = 1f;
+            tray.SilentSetActive(false);
+
+            bigMenuItems.Add(tray);
+
             // Add lists
 
-            smallLeftWidgets.ForEach(x => objects.Add(x));
-            smallRightWidgets.ForEach(x => objects.Add(x));
+            smallLeftWidgets.ForEach(x => {
+                objects.Add(x);
+            });
+
+            smallRightWidgets.ForEach(x => { 
+                objects.Add(x);
+            });
 
             bigMenuItems.ForEach(x =>
             {
@@ -166,8 +188,19 @@ namespace DynamicWin.UI.Menu.Menus
         float sCD = 35;
         float bCD = 50;
 
+        bool isWidgetMode = true;
+        bool wasWidgetMode = false;
+
         public override void Update()
         {
+            tray.Size = new Vec2(IslandSizeBig().X - bCD, RendererMain.Instance.MainIsland.Size.Y - bCD - topSpacing - topContainer.Size.Y / 2);
+            tray.SetActive(!(isWidgetMode || !RendererMain.Instance.MainIsland.IsHovering));
+
+            widgetButton.normalColor = Col.Lerp(widgetButton.normalColor, isWidgetMode ? Col.White.Override(a: 0.075f) : Col.Transparent, 15f * RendererMain.Instance.DeltaTime);
+            trayButton.normalColor = Col.Lerp(trayButton.normalColor, (!isWidgetMode) ? Col.White.Override(a: 0.075f) : Col.Transparent, 15f * RendererMain.Instance.DeltaTime);
+            widgetButton.hoverColor = Col.Lerp(widgetButton.hoverColor, isWidgetMode ? Col.White.Override(a: 0.075f) : Col.Transparent, 15f * RendererMain.Instance.DeltaTime);
+            trayButton.hoverColor = Col.Lerp(trayButton.hoverColor, (!isWidgetMode) ? Col.White.Override(a: 0.075f) : Col.Transparent, 15f * RendererMain.Instance.DeltaTime);
+
             if (!RendererMain.Instance.MainIsland.IsHovering)
             {
                 var smallContainerSize = IslandSize();
@@ -196,16 +229,16 @@ namespace DynamicWin.UI.Menu.Menus
                     }
                 }
 
+                smallLeftWidgets.ForEach(x => x.SetActive(true));
+                smallRightWidgets.ForEach(x => x.SetActive(true));
+                
                 if (wasHovering)
                 {
-                    wasHovering = false;
-
-                    smallLeftWidgets.ForEach(x => x.SetActive(true));
-                    smallRightWidgets.ForEach(x => x.SetActive(true));
-
                     bigWidgets.ForEach(x => x.SetActive(false));
                     bigMenuItems.ForEach(x => x.SetActive(false));
                 }
+                
+                wasHovering = false;
             }
             else if (RendererMain.Instance.MainIsland.IsHovering)
             {
@@ -236,7 +269,6 @@ namespace DynamicWin.UI.Menu.Menus
                         {
                             lastBiggestY = 0f;
                             CenterWidgets(widgetsInOneLine, bigWidgetsContainer);
-                            System.Diagnostics.Debug.WriteLine(line);
                             widgetsInOneLine.Clear();
                             line++;
                         }
@@ -245,14 +277,25 @@ namespace DynamicWin.UI.Menu.Menus
 
                 if (!wasHovering)
                 {
-                    wasHovering = true;
-                 
                     smallLeftWidgets.ForEach(x => x.SetActive(false));
                     smallRightWidgets.ForEach(x => x.SetActive(false));
-                    
-                    bigWidgets.ForEach(x => x.SetActive(true));
+
+                    bigWidgets.ForEach(x => x.SetActive(isWidgetMode));
                     bigMenuItems.ForEach(x => x.SetActive(true));
                 }
+
+                if (isWidgetMode && !wasWidgetMode)
+                {
+                    wasWidgetMode = true;
+                    bigWidgets.ForEach(x => x.SetActive(true));
+                }
+                else if (!isWidgetMode && wasWidgetMode)
+                {
+                    wasWidgetMode = false;
+                    bigWidgets.ForEach(x => x.SetActive(false));
+                }
+
+                wasHovering = true;
             }
         }
 

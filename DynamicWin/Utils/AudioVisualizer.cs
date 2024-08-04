@@ -22,16 +22,26 @@ namespace DynamicWin.Utils
 
         public float divisor = 1f;
 
-        public AudioVisualizer(UIObject? parent, Vec2 position, Vec2 size, UIAlignment alignment = UIAlignment.TopCenter, int fftLength = 16) : base(parent, position, size, alignment)
+        bool avAmpsMode = false;
+
+        public AudioVisualizer(UIObject? parent, Vec2 position, Vec2 size, UIAlignment alignment = UIAlignment.TopCenter, int length = 16, int averageAmpsSize = 0) : base(parent, position, size, alignment)
         {
-            this.fftLength = fftLength;
+            this.fftLength = length;
             roundRadius = 5;
 
             // Init audio
             // Audio Capture
 
-            fftValues = new float[fftLength];
-            barHeight = new float[fftLength];
+            if(averageAmpsSize != 0)
+            {
+                averageAmps = new float[averageAmpsSize];
+                smoothAverageAmps = new float[averageAmpsSize];
+                avAmpsMode = true;
+
+            }
+
+            fftValues = new float[length];
+            barHeight = new float[length];
 
             capture = new WasapiLoopbackCapture();
             capture.DataAvailable += OnDataAvailable;
@@ -53,9 +63,13 @@ namespace DynamicWin.Utils
             }
         }
 
+        int updateTick = 0;
+
         public override void Update(float deltaTime)
         {
             base.Update(deltaTime);
+
+            updateTick++;
 
             if (fftValues == null || fftValues.Length == 0) return;
 
@@ -67,6 +81,24 @@ namespace DynamicWin.Utils
                 if (float.IsNaN(amplitude) || float.IsInfinity(amplitude)) amplitude = 0f;
 
                 barHeight[i] = Mathf.Lerp(barHeight[i], amplitude, (amplitude > barHeight[i]) ? barUpSmoothing : barDownSmoothing * deltaTime);
+            }
+
+            if (avAmpsMode)
+            {
+                for (int a = 0; a < averageAmps.Length; a++)
+                {
+                    smoothAverageAmps[a] = Mathf.Lerp(smoothAverageAmps[a], averageAmps[a], barUpSmoothing * deltaTime);
+                }
+
+                if (avAmpsMode && updateTick % 6 == 0)
+                {
+                    for (int a = averageAmps.Length - 2; a >= 0; a--)
+                    {
+                        averageAmps[a + 1] = averageAmps[a];
+                    }
+
+                    averageAmps[0] = AverageAmplitude;
+                }
             }
         }
 
@@ -155,7 +187,11 @@ namespace DynamicWin.Utils
             return ((reversedN << count) & ((1 << bits) - 1));
         }
 
+        public int averageAmpModeRectSize = 24;
+
         float averageAmplitude = 0f;
+        float[] averageAmps;
+        float[] smoothAverageAmps;
         public float AverageAmplitude { get => averageAmplitude; }
 
         public Col GetActionCol()
@@ -181,21 +217,44 @@ namespace DynamicWin.Utils
 
                 var paint = GetPaint();
 
-                var barWidth = width / (barHeight.Length / divisor);
-
                 for (int i = 0; i < barHeight.Length / divisor; i++)
                 {
-                    averageAmplitude += barHeight[i];
+                    averageAmplitude += Mathf.Clamp(barHeight[i] * ((barHeight.Length - i) / barHeight.Length * 2 + 1f) * (Random.Shared.NextSingle() + 0.1f), 0, 1) * 4.5f;
+                }
 
-                    float bH = (int)(barHeight[i] * height) + 2.5f; // Scale factor for visualization
+                if (!avAmpsMode)
+                {
+                    var barWidth = width / (barHeight.Length / divisor);
 
-                    var rect = SKRect.Create(Position.X + i * barWidth, Position.Y + (height / 2) - bH / 2, barWidth - 5f, bH);
-                    var rRect = new SKRoundRect(rect, roundRadius);
+                    for (int i = 0; i < barHeight.Length / divisor; i++)
+                    {
+                        float bH = (int)(barHeight[i] * height) + 2.5f; // Scale factor for visualization
 
-                    Col pCol = Col.Lerp(Theme.Secondary, Theme.Primary, barHeight[i] * 2);
-                    paint.Color = pCol.Value();
+                        var rect = SKRect.Create(Position.X + i * barWidth, Position.Y + (height / 2) - bH / 2, barWidth - 5f, bH);
+                        var rRect = new SKRoundRect(rect, roundRadius);
 
-                    canvas.DrawRoundRect(rRect, paint);
+                        Col pCol = Col.Lerp(Theme.Secondary, Theme.Primary, Mathf.Clamp(barHeight[i] * 2 + (averageAmplitude / 2), 0, 1));
+                        paint.Color = pCol.Value();
+
+                        canvas.DrawRoundRect(rRect, paint);
+                    }
+                }
+                else
+                {
+                    var barWidth = width / (smoothAverageAmps.Length / divisor);
+
+                    for (int i = 0; i < smoothAverageAmps.Length / divisor; i++)
+                    {
+                        float bH = (int)(smoothAverageAmps[i] * height) + 2.5f; // Scale factor for visualization
+
+                        var rect = SKRect.Create(Position.X + i * barWidth, Position.Y + (height / 2) - bH / 2, barWidth - 2.5f, bH);
+                        var rRect = new SKRoundRect(rect, roundRadius);
+
+                        Col pCol = Col.Lerp(Theme.Secondary, Theme.Primary, Mathf.Clamp(smoothAverageAmps[i], 0, 1));
+                        paint.Color = pCol.Value();
+
+                        canvas.DrawRoundRect(rRect, paint);
+                    }
                 }
 
                 averageAmplitude /= barHeight.Length;

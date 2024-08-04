@@ -39,11 +39,11 @@ namespace DynamicWin.UI.UIElements.Custom
             paint.StrokeJoin = SKStrokeJoin.Round;
             paint.StrokeWidth = 2f;
 
-            paint.Color = Theme.Primary.Value();
+            paint.Color = GetColor(Theme.Primary).Value();
 
             canvas.DrawRoundRect(rect, paint);
 
-            paint.Color = currentCol.Value();
+            paint.Color = GetColor(currentCol).Value();
             paint.IsStroke = false;
 
             rect.Deflate(10, 10);

@@ -13,6 +13,9 @@ namespace DynamicWin.UI.Widgets
     {
         public bool isEditMode = false;
 
+        protected bool isSmallWidget = false;
+        public bool IsSmallWidget { get { return isSmallWidget; } }
+
         public WidgetBase(UIObject? parent, Vec2 position, UIAlignment alignment = UIAlignment.TopCenter) : base(parent, position, Vec2.zero, alignment)
         {
             Size = GetWidgetSize();
@@ -41,16 +44,19 @@ namespace DynamicWin.UI.Widgets
 
             var paint = GetPaint();
 
-            var bPaint = GetPaint();
-            bPaint.ImageFilter = SKImageFilter.CreateBlur(100, 100);
-            bPaint.BlendMode = SKBlendMode.SrcOver;
-            bPaint.Color = Col.White.Override(a: 0.4f).Value();
+            if (!IsSmallWidget)
+            {
+                var bPaint = GetPaint();
+                bPaint.ImageFilter = SKImageFilter.CreateBlur(100, 100);
+                bPaint.BlendMode = SKBlendMode.SrcOver;
+                bPaint.Color = Col.White.Override(a: 0.4f).Value();
 
-            int canvasSave = canvas.Save();
-            canvas.ClipRoundRect(GetRect(), antialias: true);
-            canvas.DrawCircle(RendererMain.CursorPosition.X + 12.5f, RendererMain.CursorPosition.Y + 20, 35, bPaint);
+                int canvasSave = canvas.Save();
+                canvas.ClipRoundRect(GetRect(), antialias: true);
+                canvas.DrawCircle(RendererMain.CursorPosition.X + 12.5f, RendererMain.CursorPosition.Y + 20, 35, bPaint);
 
-            canvas.RestoreToCount(canvasSave);
+                canvas.RestoreToCount(canvasSave);
+            }
 
             if (isEditMode)
             {

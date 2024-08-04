@@ -15,8 +15,6 @@ namespace DynamicWin.UI.UIElements
 
         public DWImage Image { get { return image; } private set => image = value; }
 
-        Vec2 imageSize;
-
         public DWImageButton(UIObject? parent, SKBitmap sprite, Vec2 position, Vec2 size, Action clickCallback, UIAlignment alignment = UIAlignment.TopCenter) : base(parent, position, size, clickCallback, alignment)
         {
 

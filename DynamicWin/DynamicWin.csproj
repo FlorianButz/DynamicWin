@@ -60,6 +60,9 @@
     <None Update="Resources\icons\edit.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Resources\icons\home\File.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Resources\icons\home\Settings.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
