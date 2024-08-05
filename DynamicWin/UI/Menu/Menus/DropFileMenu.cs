@@ -22,6 +22,8 @@ namespace DynamicWin.UI.Menu.Menus
         {
             System.Diagnostics.Debug.WriteLine("Dropped!");
 
+            if (e == null) return;
+
             string[] fileList = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
             if (fileList != null && fileList.Length > 0)

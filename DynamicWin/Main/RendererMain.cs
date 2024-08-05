@@ -8,6 +8,7 @@ using DynamicWin.UI.UIElements;
 using DynamicWin.Utils;
 using SkiaSharp;
 using SkiaSharp.Views.Desktop;
+using Windows.Media.Capture;
 
 namespace DynamicWin.Main
 {
@@ -21,7 +22,7 @@ namespace DynamicWin.Main
         private List<UIObject> objects { get => MenuManager.Instance.ActiveMenu.UiObjects; }
 
         public static Vec2 ScreenDimensions { get => new Vec2(instance.Width, instance.Height); }
-        public static Vec2 CursorPosition { get => new Vec2(Cursor.Position.X, Cursor.Position.Y); }
+        public static Vec2 CursorPosition { get => new Vec2(Cursor.Position.X + 5f, Cursor.Position.Y + 5f); }
 
         private static RendererMain instance;
         public static RendererMain Instance { get { return instance; } }
@@ -30,38 +31,61 @@ namespace DynamicWin.Main
 
         public RendererMain()
         {
-                MenuManager m = new MenuManager();
-                Theme theme = new Theme();
+            MenuManager m = new MenuManager();
+            Theme theme = new Theme();
 
-                instance = this;
+            // Skia Sharp
 
-                SetStyle(ControlStyles.SupportsTransparentBackColor, true);
-                BackColor = Color.Transparent;
+            this.DoubleBuffered = true;
+            this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+            this.SetStyle(ControlStyles.CacheText, true);
 
-                islandObject = new IslandObject();
-                m.Init();
+            // Init control
 
-                // Set up the timer
-                timer = new System.Windows.Forms.Timer
-                {
-                    Interval = 6
-                };
-                timer.Tick += (sender, args) => Update();
-                timer.Tick += (sender, args) => Render();
-                timer.Start();
+            instance = this;
 
-                KeyHandler.onKeyDown += OnKeyRegistered;
+            SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+            BackColor = Color.Transparent;
 
-                {
-                    MainForm.Instance.DragEnter += MainForm.Instance.MainForm_DragEnter;
-                    MainForm.Instance.DragDrop += MainForm.Instance.MainForm_DragDrop;
-                    MainForm.Instance.DragLeave += MainForm.Instance.MainForm_DragLeave;
-                    MainForm.Instance.DragOver += MainForm.Instance.MainForm_DragOver;
+            islandObject = new IslandObject();
+            m.Init();
 
-                    MainForm.Instance.MouseWheel += MainForm.Instance.OnScroll;
-                }
+            // Set up the timer
+            timer = new System.Windows.Forms.Timer
+            {
+                Interval = 14
+            };
+            timer.Tick += (sender, args) => Update();
+            timer.Tick += (sender, args) => Render();
+            timer.Start();
 
-                isInitialized = true;
+            KeyHandler.onKeyDown += OnKeyRegistered;
+
+            {
+                MainForm.Instance.DragEnter += MainForm.Instance.MainForm_DragEnter;
+                MainForm.Instance.DragLeave += MainForm.Instance.MainForm_DragLeave;
+
+                MainForm.Instance.MouseWheel += MainForm.Instance.OnScroll;
+            }
+
+            isInitialized = true;
+        }
+
+        public void Destroy()
+        {
+            timer.Stop();
+            timer.Dispose();
+
+            KeyHandler.onKeyDown -= OnKeyRegistered;
+
+            {
+                MainForm.Instance.DragEnter -= MainForm.Instance.MainForm_DragEnter;
+                MainForm.Instance.DragLeave -= MainForm.Instance.MainForm_DragLeave;
+
+                MainForm.Instance.MouseWheel -= MainForm.Instance.OnScroll;
+            }
+
+            instance = null;
         }
 
         void OnKeyRegistered(Keys key, KeyModifier modifier)
@@ -120,7 +144,6 @@ namespace DynamicWin.Main
         }
 
         public int canvasWithoutClip;
-
         bool isInitialized = false;
 
         protected override void OnPaintSurface(SKPaintSurfaceEventArgs e)

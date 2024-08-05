@@ -3,6 +3,7 @@ using DynamicWin.Utils;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -16,12 +17,16 @@ namespace DynamicWin.UI.Widgets.Big
     {
         MediaController controller;
         AudioVisualizer audioVisualizer;
+        AudioVisualizer audioVisualizerBig;
 
         DWImageButton playPause;
         DWImageButton next;
         DWImageButton prev;
 
         DWText noMediaPlaying;
+
+        DWText title;
+        DWText artist;
 
         public MediaWidget(UIObject? parent, Vec2 position, UIAlignment alignment = UIAlignment.TopCenter) : base(parent, position, alignment)
         {
@@ -75,6 +80,13 @@ namespace DynamicWin.UI.Widgets.Big
             };
             AddLocalObject(audioVisualizer);
 
+            audioVisualizerBig = new AudioVisualizer(this, new Vec2(0, 0), GetWidgetSize(), length: 16, alignment: UIAlignment.Center,
+                Primary: spotifyCol.Override(a: 0.25f), Secondary: spotifyCol.Override(a: 0.1f) * 0.1f)
+            {
+                divisor = 2f
+            };
+            audioVisualizerBig.SilentSetActive(false);
+
             noMediaPlaying = new DWText(this, "No Media Playing", new Vec2(0, 30))
             {
                 Color = Theme.TextSecond,
@@ -84,6 +96,24 @@ namespace DynamicWin.UI.Widgets.Big
             noMediaPlaying.SilentSetActive(false);
             AddLocalObject(noMediaPlaying);
 
+            title = new DWText(this, "Title", new Vec2(0, 22.5f))
+            {
+                Color = Theme.TextSecond,
+                Font = Resources.Resources.InterBold,
+                textSize = 15
+            };
+            title.SilentSetActive(false);
+            AddLocalObject(title);
+
+            artist = new DWText(this, "Artist", new Vec2(0, 42.5f))
+            {
+                Color = Theme.TextThird,
+                Font = Resources.Resources.InterRegular,
+                textSize = 13
+            };
+            artist.SilentSetActive(false);
+            AddLocalObject(artist);
+
             prev.Image.dynamicColor         = true;
             next.Image.dynamicColor         = true;
             playPause.Image.dynamicColor    = true;
@@ -92,29 +122,62 @@ namespace DynamicWin.UI.Widgets.Big
         float smoothedAmp = 0f;
         float smoothing = 1.5f;
 
-        bool wasEnabled = false;
+        int cycle = 0;
 
         public override void Update(float deltaTime)
         {
             base.Update(deltaTime);
 
+            if (cycle % 64 == 0)
+            {
+                isSpotifyAvaliable = IsSpotifyAvaliable();
+
+                if (isSpotifyAvaliable)
+                {
+                    string titleString;
+                    string artistString;
+                    string error;
+
+                    GetSpotifyTrackInfo(out titleString, out artistString, out error);
+
+                    if (string.IsNullOrEmpty(error))
+                    {
+                        title.Text = DWText.Truncate(titleString, 20);
+                        artist.Text = DWText.Truncate(artistString, 28);
+                    }
+                    else
+                    {
+                        if (!error.Equals("Paused") || title.Text.ToLower().Equals("title") || title.Text.ToLower().Equals("error"))
+                        {
+                            title.Text = "Error";
+                            artist.Text = DWText.Truncate(error, 24);
+                        }
+
+                    }
+                }
+            }
+            cycle++;
+
             prev.normalColor = audioVisualizer.GetActionCol().Override(a: 0.2f);
             next.normalColor = audioVisualizer.GetActionCol().Override(a: 0.2f);
             playPause.normalColor = audioVisualizer.GetActionCol().Override(a: 0.2f);
 
-            smoothedAmp = (float)Math.Max(Mathf.Lerp(smoothedAmp, audioVisualizer.AverageAmplitude, smoothing * deltaTime), audioVisualizer.AverageAmplitude);
+            if(!isSpotifyAvaliable)
+                smoothedAmp = (float)Math.Max(Mathf.Lerp(smoothedAmp, audioVisualizer.AverageAmplitude, smoothing * deltaTime), audioVisualizer.AverageAmplitude);
+            else
+                smoothedAmp = (float)Math.Max(Mathf.Lerp(smoothedAmp, audioVisualizer.AverageAmplitude, smoothing * deltaTime), audioVisualizer.AverageAmplitude);
+
             if (smoothedAmp < 0.005f) smoothedAmp = 0f;
 
-            if(smoothedAmp.Equals(0f) && !wasEnabled)
-            {
-                wasEnabled = true;
-                noMediaPlaying.SetActive(true);
-            }
-            else if (!smoothedAmp.Equals(0f) && wasEnabled)
-            {
-                wasEnabled = false;
-                noMediaPlaying.SetActive(false);
-            }
+            spotifyBlur = Mathf.Lerp(spotifyBlur, isSpotifyAvaliable ? 0f : 25f, 10f * deltaTime);
+
+            noMediaPlaying.SetActive(smoothedAmp.Equals(0f) && !isSpotifyAvaliable);
+            title.SetActive(isSpotifyAvaliable);
+            artist.SetActive(isSpotifyAvaliable);
+            audioVisualizerBig.SetActive(isSpotifyAvaliable);
+            audioVisualizer.SetActive(!isSpotifyAvaliable);
+
+            audioVisualizerBig.UpdateCall(deltaTime);
         }
 
         private void InitMediaPlayer()
@@ -122,11 +185,111 @@ namespace DynamicWin.UI.Widgets.Big
             controller = new MediaController();
         }
 
+        float spotifyBlur = 0f;
+        bool isSpotifyAvaliable = false;
+        Col spotifyCol = Col.FromHex("#1cb351");
+
         public override void DrawWidget(SKCanvas canvas)
         {
             var paint = GetPaint();
             paint.Color = (Theme.Primary * 0.1f).Value();
             canvas.DrawRoundRect(GetRect(), paint);
+
+            int saveCanvas = canvas.Save();
+
+            canvas.ClipRoundRect(GetRect());
+            audioVisualizerBig.blurAmount = 12.5f;
+            audioVisualizerBig.DrawCall(canvas);
+
+            canvas.RestoreToCount(saveCanvas);
+
+            if (isSpotifyAvaliable || spotifyBlur <= 24f)
+            {
+                paint.Color = spotifyCol.Override(a: Color.a * (1f - (spotifyBlur / 25f))).Value();
+
+                var blur = SKImageFilter.CreateBlur((float)Math.Max(GetBlur(), spotifyBlur) + 0.1f, (float)Math.Max(GetBlur(), spotifyBlur) + 0.1f);
+                paint.ImageFilter = blur;
+
+                var r = GetRect();
+
+                var inward = 5;
+                var w = 25 + spotifyBlur * (isSpotifyAvaliable ? 2.5f : -0.15f);
+                var h = 25 + spotifyBlur * (isSpotifyAvaliable ? 2.5f : -0.15f);
+                var x = Position.X + r.Width - w / 2 - inward;
+                var y = Position.Y - h / 2 + inward;
+
+                canvas.DrawBitmap(Resources.Resources.Spotify, SKRect.Create(x, y, w, h), paint);
+
+                paint.Color = spotifyCol.Override(a: 0.25f * Color.a).Value();
+                paint.StrokeWidth = 2f;
+
+                float[] intervals = { 5, 10 };
+                paint.PathEffect = SKPathEffect.CreateDash(intervals, (float)-cycle * 0.1f);
+
+                paint.IsStroke = true;
+                paint.StrokeCap = SKStrokeCap.Round;
+                paint.StrokeJoin = SKStrokeJoin.Round;
+
+                canvas.DrawRoundRect(r, paint);
+
+                canvas.RestoreToCount(saveCanvas);
+
+                var shadowPaint = GetPaint();
+
+                var drop = SKImageFilter.CreateDropShadowOnly(0, 0, (25f - spotifyBlur) / 2, (25f - spotifyBlur) / 2, 
+                    spotifyCol.Override(a: (25f - spotifyBlur) / 100f).Value());
+                shadowPaint.ImageFilter = drop;
+                shadowPaint.IsStroke = true;
+                shadowPaint.StrokeWidth = 15;
+
+                int s = canvas.Save();
+                canvas.ClipRoundRect(GetRect());
+                canvas.DrawRoundRect(GetRect(), shadowPaint);
+                canvas.RestoreToCount(s);
+            }
+        }
+
+        public static void GetSpotifyTrackInfo(out string title, out string artist, out string error)
+        {
+            var proc = Process.GetProcessesByName("Spotify").FirstOrDefault(p => !string.IsNullOrWhiteSpace(p.MainWindowTitle));
+
+            if (proc == null)
+            {
+                error = "Spotify is not open!";
+                title = null;
+                artist = null;
+                return;
+            }
+
+            if (proc.MainWindowTitle.ToLower().StartsWith("spotify"))
+            {
+                error = "Paused";
+                title = null;
+                artist = null;
+                return;
+            }
+
+            string[] strings = proc.MainWindowTitle.Split(" - ");
+            
+            if(strings.Length >= 2)
+            {
+                title = strings[1];
+                artist = strings[0];
+                error = null;
+            }
+            else
+            {
+                error = null;
+                title = "Advertisement";
+                artist = "";
+                return;
+            }
+        }
+
+        public bool IsSpotifyAvaliable()
+        {
+            var processes = Process.GetProcessesByName("Spotify");
+            return processes.Any();
         }
     }
 }

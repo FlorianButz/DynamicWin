@@ -1,9 +1,13 @@
 ﻿using DynamicWin.UI.Menu;
 using DynamicWin.UI.Menu.Menus;
+using DynamicWin.Utils;
 using Microsoft.VisualBasic;
 using OpenTK.Input;
+using SkiaSharp.Views.Desktop;
+using SkiaSharp.Views.WPF;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -49,19 +53,13 @@ namespace DynamicWin.Main
             MainForm.Instance.AllowDrop = true;
         }
 
+        public bool isDragging = false;
+
         public void OnScroll(object? sender, System.Windows.Forms.MouseEventArgs e)
         {
             onScrollEvent?.Invoke(e);
         }
 
-        public bool isDragging = false;
-
-        public void MainForm_DragOver(object? sender, DragEventArgs e)
-        {
-            //System.Diagnostics.Debug.WriteLine("DragOver");
-
-            isDragging = true;
-        }
 
         public void MainForm_DragEnter(object? sender, DragEventArgs e)
         {
@@ -76,22 +74,11 @@ namespace DynamicWin.Main
             }
         }
 
-        public void MainForm_DragDrop(object? sender, DragEventArgs e)
-        {
-            //System.Diagnostics.Debug.WriteLine("DragDrop");
-
-            isDragging = false;
-            DropFileMenu.Drop(e);
-
-            MenuManager.Instance.QueueOpenMenu(Resources.Resources.HomeMenu);
-        }
-
         public void MainForm_DragLeave(object? sender, EventArgs e)
         {
             //System.Diagnostics.Debug.WriteLine("DragLeave");
 
             isDragging = false;
-
             MenuManager.OpenMenu(Resources.Resources.HomeMenu);
         }
 
@@ -102,12 +89,81 @@ namespace DynamicWin.Main
             BackColor = Color.Transparent;
         }
 
+        bool isLocalDrag = false;
+
         internal void StartDrag(string file)
         {
-            return;
+            if (isLocalDrag) return;
 
-            DoDragDrop(new DataObject(DataFormats.FileDrop, new string[] { String.Join(file, "") }), DragDropEffects.Copy);
-            //RendererMain.Instance.MainIsland.hidden = true;
+            System.Diagnostics.Debug.WriteLine(file);
+            try
+            {
+                isLocalDrag = true;
+
+                if (RendererMain.Instance != null) RendererMain.Instance.Destroy();
+                Controls.Clear();
+
+                DataObject dataObject = new DataObject(DataFormats.FileDrop, new string[] { file });
+                var effects = DoDragDrop(dataObject, DragDropEffects.Copy |
+                    DragDropEffects.Move);
+
+                var customControl = new RendererMain
+                {
+                    Dock = DockStyle.Fill
+                };
+                Controls.Add(customControl);
+
+                isLocalDrag = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred: " + ex.Message);
+            }
+        }
+
+        protected override void OnQueryContinueDrag(QueryContinueDragEventArgs e)
+        {
+            if(e.Action == DragAction.Cancel)
+            {
+                isLocalDrag = false;
+            }
+            else if (e.Action == DragAction.Continue)
+            {
+                isLocalDrag = true;
+            }
+            else if (e.Action == DragAction.Drop)
+            {
+                isLocalDrag = false;
+            }
+        }
+
+        protected override void OnDragOver(DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                e.Effect = DragDropEffects.Move;
+            }
+            else
+            {
+                e.Effect = DragDropEffects.None;
+            }
+            base.OnDragOver(e);
+        }
+
+        protected override void OnDragDrop(DragEventArgs e)
+        {
+            isDragging = false;
+
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                // Handle the dropped files here
+
+                DropFileMenu.Drop(e);
+
+                MenuManager.Instance.QueueOpenMenu(Resources.Resources.HomeMenu);
+            }
+            base.OnDragDrop(e);
         }
     }
 }

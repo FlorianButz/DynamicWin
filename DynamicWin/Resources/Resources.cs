@@ -16,6 +16,7 @@ namespace DynamicWin.Resources
     {
         public static SKTypeface InterRegular { get => SKTypeface.FromFile("Resources\\Inter_24pt-Regular.ttf"); }
         public static SKTypeface InterBold { get => SKTypeface.FromFile("Resources\\Inter_24pt-ExtraBold.ttf"); }
+        public static SKTypeface CascadiaMono { get => SKTypeface.FromFile("Resources\\CascadiaMono.ttf"); }
 
         public static SKBitmap searchIcon;
         public static SKBitmap editIcon;
@@ -39,6 +40,12 @@ namespace DynamicWin.Resources
         public static SKBitmap Tray;
         public static SKBitmap Widgets;
         public static SKBitmap FileIcon;
+        public static SKBitmap Spotify;
+
+        public static SKBitmap ArrowUp;
+        public static SKBitmap ArrowDown;
+
+        public static string TimerOverSound = "Resources\\sounds\\TimerOver.wav";
 
         private static HomeMenu homeMenu;
         public static HomeMenu HomeMenu { get => homeMenu; }
@@ -72,6 +79,10 @@ namespace DynamicWin.Resources
             Tray = LoadImg("Resources\\icons\\home\\Tray.png");
             Widgets = LoadImg("Resources\\icons\\home\\Widgets.png");
             FileIcon = LoadImg("Resources\\icons\\home\\File.png");
+            Spotify = LoadImg("Resources\\icons\\home\\Spotify.png");
+
+            ArrowUp = LoadImg("Resources\\icons\\home\\ArrowUp.png");
+            ArrowDown = LoadImg("Resources\\icons\\home\\ArrowDown.png");
 
             System.Diagnostics.Debug.WriteLine("Loaded Resources");
         }

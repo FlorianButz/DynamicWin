@@ -49,21 +49,39 @@ namespace DynamicWin.UI.UIElements
             var fontMetrics = paint.FontMetrics;
             Size.Y = fontMetrics.Descent + fontMetrics.Ascent;
 
-            textBounds = new Vec2(paint.MeasureText(text), fontMetrics.Descent + fontMetrics.Ascent);
+            SKTextBlob blob = SKTextBlob.Create(text, new SKFont(paint.Typeface, textSize));
 
-            canvas.DrawText(text, new SKPoint(Position.X, Position.Y), paint);
+            if (blob != null)
+            {
+                canvas.DrawText(blob, Position.X, Position.Y, paint);
+                textBounds = new Vec2(blob.Bounds.Width, blob.Bounds.Height);
+            }
+
+            //canvas.DrawRoundRect(GetRect(), paint);
+        }
+
+        public Vec2 GetBoundsForString(string text)
+        {
+            SKTextBlob blob = SKTextBlob.Create(text, new SKFont(Font, textSize));
+
+            return new Vec2(blob.Bounds.Width, blob.Bounds.Height);
         }
 
         Animator changeTextAnim;
 
-        private void SetText(string text)
+        public void SilentSetText(string text)
+        {
+            this.text = text;
+        }
+
+        public void SetText(string text)
         {
             if (this.text == text) return;
             if (changeTextAnim != null && changeTextAnim.IsRunning) return;
 
             float ogTextSize = textSize;
 
-            changeTextAnim = new Animator(450, 1);
+            changeTextAnim = new Animator(350, 1);
 
             changeTextAnim.onAnimationUpdate += (x) =>
             {
@@ -93,6 +111,12 @@ namespace DynamicWin.UI.UIElements
                 this.text = text;
                 textSize = ogTextSize;
             };
+        }
+
+        public static string Truncate(string value, int maxLength)
+        {
+            if (string.IsNullOrEmpty(value)) return value;
+            return value.Length <= maxLength ? value : value.Substring(0, maxLength) + "…";
         }
     }
 }

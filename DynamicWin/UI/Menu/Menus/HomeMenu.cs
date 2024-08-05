@@ -1,5 +1,6 @@
 ﻿using DynamicWin.Main;
 using DynamicWin.UI.UIElements;
+using DynamicWin.UI.UIElements.Custom;
 using DynamicWin.UI.Widgets;
 using DynamicWin.UI.Widgets.Big;
 using DynamicWin.UI.Widgets.Small;
@@ -101,7 +102,7 @@ namespace DynamicWin.UI.Menu.Menus
             smallRightWidgets.Add(new UsedDevicesWidget(smallWidgetsContainer, Vec2.zero, UIAlignment.MiddleRight));
 
             bigWidgets.Add(new MediaWidget(bigWidgetsContainer, Vec2.zero, UIAlignment.BottomCenter));
-            bigWidgets.Add(new TestWidget(bigWidgetsContainer, Vec2.zero, UIAlignment.BottomCenter));
+            bigWidgets.Add(new TimerWidget(bigWidgetsContainer, Vec2.zero, UIAlignment.BottomCenter));
 
             topContainer = new UIObject(island, new Vec2(0, 30), new Vec2(island.currSize.X, 50))
             {
@@ -122,7 +123,7 @@ namespace DynamicWin.UI.Menu.Menus
 
             bigMenuItems.Add(widgetButton);
 
-            trayButton = new DWTextImageButton(topContainer, Resources.Resources.Tray, "Tray", new Vec2(105, 0), new Vec2(50, 20), () =>
+            trayButton = new DWTextImageButton(topContainer, Resources.Resources.Tray, "Tray", new Vec2(110, 0), new Vec2(55, 20), () =>
             {
                 isWidgetMode = false;
             },

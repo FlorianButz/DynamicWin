@@ -1,5 +1,6 @@
 ﻿using DynamicWin.Main;
 using DynamicWin.UI;
+using DynamicWin.Utils;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
@@ -7,14 +8,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DynamicWin.Utils
+namespace DynamicWin.UI.UIElements.Custom
 {
     internal class Tray : UIObject
     {
         static string[]? cachedTrayFiles;
 
         int maxFilesInOneLine = 6;
-        int fileHeight = 80;
 
         float yOffset = 0f;
         float mouseSensitivity = 0.15f;
@@ -27,11 +27,11 @@ namespace DynamicWin.Utils
         public override void OnDestroy()
         {
             base.OnDestroy();
-        
+
             MainForm.onScrollEvent -= OnScroll;
         }
 
-        void OnScroll(System.Windows.Forms.MouseEventArgs e)
+        void OnScroll(MouseEventArgs e)
         {
             yOffset += e.Delta * mouseSensitivity;
         }
@@ -52,60 +52,51 @@ namespace DynamicWin.Utils
         {
             base.Update(deltaTime);
 
-            if (timer % 64 == 0) cachedTrayFiles = GetFiles();
+            if (timer % 64 == 0) { cachedTrayFiles = GetFiles(); AddFileObjects(); }
             timer++;
 
             if (cachedTrayFiles == null) return;
 
             mouseYLastSmooth = Mathf.Lerp(mouseYLastSmooth, 0, 10f * deltaTime);
-            
-            if (IsMouseDown)
-            {
-                yOffset += (RendererMain.CursorPosition.Y - mouseYLast) * (mouseSensitivity * 5f);
-                mouseYLastSmooth = (RendererMain.CursorPosition.Y - mouseYLast) * (mouseSensitivity * 7.5f);
-                mouseYLast = RendererMain.CursorPosition.Y;
 
-                if(Vec2.Distance(mouseStart, new Vec2(RendererMain.MousePosition.X, RendererMain.MousePosition.Y)) >= 25)
-                {
-                    MainForm.Instance.StartDrag(cachedTrayFiles[0]);
-                }
-            }
-            else
-            {
-                int lines = cachedTrayFiles.Length / maxFilesInOneLine;
+            var maxFilesInOneLine = (int)(Size.X / 60);
 
-                yOffset += mouseYLastSmooth;
-                yOffset = Mathf.Lerp(yOffset, Mathf.Clamp(yOffset, -((lines-1) * (fileHeight)), 0f), 25f * deltaTime);
+            for (int i = 0; i < fileObjects.Count; i++)
+            {
+                var fileObject = fileObjects[i];
+                int line = i / maxFilesInOneLine;
+
+                fileObject.LocalPosition.X = 60 * (i - (maxFilesInOneLine * line)) - (Size.X * line);
+                fileObject.LocalPosition.Y = (75 * line);
             }
+
+            int lines = cachedTrayFiles.Length / maxFilesInOneLine;
+
+            yOffset += mouseYLastSmooth;
+            yOffset = Mathf.Lerp(yOffset, Mathf.Clamp(yOffset, -((lines - 1) * 75), 0f), 25f * deltaTime);
         }
 
         public override void Draw(SKCanvas canvas)
         {
             var paint = GetPaint();
+        }
 
-            if (cachedTrayFiles == null) return;
+        List<TrayFile> fileObjects = new List<TrayFile>();
 
-            var fileWidth = Size.X / maxFilesInOneLine;
-            var sizeSub = 10;
+        void AddFileObjects()
+        {
+            fileObjects.ForEach(x => DestroyLocalObject(x));
+            fileObjects = new List<TrayFile>();
 
-            int save = canvas.Save();
-            canvas.ClipRoundRect(GetRect());
-            canvas.Translate(0, yOffset);
-
-            for (int i = 0; i < cachedTrayFiles.Length; i++)
+            foreach(var x in cachedTrayFiles)
             {
-                int line = i / maxFilesInOneLine;
-
-                var file = cachedTrayFiles[i];
-
-                var rect = SKRect.Create(
-                    Position.X + (fileWidth * i) + (sizeSub / maxFilesInOneLine) * ((i - (line * maxFilesInOneLine)) + 1) - (Size.X * line),
-                    Position.Y + (fileHeight * line) + (sizeSub / maxFilesInOneLine) * (line + 1),
-                    fileWidth - sizeSub, fileHeight - sizeSub);
-                canvas.DrawRect(rect, paint);
+                var f = new TrayFile(this, x, Vec2.zero, UIAlignment.TopLeft)
+                {
+                    Anchor = new Vec2(0, 0)
+                };
+                fileObjects.Add(f);
+                AddLocalObject(f);
             }
-
-            canvas.RestoreToCount(save);
         }
 
         public static string[]? GetFiles()

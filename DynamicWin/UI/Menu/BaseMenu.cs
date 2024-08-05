@@ -27,6 +27,8 @@ namespace DynamicWin.UI.Menu
 
         public virtual void Update() { }
 
+        public virtual void OnDeload() { }
+
         public void Dispose()
         {
             uiObjects.Clear();

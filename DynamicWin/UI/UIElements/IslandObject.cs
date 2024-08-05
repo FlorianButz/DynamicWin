@@ -7,12 +7,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Devices.PointOfService.Provider;
 
 namespace DynamicWin.UI.UIElements
 {
     internal class IslandObject : UIObject
     {
-        public float topOffset = 15f;
+        public float topOffset = 5f;
 
         public SecondOrder scaleSecondOrder;
 
@@ -24,7 +25,7 @@ namespace DynamicWin.UI.UIElements
         public Vec2 currSize;
 
         public enum IslandMode { Island, Notch };
-        public IslandMode mode;
+        public IslandMode mode = IslandMode.Notch;
 
         public IslandObject() : base(null, Vec2.zero, new Vec2(250, 50), UIAlignment.TopCenter)
         {
@@ -84,30 +85,34 @@ namespace DynamicWin.UI.UIElements
                 var path = new SKPath();
 
                 var awidth = (float)(Math.Max(Size.Magnitude / 12, 50));
-                var aheight = (float)(Math.Max(Size.Magnitude / 6, 25));
+                var aheight = (float)(Math.Max(Size.Magnitude / 6, 25)) + (LocalPosition.Y - topOffset);
 
-                { // Left
+                { // Left notch curve
+                    var y = LocalPosition.Y - topOffset;
+
                     var x = Position.X - awidth;
 
-                    path.MoveTo(x - awidth, 0);
+                    path.MoveTo(x - awidth, y);
                     path.CubicTo(
-                        x + 0, 0,
-                        x + awidth, 0,
-                        x + awidth, aheight);
-                    path.LineTo(x + awidth, 0);
-                    path.LineTo(x + 0, 0);
+                        x + 0, y,
+                        x + awidth, y,
+                        x + awidth, y + aheight);
+                    path.LineTo(x + awidth, y);
+                    path.LineTo(x + 0, y);
                 }
 
-                { // Right
+                { // Right notch curve
+                    var y = LocalPosition.Y - topOffset;
+
                     var x = Position.X + Size.X + awidth;
 
-                    path.MoveTo(x + awidth, 0);
+                    path.MoveTo(x + awidth, y);
                     path.CubicTo(
-                        x - 0, 0,
-                        x - awidth, 0,
-                        x - awidth, aheight);
-                    path.LineTo(x - awidth, 0);
-                    path.LineTo(x - 0, 0);
+                        x - 0, y,
+                        x - awidth, y,
+                        x - awidth, y + aheight);
+                    path.LineTo(x - awidth, y);
+                    path.LineTo(x - 0, y);
                 }
 
                 var r = SKRect.Create(Position.X, 0, Size.X, (Position.Y - topOffset) + topOffset + Size.Y / 2);

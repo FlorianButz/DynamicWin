@@ -47,21 +47,37 @@ namespace DynamicWin.UI.Menu
             Instance.OpenOverlay(newActiveMenu, time);
         }
 
+        static Thread overlayThread;
+
+        public static void CloseOverlay()
+        {
+            overlayThread.Interrupt();
+        }
+
         private void OpenOverlay(BaseMenu newActiveMenu, float time)
         {
-            new Thread(() =>
+            overlayThread = new Thread(() =>
             {
-                    BaseMenu lastMenu = activeMenu;
+                BaseMenu lastMenu = activeMenu;
 
-                    SetActiveMenu(newActiveMenu);
-                    int timeMillis = (int)(time * 1000);
+                QueueOpenMenu(newActiveMenu);
+                int timeMillis = (int)(time * 1000);
 
+                try
+                {
                     Thread.Sleep(timeMillis);
+                }
+                catch(ThreadInterruptedException e)
+                {
+                    QueueOpenMenu(lastMenu);
+                    return;
+                }
 
-                    if (lastMenu == null) throw new NullReferenceException();
-                    SetActiveMenu(lastMenu);
+                if (lastMenu == null) throw new NullReferenceException();
+                QueueOpenMenu(lastMenu);
 
-            }).Start();
+            });
+            overlayThread.Start();
         }
 
         List<BaseMenu> menuLoadQueue = new List<BaseMenu>();
@@ -134,6 +150,7 @@ namespace DynamicWin.UI.Menu
 
                 menuAnimatorIn.onAnimationEnd += () =>
                 {
+                    if (activeMenu != null) activeMenu.OnDeload();
                     activeMenu = newActiveMenu;
 
                     RendererMain.Instance.renderOffset.Y = -yOffset;

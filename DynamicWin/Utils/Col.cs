@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -58,6 +59,25 @@ namespace DynamicWin.Utils
         public static Col operator *(Col a, float b)
         {
             return new Col(a.r * b, a.g * b, a.b * b);
+        }
+
+        public static Col FromHex(string hex)
+        {
+            hex = hex.Replace("#", "");
+
+            string hexCode = "";
+            if (hex.Length == 6) hexCode += "ff";
+            hexCode += hex;
+
+            int argb = Int32.Parse(hexCode, NumberStyles.HexNumber);
+            Color clr = Color.FromArgb(argb);
+
+            return new Col(
+                (float)clr.R / 255,
+                (float)clr.G / 255,
+                (float)clr.B / 255,
+                (float)clr.A / 255
+                );
         }
     }
 }

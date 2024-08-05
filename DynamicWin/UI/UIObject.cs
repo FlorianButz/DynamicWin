@@ -1,4 +1,5 @@
 ﻿using DynamicWin.Main;
+using DynamicWin.UI.UIElements;
 using DynamicWin.Utils;
 using SkiaSharp;
 using System;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Forms.Internals;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace DynamicWin.UI
@@ -253,7 +255,7 @@ namespace DynamicWin.UI
 
             Update(deltaTime);
 
-            localObjects.ForEach((UIObject obj) =>
+            new List<UIObject>(localObjects).ForEach((UIObject obj) =>
             {
                 obj.blurAmount = GetBlur();
                 obj.UpdateCall(deltaTime);
@@ -268,7 +270,7 @@ namespace DynamicWin.UI
 
             Draw(canvas);
 
-            localObjects.ForEach((UIObject obj) =>
+            new List<UIObject>(localObjects).ForEach((UIObject obj) =>
             {
                 obj.DrawCall(canvas);
             });
@@ -293,16 +295,15 @@ namespace DynamicWin.UI
                 IsAntialias = true,
                 IsDither = true,
                 SubpixelText = true,
-                FilterQuality = SKFilterQuality.High,
-                HintingLevel = SKPaintHinting.Full,
-                IsLinearText = false
+                FilterQuality = SKFilterQuality.Medium,
+                HintingLevel = SKPaintHinting.Normal,
+                IsLinearText = true
             };
 
             if(GetBlur() != 0f)
             {
                 var blur = SKImageFilter.CreateBlur(GetBlur(), GetBlur());
                 paint.ImageFilter = blur;
-                //paint.MaskFilter = SKMaskFilter.CreateBlur(SKBlurStyle.Normal, GetBlur());
             }
 
             return paint;
@@ -378,7 +379,7 @@ namespace DynamicWin.UI
             return new SKRoundRect(rect, roundRadius);
         }
 
-        protected int expandInteractionRect = 5;
+        public int expandInteractionRect = 5;
 
         public virtual SKRoundRect GetInteractionRect()
         {

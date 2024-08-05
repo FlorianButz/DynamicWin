@@ -24,7 +24,7 @@ namespace DynamicWin.Utils
 
         bool avAmpsMode = false;
 
-        public AudioVisualizer(UIObject? parent, Vec2 position, Vec2 size, UIAlignment alignment = UIAlignment.TopCenter, int length = 16, int averageAmpsSize = 0) : base(parent, position, size, alignment)
+        public AudioVisualizer(UIObject? parent, Vec2 position, Vec2 size, UIAlignment alignment = UIAlignment.TopCenter, int length = 16, int averageAmpsSize = 0, Col Primary = null, Col Secondary = null) : base(parent, position, size, alignment)
         {
             this.fftLength = length;
             roundRadius = 5;
@@ -32,7 +32,12 @@ namespace DynamicWin.Utils
             // Init audio
             // Audio Capture
 
-            if(averageAmpsSize != 0)
+            if (Primary == null) this.Primary = Theme.Primary;
+            else this.Primary = Primary;
+            if (Secondary == null) this.Secondary = Theme.Secondary;
+            else this.Secondary = Secondary;
+
+            if (averageAmpsSize != 0)
             {
                 averageAmps = new float[averageAmpsSize];
                 smoothAverageAmps = new float[averageAmpsSize];
@@ -194,15 +199,18 @@ namespace DynamicWin.Utils
         float[] smoothAverageAmps;
         public float AverageAmplitude { get => averageAmplitude; }
 
+        public Col Primary;
+        public Col Secondary;
+
         public Col GetActionCol()
         {
-            Col pCol = Col.Lerp(Theme.Secondary, Theme.Primary, averageAmplitude * 2);
+            Col pCol = Col.Lerp(Secondary, Primary, averageAmplitude * 2);
             return pCol;
         }
 
         public Col GetInverseActionCol()
         {
-            Col pCol = Col.Lerp(Theme.Primary, Theme.Secondary, averageAmplitude * 2);
+            Col pCol = Col.Lerp(Primary, Secondary, averageAmplitude * 2);
             return pCol;
         }
 
@@ -233,7 +241,7 @@ namespace DynamicWin.Utils
                         var rect = SKRect.Create(Position.X + i * barWidth, Position.Y + (height / 2) - bH / 2, barWidth - 5f, bH);
                         var rRect = new SKRoundRect(rect, roundRadius);
 
-                        Col pCol = Col.Lerp(Theme.Secondary, Theme.Primary, Mathf.Clamp(barHeight[i] * 2 + (averageAmplitude / 2), 0, 1));
+                        Col pCol = Col.Lerp(Secondary, Primary, Mathf.Clamp(barHeight[i] * 2 + (averageAmplitude / 2), 0, 1));
                         paint.Color = pCol.Value();
 
                         canvas.DrawRoundRect(rRect, paint);
@@ -250,7 +258,7 @@ namespace DynamicWin.Utils
                         var rect = SKRect.Create(Position.X + i * barWidth, Position.Y + (height / 2) - bH / 2, barWidth - 2.5f, bH);
                         var rRect = new SKRoundRect(rect, roundRadius);
 
-                        Col pCol = Col.Lerp(Theme.Secondary, Theme.Primary, Mathf.Clamp(smoothAverageAmps[i], 0, 1));
+                        Col pCol = Col.Lerp(Secondary, Primary, Mathf.Clamp(smoothAverageAmps[i], 0, 1));
                         paint.Color = pCol.Value();
 
                         canvas.DrawRoundRect(rRect, paint);

@@ -6,6 +6,7 @@ namespace DynamicWin.Utils
     {
         private static Col textMain;
         private static Col textSecond;
+        private static Col textThird;
         private static Col prim;
         private static Col sec;
         private static Col islandBackground;
@@ -18,6 +19,7 @@ namespace DynamicWin.Utils
                 IslandColor = "#000000",
                 TextMain = "#ffffff",
                 TextSecond = "#a6a6a6",
+                TextThird = "#595959",
                 Primary = "#6988b7",
                 Secondary = "#061122",
                 Success = "#bad844",
@@ -42,6 +44,7 @@ namespace DynamicWin.Utils
         {
             textMain = GetColor(theme.TextMain);
             textSecond = GetColor(theme.TextSecond);
+            textThird = GetColor(theme.TextThird);
             prim = GetColor(theme.Primary);
             sec = GetColor(theme.Secondary);
             islandBackground = GetColor(theme.IslandColor);
@@ -51,25 +54,12 @@ namespace DynamicWin.Utils
 
         public Col GetColor(string hex)
         {
-            hex = hex.Replace("#", "");
-
-            string hexCode = "";
-            if (hex.Length == 6) hexCode += "ff";
-            hexCode += hex;
-
-            int argb = Int32.Parse(hexCode, NumberStyles.HexNumber);
-            Color clr = Color.FromArgb(argb);
-
-            return new Col(
-                (float)clr.R / 255,
-                (float)clr.G / 255,
-                (float)clr.B / 255,
-                (float)clr.A / 255
-                );
+            return Col.FromHex(hex);
         }
 
         public static Col TextMain { get => textMain; }
         public static Col TextSecond { get => textSecond; }
+        public static Col TextThird { get => textThird; }
         public static Col Primary { get => prim; }
         public static Col Secondary { get => sec; }
         public static Col IslandBackground { get => islandBackground; }
@@ -81,6 +71,7 @@ namespace DynamicWin.Utils
     {
         public string TextMain;
         public string TextSecond;
+        public string TextThird;
         public string Primary;
         public string Secondary;
         public string IslandColor;

@@ -20,6 +20,11 @@ namespace DynamicWin.Utils
             return Math.Max(min, Math.Min(max, value));
         }
 
+        public static float Remap(float value, float start1, float end1, float start2, float end2)
+        {
+            return start2 + (end2 - start2) * ((value - start1) / (end1 - start1));
+        }
+
         public static float LimitDecimalPoints(float value, int decimalPlaces)
         {
             return (float)Math.Round(value, decimalPlaces);

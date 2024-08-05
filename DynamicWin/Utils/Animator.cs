@@ -44,6 +44,7 @@
 
             animationTimer.Elapsed += (sender, e) =>
             {
+                if (animationTimer == null) return;
                 elapsed += (float)animationTimer.Interval;
 
                 if (elapsed >= animationDuration)
@@ -58,7 +59,8 @@
                 onAnimationUpdate?.Invoke(progress);
             };
 
-            animationTimer.Start();
+            if(animationTimer != null)
+                animationTimer.Start();
         }
 
         public void Stop(bool trigggerStopEvent = true)
@@ -71,7 +73,6 @@
             if (animationTimer != null)
             {
                 animationTimer.Stop();
-                animationTimer.Dispose();
                 animationTimer = null;
             }
         }
