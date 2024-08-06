@@ -13,7 +13,7 @@ namespace DynamicWin.Main
     {
         public ErrorForm()
         {
-            var result = MessageBox.Show("Only one instance can run at a time.");
+            var result = MessageBox.Show("Only one instance of DynamicWin can run at a time.", "An error occured.");
             Process.GetCurrentProcess().Kill();
         }
     }

@@ -4,6 +4,7 @@ using DynamicWin.Utils;
 using System.Configuration;
 using System.Data;
 using System.Diagnostics;
+using System.Threading;
 using System.Windows;
 
 namespace DynamicWin
@@ -18,6 +19,8 @@ namespace DynamicWin
         }
 
 
+        Mutex mutex;
+
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
@@ -27,7 +30,7 @@ namespace DynamicWin
             Dispatcher.UnhandledException += Dispatcher_UnhandledException;
 
             bool result;
-            var mutex = new System.Threading.Mutex(true, "FlorianButz.DynamicWin", out result);
+            mutex = new System.Threading.Mutex(true, "FlorianButz.DynamicWin", out result);
 
             if (!result)
             {
@@ -41,9 +44,13 @@ namespace DynamicWin
 
             MainForm mainForm = new MainForm();
             mainForm.Show();
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            base.OnExit(e);
 
             KeyHandler.Stop();
-
             GC.KeepAlive(mutex); // Important
         }
 
