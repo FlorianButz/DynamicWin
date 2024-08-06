@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -24,12 +25,17 @@ namespace DynamicWin.Utils
 
         public Col Override(float r = -1, float g = -1, float b = -1, float a = -1)
         {
-            if (r != -1) this.r = r;
-            if (g != -1) this.g = g;
-            if (b != -1) this.b = b;
-            if (a != -1) this.a = a;
+            float red = this.r;
+            float green = this.g;
+            float blue = this.b;
+            float alpha = this.a;
 
-            return new Col(this.r, this.g, this.b, this.a);
+            if (r != -1) red = r;
+            if (g != -1) green = g;
+            if (b != -1) blue = b;
+            if (a != -1) alpha = a;
+
+            return new Col(red, green, blue, alpha);
         }
 
         public static Col Lerp(Col a, Col b, float t)
@@ -49,6 +55,15 @@ namespace DynamicWin.Utils
                 (byte)(g * 255),
                 (byte)(b * 255),
                 (byte)(a * 255));
+        }
+
+        public Color ValueSystem()
+        {
+            return Color.FromArgb(
+                (byte)(a * 255),
+                (byte)(r * 255),
+                (byte)(g * 255),
+                (byte)(b * 255));
         }
 
         public Col Inverted()

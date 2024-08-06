@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,6 +29,29 @@ namespace DynamicWin.Utils
         public static float LimitDecimalPoints(float value, int decimalPlaces)
         {
             return (float)Math.Round(value, decimalPlaces);
+        }
+
+        public static string GetFileSizeString(string filename)
+        {
+            string[] sizes = { "B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
+
+            double len = 0;
+            try
+            {
+                len = new FileInfo(filename).Length;
+            }catch(FileNotFoundException e)
+            {
+                return "File not found!";
+            }
+
+            int order = 0;
+            while (len >= 1024 && order < sizes.Length - 1)
+            {
+                order++;
+                len = len / 1024;
+            }
+
+            return String.Format("{0:0.#} {1}", len, sizes[order]);
         }
     }
 }

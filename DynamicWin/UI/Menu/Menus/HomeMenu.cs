@@ -111,7 +111,7 @@ namespace DynamicWin.UI.Menu.Menus
             };
             bigMenuItems.Add(topContainer);
 
-            widgetButton = new DWTextImageButton(topContainer, Resources.Resources.Widgets, "Widgets", new Vec2(75 / 2 + 5, 0), new Vec2(75, 20), () =>
+            widgetButton = new DWTextImageButton(topContainer, Resources.Res.Widgets, "Widgets", new Vec2(75 / 2 + 5, 0), new Vec2(75, 20), () =>
             {
                 isWidgetMode = true;
             },
@@ -123,7 +123,7 @@ namespace DynamicWin.UI.Menu.Menus
 
             bigMenuItems.Add(widgetButton);
 
-            trayButton = new DWTextImageButton(topContainer, Resources.Resources.Tray, "Tray", new Vec2(110, 0), new Vec2(55, 20), () =>
+            trayButton = new DWTextImageButton(topContainer, Resources.Res.Tray, "Tray", new Vec2(110, 0), new Vec2(55, 20), () =>
             {
                 isWidgetMode = false;
             },
@@ -135,7 +135,7 @@ namespace DynamicWin.UI.Menu.Menus
 
             bigMenuItems.Add(trayButton);
 
-            var settingsButton = new DWImageButton(topContainer, Resources.Resources.Settings, new Vec2(-20f, 0), new Vec2(20, 20), () =>
+            var settingsButton = new DWImageButton(topContainer, Resources.Res.Settings, new Vec2(-20f, 0), new Vec2(20, 20), () =>
             {
                 MenuManager.OpenMenu(new SettingsMenu());
             },
@@ -189,7 +189,7 @@ namespace DynamicWin.UI.Menu.Menus
         float sCD = 35;
         float bCD = 50;
 
-        bool isWidgetMode = true;
+        public bool isWidgetMode = true;
         bool wasWidgetMode = false;
 
         public override void Update()

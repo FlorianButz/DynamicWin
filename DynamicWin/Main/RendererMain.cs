@@ -1,6 +1,9 @@
 ﻿using System.Diagnostics;
 using System.Drawing;
+using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Input;
+using DynamicWin.Resources;
 using DynamicWin.UI;
 using DynamicWin.UI.Menu;
 using DynamicWin.UI.Menu.Menus;
@@ -8,11 +11,11 @@ using DynamicWin.UI.UIElements;
 using DynamicWin.Utils;
 using SkiaSharp;
 using SkiaSharp.Views.Desktop;
-using Windows.Media.Capture;
+using SkiaSharp.Views.WPF;
 
 namespace DynamicWin.Main
 {
-    internal class RendererMain : SKControl
+    internal class RendererMain : SKElement
     {
         private System.Windows.Forms.Timer timer;
 
@@ -21,8 +24,8 @@ namespace DynamicWin.Main
 
         private List<UIObject> objects { get => MenuManager.Instance.ActiveMenu.UiObjects; }
 
-        public static Vec2 ScreenDimensions { get => new Vec2(instance.Width, instance.Height); }
-        public static Vec2 CursorPosition { get => new Vec2(Cursor.Position.X + 5f, Cursor.Position.Y + 5f); }
+        public static Vec2 ScreenDimensions { get => new Vec2(MainForm.Instance.Width, MainForm.Instance.Height); }
+        public static Vec2 CursorPosition { get => new Vec2(Mouse.GetPosition(MainForm.Instance).X, Mouse.GetPosition(MainForm.Instance).Y); }
 
         private static RendererMain instance;
         public static RendererMain Instance { get { return instance; } }
@@ -34,18 +37,9 @@ namespace DynamicWin.Main
             MenuManager m = new MenuManager();
             Theme theme = new Theme();
 
-            // Skia Sharp
-
-            this.DoubleBuffered = true;
-            this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
-            this.SetStyle(ControlStyles.CacheText, true);
-
             // Init control
 
             instance = this;
-
-            SetStyle(ControlStyles.SupportsTransparentBackColor, true);
-            BackColor = Color.Transparent;
 
             islandObject = new IslandObject();
             m.Init();
@@ -64,6 +58,7 @@ namespace DynamicWin.Main
             {
                 MainForm.Instance.DragEnter += MainForm.Instance.MainForm_DragEnter;
                 MainForm.Instance.DragLeave += MainForm.Instance.MainForm_DragLeave;
+                MainForm.Instance.Drop += MainForm.Instance.OnDrop;
 
                 MainForm.Instance.MouseWheel += MainForm.Instance.OnScroll;
             }
@@ -119,7 +114,7 @@ namespace DynamicWin.Main
                 MenuManager.Instance.ActiveMenu.Update();
 
             if (MenuManager.Instance.ActiveMenu is DropFileMenu && !MainForm.Instance.isDragging)
-                MenuManager.OpenMenu(Resources.Resources.HomeMenu);
+                MenuManager.OpenMenu(Res.HomeMenu);
 
             // Update logic here
 
@@ -140,7 +135,7 @@ namespace DynamicWin.Main
 
         private void Render()
         {
-            Invalidate();
+            this.InvalidateVisual();
         }
 
         public int canvasWithoutClip;
@@ -165,9 +160,21 @@ namespace DynamicWin.Main
 
             if (MainIsland.hidden) return;
 
-            foreach(UIObject uiObject in objects)
+            bool hasContextMenu = false;
+            foreach (UIObject uiObject in objects)
             {
                 canvas.RestoreToCount(canvasWithoutClip);
+
+                if(uiObject.IsHovering && uiObject.GetContextMenu() != null)
+                {
+                    hasContextMenu = true;
+
+                    var contextMenu = uiObject.GetContextMenu();
+                    //contextMenu.BackColor = Theme.IslandBackground.ValueSystem();
+                    //contextMenu.ForeColor = Theme.TextMain.ValueSystem();
+
+                    ContextMenu = contextMenu;
+                }
 
                 if (uiObject.maskInToIsland)
                 {
@@ -177,6 +184,8 @@ namespace DynamicWin.Main
                 canvas.Translate(renderOffset.X, renderOffset.Y);
                 uiObject.DrawCall(canvas);
             }
+
+            if(!hasContextMenu) ContextMenu = null;
 
             canvas.Flush();
         }
@@ -193,6 +202,7 @@ namespace DynamicWin.Main
             islandMask.Deflate(new SKSize(1, 1));
             return islandMask;
         }
+
     }
 
 }

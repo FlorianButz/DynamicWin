@@ -32,15 +32,15 @@ namespace DynamicWin.UI.Widgets.Big
         {
             instance = this;
 
-            timerText = new DWText(parent, "00:00:00", new Vec2(15, -2.5f), UIAlignment.MiddleLeft)
+            timerText = new DWText(parent, "00:00:00", new Vec2(15, 0f), UIAlignment.MiddleLeft)
             {
                 textSize = 45,
-                Font = Resources.Resources.CascadiaMono
+                Font = Resources.Res.InterRegular
             };
             timerText.Anchor.X = 0;
             AddLocalObject(timerText);
 
-            startStopButton = new DWImageButton(parent, Resources.Resources.Play, new Vec2(-35, 0), new Vec2(25, 25), () =>
+            startStopButton = new DWImageButton(parent, Resources.Res.Play, new Vec2(-35, 0), new Vec2(25, 25), () =>
             {
                 ToggleTimer();
             }, alignment: UIAlignment.MiddleRight);
@@ -50,7 +50,7 @@ namespace DynamicWin.UI.Widgets.Big
 
             // Hours
 
-            hourMore = new DWImageButton(parent, Resources.Resources.ArrowUp, new Vec2(0, -35f), new Vec2(25f, 25f), () =>
+            hourMore = new DWImageButton(parent, Resources.Res.ArrowUp, new Vec2(0, -30f), new Vec2(25f, 25f), () =>
             {
                 ChangeTimerTime(0, 0, 1);
             }, alignment: UIAlignment.MiddleLeft)
@@ -60,7 +60,7 @@ namespace DynamicWin.UI.Widgets.Big
             };
             AddLocalObject(hourMore);
 
-            hourLess = new DWImageButton(parent, Resources.Resources.ArrowDown, new Vec2(0, 35f), new Vec2(25f, 25f), () =>
+            hourLess = new DWImageButton(parent, Resources.Res.ArrowDown, new Vec2(0, 30f), new Vec2(25f, 25f), () =>
             {
                 ChangeTimerTime(0, 0, -1);
             }, alignment: UIAlignment.MiddleLeft)
@@ -72,7 +72,7 @@ namespace DynamicWin.UI.Widgets.Big
 
             // Minutes
 
-            minuteMore = new DWImageButton(parent, Resources.Resources.ArrowUp, new Vec2(0, -35f), new Vec2(25f, 25f), () =>
+            minuteMore = new DWImageButton(parent, Resources.Res.ArrowUp, new Vec2(0, -30f), new Vec2(25f, 25f), () =>
             {
                 ChangeTimerTime(0, 1, 0);
             }, alignment: UIAlignment.MiddleLeft)
@@ -82,7 +82,7 @@ namespace DynamicWin.UI.Widgets.Big
             };
             AddLocalObject(minuteMore);
 
-            minuteLess = new DWImageButton(parent, Resources.Resources.ArrowDown, new Vec2(0, 35f), new Vec2(25f, 25f), () =>
+            minuteLess = new DWImageButton(parent, Resources.Res.ArrowDown, new Vec2(0, 30f), new Vec2(25f, 25f), () =>
             {
                 ChangeTimerTime(0, -1, 0);
             }, alignment: UIAlignment.MiddleLeft)
@@ -94,7 +94,7 @@ namespace DynamicWin.UI.Widgets.Big
 
             // Seconds
 
-            secondMore = new DWImageButton(parent, Resources.Resources.ArrowUp, new Vec2(0, -35f), new Vec2(25f, 25f), () =>
+            secondMore = new DWImageButton(parent, Resources.Res.ArrowUp, new Vec2(0, -30f), new Vec2(25f, 25f), () =>
             {
                 ChangeTimerTime(1, 0, 0);
             }, alignment: UIAlignment.MiddleLeft)
@@ -104,7 +104,7 @@ namespace DynamicWin.UI.Widgets.Big
             };
             AddLocalObject(secondMore);
 
-            secondLess = new DWImageButton(parent, Resources.Resources.ArrowDown, new Vec2(0, 35f), new Vec2(25f, 25f), () =>
+            secondLess = new DWImageButton(parent, Resources.Res.ArrowDown, new Vec2(0, 30f), new Vec2(25f, 25f), () =>
             {
                 ChangeTimerTime(-1, 0, 0);
             }, alignment: UIAlignment.MiddleLeft)
@@ -120,6 +120,8 @@ namespace DynamicWin.UI.Widgets.Big
             minuteLess.Image.Color = Col.White.Override(a: 0.15f);
             secondMore.Image.Color = Col.White.Override(a: 0.15f);
             secondLess.Image.Color = Col.White.Override(a: 0.15f);
+
+            ChangeTimerTime(0, 5, 0);
         }
 
         bool isTimerRunning = false;
@@ -144,8 +146,8 @@ namespace DynamicWin.UI.Widgets.Big
             if (isTimerRunning) StopTimer();
             else StartTimer();
 
-            if (isTimerRunning) startStopButton.Image.Image = Resources.Resources.Stop;
-            else startStopButton.Image.Image = Resources.Resources.Play;
+            if (isTimerRunning) startStopButton.Image.Image = Resources.Res.Stop;
+            else startStopButton.Image.Image = Resources.Res.Play;
         }
 
         public void StopTimer()
@@ -203,15 +205,15 @@ namespace DynamicWin.UI.Widgets.Big
         {
             base.Update(deltaTime);
 
-            timerText.textSize = Mathf.Lerp(timerText.textSize, isTimerRunning ? 32.5f : 25, 10f * deltaTime);
+            timerText.textSize = Mathf.Lerp(timerText.textSize, isTimerRunning ? 29 : 25, 10f * deltaTime);
 
-            var tOff = 2.5f;
-            var mul = .3175f;
+            var tOff = -5f;
+            var mul = 0.365f;
 
             TimeSpan t = TimeSpan.FromSeconds(initialSecondsSet);
             var h = (timerText.GetBoundsForString(string.Format("{0:D2}", t.Hours)).X) * mul;
-            var m = (timerText.GetBoundsForString(string.Format("{0:D2}", t.Minutes)).X + h) * mul;
-            var s = (timerText.GetBoundsForString(string.Format("{0:D2}", t.Seconds)).X + m) * mul;
+            var m = (timerText.GetBoundsForString(string.Format("{0:D2}", t.Minutes)).X) * mul;
+            var s = (timerText.GetBoundsForString(string.Format("{0:D2}", t.Seconds)).X) * mul;
 
             hourLess.LocalPosition.X = tOff + h;
             hourMore.LocalPosition.X = tOff + h;

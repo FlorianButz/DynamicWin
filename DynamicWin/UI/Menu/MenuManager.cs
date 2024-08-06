@@ -28,8 +28,8 @@ namespace DynamicWin.UI.Menu
 
         public void Init()
         {
-            Resources.Resources.CreateStaticMenus();
-            activeMenu = Resources.Resources.HomeMenu;
+            Resources.Res.CreateStaticMenus();
+            activeMenu = Resources.Res.HomeMenu;
         }
 
         public static void OpenMenu(BaseMenu newActiveMenu)
@@ -145,7 +145,8 @@ namespace DynamicWin.UI.Menu
                         }
                     });
 
-                    RendererMain.Instance.renderOffset.Y = Mathf.Lerp(0, yOffset, tEased);
+                    if(RendererMain.Instance != null)
+                        RendererMain.Instance.renderOffset.Y = Mathf.Lerp(0, yOffset, tEased);
                 };
 
                 menuAnimatorIn.onAnimationEnd += () =>

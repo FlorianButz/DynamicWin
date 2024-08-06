@@ -8,8 +8,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.Media;
-using Windows.Media.Playback;
 
 namespace DynamicWin.UI.Widgets.Big
 {
@@ -32,7 +30,7 @@ namespace DynamicWin.UI.Widgets.Big
         {
             InitMediaPlayer();
 
-            playPause = new DWImageButton(this, Resources.Resources.PlayPause, new Vec2(0, 25), new Vec2(30, 30), () =>
+            playPause = new DWImageButton(this, Resources.Res.PlayPause, new Vec2(0, 25), new Vec2(30, 30), () =>
             {
                 controller.PlayPause();
             }, alignment: UIAlignment.Center)
@@ -46,7 +44,7 @@ namespace DynamicWin.UI.Widgets.Big
             };
             AddLocalObject(playPause);
 
-            next = new DWImageButton(this, Resources.Resources.Next, new Vec2(50, 25), new Vec2(30, 30), () =>
+            next = new DWImageButton(this, Resources.Res.Next, new Vec2(50, 25), new Vec2(30, 30), () =>
             {
                 controller.Next();
             }, alignment: UIAlignment.Center)
@@ -60,7 +58,7 @@ namespace DynamicWin.UI.Widgets.Big
             };
             AddLocalObject(next);
 
-            prev = new DWImageButton(this, Resources.Resources.Previous, new Vec2(-50, 25), new Vec2(30, 30), () =>
+            prev = new DWImageButton(this, Resources.Res.Previous, new Vec2(-50, 25), new Vec2(30, 30), () =>
             {
                 controller.Previous();
             }, alignment: UIAlignment.Center)
@@ -90,7 +88,7 @@ namespace DynamicWin.UI.Widgets.Big
             noMediaPlaying = new DWText(this, "No Media Playing", new Vec2(0, 30))
             {
                 Color = Theme.TextSecond,
-                Font = Resources.Resources.InterBold,
+                Font = Resources.Res.InterBold,
                 textSize = 16
             };
             noMediaPlaying.SilentSetActive(false);
@@ -99,7 +97,7 @@ namespace DynamicWin.UI.Widgets.Big
             title = new DWText(this, "Title", new Vec2(0, 22.5f))
             {
                 Color = Theme.TextSecond,
-                Font = Resources.Resources.InterBold,
+                Font = Resources.Res.InterBold,
                 textSize = 15
             };
             title.SilentSetActive(false);
@@ -108,7 +106,7 @@ namespace DynamicWin.UI.Widgets.Big
             artist = new DWText(this, "Artist", new Vec2(0, 42.5f))
             {
                 Color = Theme.TextThird,
-                Font = Resources.Resources.InterRegular,
+                Font = Resources.Res.InterRegular,
                 textSize = 13
             };
             artist.SilentSetActive(false);
@@ -218,7 +216,7 @@ namespace DynamicWin.UI.Widgets.Big
                 var x = Position.X + r.Width - w / 2 - inward;
                 var y = Position.Y - h / 2 + inward;
 
-                canvas.DrawBitmap(Resources.Resources.Spotify, SKRect.Create(x, y, w, h), paint);
+                canvas.DrawBitmap(Resources.Res.Spotify, SKRect.Create(x, y, w, h), paint);
 
                 paint.Color = spotifyCol.Override(a: 0.25f * Color.a).Value();
                 paint.StrokeWidth = 2f;

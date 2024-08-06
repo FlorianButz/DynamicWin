@@ -2,18 +2,12 @@
 using DynamicWin.UI.Menu;
 using DynamicWin.Utils;
 using SkiaSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.Devices.PointOfService.Provider;
 
 namespace DynamicWin.UI.UIElements
 {
     internal class IslandObject : UIObject
     {
-        public float topOffset = 5f;
+        public float topOffset = 15f;
 
         public SecondOrder scaleSecondOrder;
 
@@ -25,7 +19,7 @@ namespace DynamicWin.UI.UIElements
         public Vec2 currSize;
 
         public enum IslandMode { Island, Notch };
-        public IslandMode mode = IslandMode.Notch;
+        public IslandMode mode = IslandMode.Island;
 
         public IslandObject() : base(null, Vec2.zero, new Vec2(250, 50), UIAlignment.TopCenter)
         {
@@ -70,22 +64,32 @@ namespace DynamicWin.UI.UIElements
 
                 LocalPosition.Y = Mathf.Lerp(LocalPosition.Y, -Size.Y + 15f, 15f * deltaTime);
             }
+
+            MainForm.Instance.Opacity = hidden ? 0.75f : 1f;
         }
 
         public override void Draw(SKCanvas canvas)
         {
             var paint = GetPaint();
-            paint.IsAntialias = false;
+            paint.IsAntialias = true;
 
             paint.Color = Theme.IslandBackground.Value();
+
+            if(!IsHovering)
+                paint.ImageFilter = SKImageFilter.CreateDropShadow(1, 1, 25, 25, Theme.IslandBackground.Override(a: 0.5f).Value());
+            else
+                paint.ImageFilter = SKImageFilter.CreateDropShadow(1, 1, 35, 35, Theme.IslandBackground.Override(a: 0.85f).Value());
+
             canvas.DrawRoundRect(GetRect(), paint);
 
-            if(mode == IslandMode.Notch)
+            paint.ImageFilter = null;
+
+            if (mode == IslandMode.Notch)
             {
                 var path = new SKPath();
 
-                var awidth = (float)(Math.Max(Size.Magnitude / 12, 50));
-                var aheight = (float)(Math.Max(Size.Magnitude / 6, 25)) + (LocalPosition.Y - topOffset);
+                var awidth = (float)(Math.Max(Size.Magnitude / 16, 50));
+                var aheight = (float)(Math.Max(Size.Magnitude / 8, 20f)) + (LocalPosition.Y - topOffset);
 
                 { // Left notch curve
                     var y = LocalPosition.Y - topOffset;

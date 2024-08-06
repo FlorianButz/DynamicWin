@@ -7,7 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Xamarin.Forms.Internals;
+using System.Windows.Controls;
+using System.Windows.Input;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace DynamicWin.UI
@@ -31,6 +32,7 @@ namespace DynamicWin.UI
 
         private bool isHovering = false;
         private bool isMouseDown = false;
+        private bool isGlobalMouseDown = false;
         public bool IsHovering { get => isHovering; private set => isHovering = value; }
         public bool IsMouseDown { get => isMouseDown; private set => isMouseDown = value; }
 
@@ -45,7 +47,6 @@ namespace DynamicWin.UI
 
         private bool isEnabled = true;
         public bool IsEnabled { get => isEnabled; set => SetActive(value); }
-
 
         public float disableBlurSize = 50;
         public float alpha = 1f;
@@ -68,6 +69,8 @@ namespace DynamicWin.UI
             this.position = position;
             this.size = size;
             this.alignment = alignment;
+
+            this.contextMenu = CreateContextMenu();
         }
 
         public Vec2 GetScreenPosFromRawPosition(Vec2 position, Vec2 Size = null, UIAlignment alignment = UIAlignment.None, UIObject parent = null)
@@ -238,17 +241,27 @@ namespace DynamicWin.UI
             var rect = SKRect.Create(RendererMain.CursorPosition.X, RendererMain.CursorPosition.Y, 1, 1);
             isHovering = GetInteractionRect().Contains(rect);
 
-            if (IsHovering && !IsMouseDown && Control.MouseButtons.HasFlag(MouseButtons.Left))
+            if (!isGlobalMouseDown && Mouse.LeftButton == MouseButtonState.Pressed)
+            {
+                isGlobalMouseDown = true;
+                OnGlobalMouseDown();
+            }else if(isGlobalMouseDown && !(Mouse.LeftButton == MouseButtonState.Pressed))
+            {
+                isGlobalMouseDown = false;
+                OnGlobalMouseUp();
+            }
+
+            if (IsHovering && !IsMouseDown && Mouse.LeftButton == MouseButtonState.Pressed)
             {
                 IsMouseDown = true;
                 OnMouseDown();
             }
-            else if (IsHovering && IsMouseDown && !Control.MouseButtons.HasFlag(MouseButtons.Left))
+            else if (IsHovering && IsMouseDown && !(Mouse.LeftButton == MouseButtonState.Pressed))
             {
                 IsMouseDown = false;
                 OnMouseUp();
             }
-            else if (IsMouseDown && !Control.MouseButtons.HasFlag(MouseButtons.Left))
+            else if (IsMouseDown && !(Mouse.LeftButton == MouseButtonState.Pressed))
             {
                 IsMouseDown = false;
             }
@@ -327,8 +340,10 @@ namespace DynamicWin.UI
         public virtual void OnDestroy() { }
 
         public virtual void OnMouseDown() { }
+        public virtual void OnGlobalMouseDown() { }
 
         public virtual void OnMouseUp() { }
+        public virtual void OnGlobalMouseUp() { }
 
         public void SilentSetActive(bool isEnabled)
         {
@@ -388,6 +403,11 @@ namespace DynamicWin.UI
             r.Deflate(-expandInteractionRect, -expandInteractionRect);
             return r;
         }
+
+        ContextMenu? contextMenu = null;
+
+        public virtual ContextMenu? CreateContextMenu() { return null; }
+        public virtual ContextMenu? GetContextMenu() { return contextMenu; }
     }
 
     public enum UIAlignment

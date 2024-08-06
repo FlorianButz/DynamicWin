@@ -15,11 +15,11 @@ namespace DynamicWin.UI.Menu.Menus
         {
             var objects = base.InitializeMenu(island);
 
-            var backBtn = new DWTextButton(island, "Save and Back", new Vec2(0, -45), new Vec2(350, 40), () => { MenuManager.OpenMenu(Resources.Resources.HomeMenu); }, UIAlignment.BottomCenter)
+            var backBtn = new DWTextButton(island, "Save and Back", new Vec2(0, -45), new Vec2(350, 40), () => { MenuManager.OpenMenu(Resources.Res.HomeMenu); }, UIAlignment.BottomCenter)
             {
                 roundRadius = 25
             };
-            backBtn.Text.Font = Resources.Resources.InterBold;
+            backBtn.Text.Font = Resources.Res.InterBold;
 
             objects.Add(backBtn);
 

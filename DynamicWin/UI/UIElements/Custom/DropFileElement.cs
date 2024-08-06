@@ -14,7 +14,7 @@ namespace DynamicWin.UI.UIElements.Custom
         {
             roundRadius = 25;
 
-            AddLocalObject(new DWText(null, "Drop Files to Tray", Vec2.zero, UIAlignment.Center) { Font = Resources.Resources.InterBold });
+            AddLocalObject(new DWText(null, "Drop Files to Tray", Vec2.zero, UIAlignment.Center) { Font = Resources.Res.InterBold });
         }
 
         Col currentCol = Theme.Secondary;

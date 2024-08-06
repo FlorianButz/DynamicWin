@@ -20,15 +20,15 @@ namespace DynamicWin.UI.Widgets.Small
 
         public BatteryWidget(UIObject? parent, Vec2 position, UIAlignment alignment = UIAlignment.TopCenter) : base(parent, position, alignment)
         {
-            batteryImage = new DWImage(this, Resources.Resources.Battery, Vec2.zero, new Vec2(Size.Y * imageScale, Size.Y * imageScale), UIAlignment.Center, true);
+            batteryImage = new DWImage(this, Resources.Res.Battery, Vec2.zero, new Vec2(Size.Y * imageScale, Size.Y * imageScale), UIAlignment.Center, true);
             AddLocalObject(batteryImage);
 
-            batteryFillLevel = new DWImage(this, Resources.Resources.BatteryLevel_10P, Vec2.zero, new Vec2(Size.Y * imageScale, Size.Y * imageScale), UIAlignment.Center, true);
+            batteryFillLevel = new DWImage(this, Resources.Res.BatteryLevel_10P, Vec2.zero, new Vec2(Size.Y * imageScale, Size.Y * imageScale), UIAlignment.Center, true);
             AddLocalObject(batteryFillLevel);
 
-            noBattery = new DWImage(this, Resources.Resources.NoBattery, Vec2.zero, new Vec2(Size.Y * imageScale, Size.Y * imageScale), UIAlignment.Center, true);
+            noBattery = new DWImage(this, Resources.Res.NoBattery, Vec2.zero, new Vec2(Size.Y * imageScale, Size.Y * imageScale), UIAlignment.Center, true);
             AddLocalObject(noBattery);
-            batteryCharging = new DWImage(this, Resources.Resources.BatteryCharging, Vec2.zero, new Vec2(Size.Y * imageScale, Size.Y * imageScale), UIAlignment.Center, true);
+            batteryCharging = new DWImage(this, Resources.Res.BatteryCharging, Vec2.zero, new Vec2(Size.Y * imageScale, Size.Y * imageScale), UIAlignment.Center, true);
             AddLocalObject(batteryCharging);
 
             noBattery.SilentSetActive(false);
@@ -45,11 +45,11 @@ namespace DynamicWin.UI.Widgets.Small
             {
                 if (batteryStatus.ACLineStatus == 0)
                 {
-                    if (batteryStatus.BatteryLifePercent > 75) batteryFillLevel.Image = Resources.Resources.BatteryLevel_Full;
-                    else if (batteryStatus.BatteryLifePercent > 50) batteryFillLevel.Image = Resources.Resources.BatteryLevel_75P;
-                    else if (batteryStatus.BatteryLifePercent > 25) batteryFillLevel.Image = Resources.Resources.BatteryLevel_50P;
-                    else if (batteryStatus.BatteryLifePercent > 10) batteryFillLevel.Image = Resources.Resources.BatteryLevel_25P;
-                    else batteryFillLevel.Image = Resources.Resources.BatteryLevel_10P;
+                    if (batteryStatus.BatteryLifePercent > 75) batteryFillLevel.Image = Resources.Res.BatteryLevel_Full;
+                    else if (batteryStatus.BatteryLifePercent > 50) batteryFillLevel.Image = Resources.Res.BatteryLevel_75P;
+                    else if (batteryStatus.BatteryLifePercent > 25) batteryFillLevel.Image = Resources.Res.BatteryLevel_50P;
+                    else if (batteryStatus.BatteryLifePercent > 10) batteryFillLevel.Image = Resources.Res.BatteryLevel_25P;
+                    else batteryFillLevel.Image = Resources.Res.BatteryLevel_10P;
 
                     if (!batteryImage.IsEnabled)
                     {

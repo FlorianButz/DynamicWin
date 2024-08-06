@@ -24,6 +24,12 @@ namespace DynamicWin.Utils
             this.y = y;
         }
 
+        public Vec2(double x, double y)
+        {
+            this.x = (float)x;
+            this.y = (float)y;
+        }
+
         public static float Distance(Vec2 v1, Vec2 v2)
         {
             return (float)Math.Sqrt(Math.Pow(v2.x - v1.x, 2) + Math.Pow(v2.y - v1.y, 2));

@@ -34,7 +34,7 @@ namespace DynamicWin.Utils
 
             if (Primary == null) this.Primary = Theme.Primary;
             else this.Primary = Primary;
-            if (Secondary == null) this.Secondary = Theme.Secondary;
+            if (Secondary == null) this.Secondary = Theme.Secondary.Override(a: 0.5f);
             else this.Secondary = Secondary;
 
             if (averageAmpsSize != 0)
@@ -236,7 +236,7 @@ namespace DynamicWin.Utils
 
                     for (int i = 0; i < barHeight.Length / divisor; i++)
                     {
-                        float bH = (int)(barHeight[i] * height) + 2.5f; // Scale factor for visualization
+                        float bH = (int)(barHeight[i] * height) + 1.5f; // Scale factor for visualization
 
                         var rect = SKRect.Create(Position.X + i * barWidth, Position.Y + (height / 2) - bH / 2, barWidth - 5f, bH);
                         var rRect = new SKRoundRect(rect, roundRadius);
@@ -253,7 +253,7 @@ namespace DynamicWin.Utils
 
                     for (int i = 0; i < smoothAverageAmps.Length / divisor; i++)
                     {
-                        float bH = (int)(smoothAverageAmps[i] * height) + 2.5f; // Scale factor for visualization
+                        float bH = (int)(smoothAverageAmps[i] * height) + 1.5f; // Scale factor for visualization
 
                         var rect = SKRect.Create(Position.X + i * barWidth, Position.Y + (height / 2) - bH / 2, barWidth - 2.5f, bH);
                         var rRect = new SKRoundRect(rect, roundRadius);

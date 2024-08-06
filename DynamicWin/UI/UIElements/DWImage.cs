@@ -20,10 +20,13 @@ namespace DynamicWin.UI.UIElements
         public bool dynamicColor;
         public bool dynamicAutoColor;
 
-        public DWImage(UIObject? parent, SKBitmap sprite, Vec2 position, Vec2 size, UIAlignment alignment = UIAlignment.TopCenter, bool dynamicColor = false) : base(parent, position, size, alignment)
+        public bool maskOwnRect = false;
+
+        public DWImage(UIObject? parent, SKBitmap sprite, Vec2 position, Vec2 size, UIAlignment alignment = UIAlignment.TopCenter, bool dynamicColor = false, bool maskOwnRect = false) : base(parent, position, size, alignment)
         {
             image = sprite;
             this.dynamicColor = dynamicColor;
+            this.maskOwnRect = maskOwnRect;
         }
 
         public override void Update(float deltaTime)
@@ -37,6 +40,7 @@ namespace DynamicWin.UI.UIElements
         public override void Draw(SKCanvas canvas)
         {
             var paint = GetPaint();
+
 
             if(dynamicColor)
             {
@@ -57,7 +61,18 @@ namespace DynamicWin.UI.UIElements
                     paint.ImageFilter = imageFilter;
             }
 
-            canvas.DrawBitmap(image, SKRect.Create(Position.X, Position.Y, Size.X, Size.Y), paint);
+            if (maskOwnRect)
+            {
+                int save = canvas.Save();
+                canvas.ClipRoundRect(GetRect(), antialias: true);
+
+                canvas.DrawBitmap(image, SKRect.Create(Position.X, Position.Y, Size.X, Size.Y), paint);
+                canvas.RestoreToCount(save);
+            }
+            else
+            {
+                canvas.DrawBitmap(image, SKRect.Create(Position.X, Position.Y, Size.X, Size.Y), paint);
+            }
         }
     }
 }

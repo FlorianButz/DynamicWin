@@ -21,12 +21,12 @@ namespace DynamicWin.UI.Menu.Menus
             overText = new DWText(island, "Timer Over!", new Utils.Vec2(0, 0), UIAlignment.Center)
             {
                 textSize = 20,
-                Font = Resources.Resources.InterBold
+                Font = Resources.Res.InterBold
             };
 
             objects.Add(overText);
 
-            player = new System.Media.SoundPlayer(Resources.Resources.TimerOverSound);
+            player = new System.Media.SoundPlayer(Resources.Res.TimerOverSound);
             player.PlayLooping();
 
             return objects;

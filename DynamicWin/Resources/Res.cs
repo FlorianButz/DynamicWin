@@ -12,7 +12,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace DynamicWin.Resources
 {
-    internal class Resources
+    internal class Res
     {
         public static SKTypeface InterRegular { get => SKTypeface.FromFile("Resources\\Inter_24pt-Regular.ttf"); }
         public static SKTypeface InterBold { get => SKTypeface.FromFile("Resources\\Inter_24pt-ExtraBold.ttf"); }
@@ -40,6 +40,7 @@ namespace DynamicWin.Resources
         public static SKBitmap Tray;
         public static SKBitmap Widgets;
         public static SKBitmap FileIcon;
+        public static SKBitmap PlaceItem;
         public static SKBitmap Spotify;
 
         public static SKBitmap ArrowUp;
@@ -79,6 +80,7 @@ namespace DynamicWin.Resources
             Tray = LoadImg("Resources\\icons\\home\\Tray.png");
             Widgets = LoadImg("Resources\\icons\\home\\Widgets.png");
             FileIcon = LoadImg("Resources\\icons\\home\\File.png");
+            PlaceItem = LoadImg("Resources\\icons\\home\\PlaceItem.png");
             Spotify = LoadImg("Resources\\icons\\home\\Spotify.png");
 
             ArrowUp = LoadImg("Resources\\icons\\home\\ArrowUp.png");
