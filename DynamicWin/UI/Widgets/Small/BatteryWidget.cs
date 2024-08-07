@@ -1,4 +1,5 @@
 ﻿using DynamicWin.UI.UIElements;
+using DynamicWin.UI.Widgets.Big;
 using DynamicWin.Utils;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,22 @@ using System.Threading.Tasks;
 
 namespace DynamicWin.UI.Widgets.Small
 {
-    internal class BatteryWidget : SmallWidgetBase
+    class RegisterBatteryWidget : IRegisterableWidget
+    {
+        public bool IsSmallWidget => true;
+
+        public WidgetBase CreateWidgetInstance(UIObject? parent, Vec2 position, UIAlignment alignment = UIAlignment.TopCenter)
+        {
+            return new BatteryWidget(parent, position, alignment);
+        }
+
+        public void RegisterWidget(out string widgetName)
+        {
+            widgetName = "Battery Display";
+        }
+    }
+
+    public class BatteryWidget : SmallWidgetBase
     {
         DWImage batteryImage;
         DWImage batteryFillLevel;

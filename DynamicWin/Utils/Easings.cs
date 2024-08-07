@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DynamicWin.Utils
 {
-    internal class Easings
+    public class Easings
     {
         public static float EaseInQuint(float x)
         {

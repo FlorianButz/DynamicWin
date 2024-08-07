@@ -9,7 +9,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace DynamicWin.UI.UIElements.Custom
 {
-    internal class DWTextGroup : UIObject
+    public class DWTextGroup : UIObject
     {
         List<DWText> textPieces = new List<DWText>();
 

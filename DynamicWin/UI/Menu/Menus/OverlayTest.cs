@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DynamicWin.UI.Menu.Menus
 {
-    internal class OverlayTest : BaseMenu
+    public class OverlayTest : BaseMenu
     {
         public override List<UIObject> InitializeMenu(IslandObject island)
         {

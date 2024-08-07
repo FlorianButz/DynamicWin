@@ -10,7 +10,7 @@ using System.Windows;
 
 namespace DynamicWin.UI.Menu.Menus
 {
-    internal class DropFileMenu : BaseMenu
+    public class DropFileMenu : BaseMenu
     {
         private static DropFileMenu instance;
 

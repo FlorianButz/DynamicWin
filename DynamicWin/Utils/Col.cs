@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DynamicWin.Utils
 {
-    internal class Col
+    public class Col
     {
         public float r, g, b, a;
 
@@ -76,8 +76,15 @@ namespace DynamicWin.Utils
             return new Col(a.r * b, a.g * b, a.b * b);
         }
 
+        public static Col operator *(Col a, Col b)
+        {
+            return new Col(a.r * b.r, a.g * b.g, a.b * b.b, a.a * b.a);
+        }
+
         public static Col FromHex(string hex)
         {
+            if (hex == null) return new Col(1, 0, 1);
+
             hex = hex.Replace("#", "");
 
             string hexCode = "";

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DynamicWin.UI.Menu
 {
-    internal class BaseMenu : IDisposable
+    public class BaseMenu : IDisposable
     {
         private List<UIObject> uiObjects = new List<UIObject>();
 

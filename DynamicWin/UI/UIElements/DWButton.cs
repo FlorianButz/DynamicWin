@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DynamicWin.UI.UIElements
 {
-    internal class DWButton : UIObject
+    public class DWButton : UIObject
     {
         // Button Color
 

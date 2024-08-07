@@ -8,7 +8,22 @@ using System.Threading.Tasks;
 
 namespace DynamicWin.UI.Widgets.Small
 {
-    internal class TimeWidget : SmallWidgetBase
+    class RegisterTimeWidget : IRegisterableWidget
+    {
+        public bool IsSmallWidget => true;
+
+        public WidgetBase CreateWidgetInstance(UIObject? parent, Vec2 position, UIAlignment alignment = UIAlignment.TopCenter)
+        {
+            return new TimeWidget(parent, position, alignment);
+        }
+
+        public void RegisterWidget(out string widgetName)
+        {
+            widgetName = "Time Display";
+        }
+    }
+
+    public class TimeWidget : SmallWidgetBase
     {
         DWText timeText;
 

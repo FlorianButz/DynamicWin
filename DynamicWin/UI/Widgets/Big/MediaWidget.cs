@@ -11,7 +11,22 @@ using System.Threading.Tasks;
 
 namespace DynamicWin.UI.Widgets.Big
 {
-    internal class MediaWidget : WidgetBase
+    class RegisterMediaWidget : IRegisterableWidget
+    {
+        public bool IsSmallWidget => false;
+
+        public WidgetBase CreateWidgetInstance(UIObject? parent, Vec2 position, UIAlignment alignment = UIAlignment.TopCenter)
+        {
+            return new MediaWidget(parent, position, alignment);
+        }
+
+        public void RegisterWidget(out string widgetName)
+        {
+            widgetName = "Media Widget";
+        }
+    }
+
+    public class MediaWidget : WidgetBase
     {
         MediaController controller;
         AudioVisualizer audioVisualizer;
@@ -111,10 +126,6 @@ namespace DynamicWin.UI.Widgets.Big
             };
             artist.SilentSetActive(false);
             AddLocalObject(artist);
-
-            prev.Image.dynamicColor         = true;
-            next.Image.dynamicColor         = true;
-            playPause.Image.dynamicColor    = true;
         }
 
         float smoothedAmp = 0f;
@@ -156,9 +167,9 @@ namespace DynamicWin.UI.Widgets.Big
             }
             cycle++;
 
-            prev.normalColor = audioVisualizer.GetActionCol().Override(a: 0.2f);
-            next.normalColor = audioVisualizer.GetActionCol().Override(a: 0.2f);
-            playPause.normalColor = audioVisualizer.GetActionCol().Override(a: 0.2f);
+            prev.normalColor = Theme.IconColor * audioVisualizer.GetActionCol().Override(a: 0.2f);
+            next.normalColor = Theme.IconColor * audioVisualizer.GetActionCol().Override(a: 0.2f);
+            playPause.normalColor = Theme.IconColor * audioVisualizer.GetActionCol().Override(a: 0.2f);
 
             if(!isSpotifyAvaliable)
                 smoothedAmp = (float)Math.Max(Mathf.Lerp(smoothedAmp, audioVisualizer.AverageAmplitude, smoothing * deltaTime), audioVisualizer.AverageAmplitude);
@@ -190,7 +201,7 @@ namespace DynamicWin.UI.Widgets.Big
         public override void DrawWidget(SKCanvas canvas)
         {
             var paint = GetPaint();
-            paint.Color = (Theme.Primary * 0.1f).Value();
+            paint.Color = Theme.WidgetBackground.Value();
             canvas.DrawRoundRect(GetRect(), paint);
 
             int saveCanvas = canvas.Save();

@@ -16,7 +16,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DynamicWin.UI.UIElements.Custom
 {
-    internal class TrayFile : UIObject
+    public class TrayFile : UIObject
     {
         string file;
         Bitmap thumbnail;
@@ -70,6 +70,7 @@ namespace DynamicWin.UI.UIElements.Custom
             });
 
             fileIconImage = new DWImage(this, Resources.Res.FileIcon, new Vec2(0, 30), new Vec2(50, 50), UIAlignment.TopCenter);
+            fileIconImage.allowIconThemeColor = false;
             fileIconImage.roundRadius = 5f;
             fileIconImage.maskOwnRect = true;
 

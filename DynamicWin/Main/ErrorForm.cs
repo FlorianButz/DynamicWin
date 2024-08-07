@@ -9,7 +9,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace DynamicWin.Main
 {
-    internal class ErrorForm : Window
+    public class ErrorForm : Window
     {
         public ErrorForm()
         {

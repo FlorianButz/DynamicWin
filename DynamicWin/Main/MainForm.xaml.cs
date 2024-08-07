@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interop;
 
 namespace DynamicWin.Main
 {
@@ -37,11 +38,13 @@ namespace DynamicWin.Main
             this.AllowsTransparency = true;
             this.WindowState = WindowState.Maximized;
             this.ShowInTaskbar = false;
+            this.Title = "DynamicWin Overlay";
 
             AddRenderer();
 
-            MainForm.Instance.AllowDrop = true;
+            Res.extensions.ForEach((x) => x.LoadExtension());
 
+            MainForm.Instance.AllowDrop = true;
         }
 
         public bool isDragging = false;
@@ -102,7 +105,7 @@ namespace DynamicWin.Main
                 RendererMain.Instance.MainIsland.hidden = true;
 
                 DataObject dataObject = new DataObject(DataFormats.FileDrop, files);
-                var effects = DragDrop.DoDragDrop((DependencyObject)this, dataObject, DragDropEffects.Move);
+                var effects = DragDrop.DoDragDrop((DependencyObject)this, dataObject, DragDropEffects.Move | DragDropEffects.Copy);
 
                 if (RendererMain.Instance != null) RendererMain.Instance.Destroy();
                 this.Content = new Grid();

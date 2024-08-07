@@ -1,6 +1,8 @@
-﻿namespace DynamicWin.Utils
+﻿using DynamicWin.Main;
+
+namespace DynamicWin.Utils
 {
-    internal class Animator
+    public class Animator
     {
         public Action<float> onAnimationUpdate;
 

@@ -13,7 +13,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace DynamicWin.UI
 {
-    internal class UIObject
+    public class UIObject
     {
         private UIObject? parent;
 
@@ -33,6 +33,8 @@ namespace DynamicWin.UI
         private bool isHovering = false;
         private bool isMouseDown = false;
         private bool isGlobalMouseDown = false;
+        protected bool drawLocalObjects = true;
+
         public bool IsHovering { get => isHovering; private set => isHovering = value; }
         public bool IsMouseDown { get => isMouseDown; private set => isMouseDown = value; }
 
@@ -231,6 +233,7 @@ namespace DynamicWin.UI
 
         public float GetBlur()
         {
+            if (!Settings.AllowBlur) return 0f;
             return Math.Max(blurAmount, localBlurAmount);
         }
 
@@ -245,7 +248,7 @@ namespace DynamicWin.UI
             {
                 isGlobalMouseDown = true;
                 OnGlobalMouseDown();
-            }else if(isGlobalMouseDown && !(Mouse.LeftButton == MouseButtonState.Pressed))
+            } else if (isGlobalMouseDown && !(Mouse.LeftButton == MouseButtonState.Pressed))
             {
                 isGlobalMouseDown = false;
                 OnGlobalMouseUp();
@@ -268,11 +271,14 @@ namespace DynamicWin.UI
 
             Update(deltaTime);
 
-            new List<UIObject>(localObjects).ForEach((UIObject obj) =>
+            if (drawLocalObjects)
             {
-                obj.blurAmount = GetBlur();
-                obj.UpdateCall(deltaTime);
-            });
+                new List<UIObject>(localObjects).ForEach((UIObject obj) =>
+                {
+                    obj.blurAmount = GetBlur();
+                    obj.UpdateCall(deltaTime);
+                });
+            }
         }
 
         public virtual void Update(float deltaTime) { }
@@ -283,10 +289,13 @@ namespace DynamicWin.UI
 
             Draw(canvas);
 
-            new List<UIObject>(localObjects).ForEach((UIObject obj) =>
+            if (drawLocalObjects)
             {
-                obj.DrawCall(canvas);
-            });
+                new List<UIObject>(localObjects).ForEach((UIObject obj) =>
+                {
+                    obj.DrawCall(canvas);
+                });
+            }
         }
 
         public virtual void Draw(SKCanvas canvas)
@@ -305,9 +314,9 @@ namespace DynamicWin.UI
             {
                 Style = SKPaintStyle.Fill,
                 Color = this.Color.Value(),
-                IsAntialias = true,
+                IsAntialias = Settings.AntiAliasing,
                 IsDither = true,
-                SubpixelText = true,
+                SubpixelText = false,
                 FilterQuality = SKFilterQuality.Medium,
                 HintingLevel = SKPaintHinting.Normal,
                 IsLinearText = true

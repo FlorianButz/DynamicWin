@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DynamicWin.UI.Widgets.Small
 {
-    internal class SmallWidgetBase : WidgetBase
+    public class SmallWidgetBase : WidgetBase
     {
         public SmallWidgetBase(UIObject? parent, Vec2 position, UIAlignment alignment = UIAlignment.TopCenter) : base(parent, position, alignment)
         {

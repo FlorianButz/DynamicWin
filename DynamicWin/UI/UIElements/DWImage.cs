@@ -11,21 +11,18 @@ using System.Threading.Tasks;
 
 namespace DynamicWin.UI.UIElements
 {
-    internal class DWImage : UIObject
+    public class DWImage : UIObject
     {
         private SKBitmap image;
 
         public SKBitmap Image { get { return image; } set => image = value; }
 
-        public bool dynamicColor;
-        public bool dynamicAutoColor;
-
         public bool maskOwnRect = false;
+        public bool allowIconThemeColor = true;
 
-        public DWImage(UIObject? parent, SKBitmap sprite, Vec2 position, Vec2 size, UIAlignment alignment = UIAlignment.TopCenter, bool dynamicColor = false, bool maskOwnRect = false) : base(parent, position, size, alignment)
+        public DWImage(UIObject? parent, SKBitmap sprite, Vec2 position, Vec2 size, UIAlignment alignment = UIAlignment.TopCenter, bool maskOwnRect = false) : base(parent, position, size, alignment)
         {
             image = sprite;
-            this.dynamicColor = dynamicColor;
             this.maskOwnRect = maskOwnRect;
         }
 
@@ -33,19 +30,17 @@ namespace DynamicWin.UI.UIElements
         {
             base.Update(deltaTime);
 
-            if(dynamicAutoColor)
-                if(dynamicColor) Color = Theme.TextMain;
+            Color = Theme.IconColor;
         }
 
         public override void Draw(SKCanvas canvas)
         {
             var paint = GetPaint();
 
-
-            if(dynamicColor)
+            if (allowIconThemeColor)
             {
                 var imageFilter = SKImageFilter.CreateBlendMode(SKBlendMode.DstIn,
-                    SKImageFilter.CreateColorFilter(SKColorFilter.CreateBlendMode(Color.Override(a: 1f).Value(), SKBlendMode.Darken)));
+                        SKImageFilter.CreateColorFilter(SKColorFilter.CreateBlendMode(Color.Override(a: 1f).Value(), SKBlendMode.Darken)));
 
                 if (GetBlur() != 0f)
                 {

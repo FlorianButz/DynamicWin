@@ -1,4 +1,6 @@
 ﻿using DynamicWin.Main;
+using DynamicWin.Resources;
+using DynamicWin.UI.UIElements;
 using DynamicWin.Utils;
 using SkiaSharp;
 using System;
@@ -9,12 +11,14 @@ using System.Threading.Tasks;
 
 namespace DynamicWin.UI.Widgets
 {
-    internal class WidgetBase : UIObject
+    public class WidgetBase : UIObject
     {
-        public bool isEditMode = false;
+        public bool isEditMode = true;
 
         protected bool isSmallWidget = false;
         public bool IsSmallWidget { get { return isSmallWidget; } }
+
+        //DWText widgetName;
 
         public WidgetBase(UIObject? parent, Vec2 position, UIAlignment alignment = UIAlignment.TopCenter) : base(parent, position, Vec2.zero, alignment)
         {
@@ -24,6 +28,12 @@ namespace DynamicWin.UI.Widgets
             objs.ForEach(obj => AddLocalObject(obj));
 
             roundRadius = 15f;
+
+            /*widgetName = new DWText(this, GetWidgetName(), Vec2.zero, UIAlignment.Center)
+            {
+                Font = Res.InterBold,
+                textSize = 20
+            };*/
         }
 
         public Vec2 GetWidgetSize() { return new Vec2(GetWidgetWidth(), GetWidgetHeight()); }
@@ -40,7 +50,17 @@ namespace DynamicWin.UI.Widgets
         {
             Size = GetWidgetSize();
 
-            DrawWidget(canvas);
+            /*if (!isEditMode || isSmallWidget)
+            {
+                drawLocalObjects = true; */ 
+                DrawWidget(canvas);
+/*            }
+            else
+            {
+                widgetName.blurAmount = GetBlur();
+                widgetName.DrawCall(canvas);
+                drawLocalObjects = false;
+            }*/
 
             var paint = GetPaint();
 
@@ -58,7 +78,7 @@ namespace DynamicWin.UI.Widgets
                 canvas.RestoreToCount(canvasSave);
             }
 
-            if (isEditMode)
+            /*if (isEditMode && !isSmallWidget)
             {
                 paint.IsStroke = true;
                 paint.StrokeCap = SKStrokeCap.Round;
@@ -78,7 +98,7 @@ namespace DynamicWin.UI.Widgets
                 canvas.DrawRoundRect(broundRect, paint);
 
                 canvas.RestoreToCount(noClip);
-            }
+            }*/
         }
 
         public virtual void DrawWidget(SKCanvas canvas) { }

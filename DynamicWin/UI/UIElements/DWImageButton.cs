@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DynamicWin.UI.UIElements
 {
-    internal class DWImageButton : DWButton
+    public class DWImageButton : DWButton
     {
         DWImage image;
         public float imageScale = 0.85f;

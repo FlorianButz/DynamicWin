@@ -9,7 +9,22 @@ using SkiaSharp;
 
 namespace DynamicWin.UI.Widgets.Big
 {
-    internal class TimerWidget : WidgetBase
+    class RegisterTimerWidget : IRegisterableWidget
+    {
+        public bool IsSmallWidget => false;
+
+        public WidgetBase CreateWidgetInstance(UIObject? parent, Vec2 position, UIAlignment alignment = UIAlignment.TopCenter)
+        {
+            return new TimerWidget(parent, position, alignment);
+        }
+
+        public void RegisterWidget(out string widgetName)
+        {
+            widgetName = "Timer Widget";
+        }
+    }
+
+    public class TimerWidget : WidgetBase
     {
         DWText timerText;
 
@@ -237,7 +252,7 @@ namespace DynamicWin.UI.Widgets.Big
             base.DrawWidget(canvas);
 
             var paint = GetPaint();
-            paint.Color = Col.White.Override(a: 0.1f).Value();
+            paint.Color = Theme.WidgetBackground.Value();
             canvas.DrawRoundRect(GetRect(), paint);
         }
     }

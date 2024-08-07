@@ -45,11 +45,20 @@ DynamicWin has a variety of features, currently including: <br>
 - [x] Music Visualizer
 - [x] Device Usage Detector <sub>(Indicates if camera / microphone is in use)</sub>
 - [x] Power State Display <sub>(Shows battery in form of icons. If no battery is found it shows a connector icon instead)</sub>
-- [x] Timer <sub>(Displaying current running timer)</sub>
+- [ ] Timer <sub>(Displaying current running timer)</sub>
 
 ## File Tray <br>
 Files can be dragged over the island to add them to the file tray. The tray can be accessed when hovering over the island and clicking on the 'Tray' button. The files are stored until they are dragged out again. They can also be removed by selecting the file and right clicking. A context menu will popup and you can click on - **"Remove Selected Files"** or **"Remove Selected Files"** to copy the files. <br>
 Idea for the future: An implementation of a service like [SnapDrop](https://snapdrop.net) to allow for an "AirDrop" kind of feature using the file tray.
+
+## Mod Support
+**Yes! You can add your own small widgets and big widgets!** <br>
+Loading a mod from someone else is very simple. You just need to drag the **Mod.dll** file in to the *Extensions* folder that is located in the application directory. 
+
+> [!WARNING]
+> **Please never load a mod that is not tested to be safe!**
+
+Mods can contain malicious code that can mess up your system, so always check a mod's source code or let a trustworthy person check it for you.
 
 # Known Issues
 The performance might not be the best on older hardware or laptops. I will try my best to add performance options to the settings menu but cannot guarantee a smooth experience for everyone. <br><br>

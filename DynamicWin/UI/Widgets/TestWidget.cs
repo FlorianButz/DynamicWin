@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DynamicWin.UI.Widgets
 {
-    internal class TestWidget : WidgetBase
+    public class TestWidget : WidgetBase
     {
         public TestWidget(UIObject? parent, Vec2 position, UIAlignment alignment = UIAlignment.TopCenter) : base(parent, position, alignment)
         {

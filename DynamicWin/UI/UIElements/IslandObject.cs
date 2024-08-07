@@ -5,7 +5,7 @@ using SkiaSharp;
 
 namespace DynamicWin.UI.UIElements
 {
-    internal class IslandObject : UIObject
+    public class IslandObject : UIObject
     {
         public float topOffset = 15f;
 
@@ -19,7 +19,7 @@ namespace DynamicWin.UI.UIElements
         public Vec2 currSize;
 
         public enum IslandMode { Island, Notch };
-        public IslandMode mode = IslandMode.Island;
+        public IslandMode mode = Settings.IslandMode;
 
         public IslandObject() : base(null, Vec2.zero, new Vec2(250, 50), UIAlignment.TopCenter)
         {
@@ -60,31 +60,36 @@ namespace DynamicWin.UI.UIElements
             else
             {
                 scaleSecondOrder.SetValues(secondOrderValuesContract.X, secondOrderValuesContract.Y, 0.1f);
-                Size = scaleSecondOrder.Update(deltaTime, new Vec2(500, 25));
+                Size = scaleSecondOrder.Update(deltaTime, new Vec2(500, 15));
 
                 LocalPosition.Y = Mathf.Lerp(LocalPosition.Y, -Size.Y + 15f, 15f * deltaTime);
             }
 
             MainForm.Instance.Opacity = hidden ? 0.75f : 1f;
+
+            topOffset = Mathf.Lerp(topOffset, (mode == IslandMode.Island) ? 15f : 5f, 15f * deltaTime);
         }
 
         public override void Draw(SKCanvas canvas)
         {
             var paint = GetPaint();
-            paint.IsAntialias = true;
+            paint.IsAntialias = Settings.AntiAliasing;
 
             paint.Color = Theme.IslandBackground.Value();
 
-            if(!IsHovering)
-                paint.ImageFilter = SKImageFilter.CreateDropShadow(1, 1, 25, 25, Theme.IslandBackground.Override(a: 0.5f).Value());
-            else
-                paint.ImageFilter = SKImageFilter.CreateDropShadow(1, 1, 35, 35, Theme.IslandBackground.Override(a: 0.85f).Value());
+            if (!hidden)
+            {
+                if (!IsHovering)
+                    paint.ImageFilter = SKImageFilter.CreateDropShadow(1, 1, 25, 25, new Col(0, 0, 0).Override(a: 0.5f).Value());
+                else
+                    paint.ImageFilter = SKImageFilter.CreateDropShadow(1, 1, 35, 35, (Theme.IslandBackground * 0.5f).Override(a: 0.85f).Value());
+            }
 
             canvas.DrawRoundRect(GetRect(), paint);
 
             paint.ImageFilter = null;
 
-            if (mode == IslandMode.Notch)
+            if (mode == IslandMode.Notch && !hidden)
             {
                 var path = new SKPath();
 
@@ -106,7 +111,7 @@ namespace DynamicWin.UI.UIElements
                 }
 
                 { // Right notch curve
-                    var y = LocalPosition.Y - topOffset;
+                    var y = Position.Y - topOffset;
 
                     var x = Position.X + Size.X + awidth;
 

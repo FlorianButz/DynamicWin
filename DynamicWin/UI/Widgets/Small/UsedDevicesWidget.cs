@@ -8,7 +8,22 @@ using System.Threading.Tasks;
 
 namespace DynamicWin.UI.Widgets.Small
 {
-    internal class UsedDevicesWidget : SmallWidgetBase
+    class RegisterUsedDevicesWidget : IRegisterableWidget
+    {
+        public bool IsSmallWidget => true;
+
+        public WidgetBase CreateWidgetInstance(UIObject? parent, Vec2 position, UIAlignment alignment = UIAlignment.TopCenter)
+        {
+            return new UsedDevicesWidget(parent, position, alignment);
+        }
+
+        public void RegisterWidget(out string widgetName)
+        {
+            widgetName = "Used Devices";
+        }
+    }
+
+    public class UsedDevicesWidget : SmallWidgetBase
     {
         public UsedDevicesWidget(UIObject? parent, Vec2 position, UIAlignment alignment = UIAlignment.TopCenter) : base(parent, position, alignment) { }
 
@@ -27,9 +42,17 @@ namespace DynamicWin.UI.Widgets.Small
             return 20;
         }
 
+        float sinCycleCamera = 1f;
+        float sinCycleMicrophone = 0f;
+
+        float sinSpeed = 2.75f;
+
         public override void Update(float deltaTime)
         {
             base.Update(deltaTime);
+
+            sinCycleCamera += sinSpeed * deltaTime;
+            sinCycleMicrophone += sinSpeed * deltaTime;
 
             bool isCamActive = DeviceUsageChecker.IsWebcamInUse();
             bool isMicActive = DeviceUsageChecker.IsMicrophoneInUse();
@@ -55,12 +78,12 @@ namespace DynamicWin.UI.Widgets.Small
 
             var camPos = GetScreenPosFromRawPosition(new Vec2(camDotPositionX, 0), new Vec2(0, camDotSizeCurrent / 2), UIAlignment.Center, this);
 
-            paint.Color = Theme.Error.Value();
+            paint.Color = Col.Lerp(Theme.Error, Theme.Error * 0.6f, Mathf.Remap((float)Math.Sin(sinCycleCamera), -1, 1, 0, 1)).Value();
             canvas.DrawCircle(camPos.X, camPos.Y, camDotSizeCurrent, paint);
 
             var micPos = GetScreenPosFromRawPosition(new Vec2(micDotPositionX, 0), new Vec2(0, micDotSizeCurrent / 2), UIAlignment.Center, this);
 
-            paint.Color = Theme.Success.Value();
+            paint.Color = Col.Lerp(Theme.Success, Theme.Success * 0.6f, Mathf.Remap((float)Math.Sin(sinCycleMicrophone), -1, 1, 0, 1)).Value();
             canvas.DrawCircle(micPos.X, micPos.Y, micDotSizeCurrent, paint);
         }
     }

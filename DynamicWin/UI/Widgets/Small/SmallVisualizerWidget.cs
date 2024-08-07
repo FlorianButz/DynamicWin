@@ -7,7 +7,22 @@ using System.Threading.Tasks;
 
 namespace DynamicWin.UI.Widgets.Small
 {
-    internal class SmallVisualizerWidget : SmallWidgetBase
+    class RegisterSmallVisualizerWidget : IRegisterableWidget
+    {
+        public bool IsSmallWidget => true;
+
+        public WidgetBase CreateWidgetInstance(UIObject? parent, Vec2 position, UIAlignment alignment = UIAlignment.TopCenter)
+        {
+            return new SmallVisualizerWidget(parent, position, alignment);
+        }
+
+        public void RegisterWidget(out string widgetName)
+        {
+            widgetName = "Audio Visualizer";
+        }
+    }
+
+    public class SmallVisualizerWidget : SmallWidgetBase
     {
         AudioVisualizer audioVisualizer;
 

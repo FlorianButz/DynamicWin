@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DynamicWin.UI.UIElements
 {
-    internal class DWText : UIObject
+    public class DWText : UIObject
     {
         private string text = "";
         public string Text { get { return text; } set { SetText(value); } }

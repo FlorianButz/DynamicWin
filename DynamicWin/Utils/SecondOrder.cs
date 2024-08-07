@@ -1,9 +1,10 @@
-﻿using DynamicWin.Utils;
+﻿using DynamicWin.Main;
+using DynamicWin.Utils;
 using System.Numerics;
 
 namespace DynamicWin.Utils
 {
-    internal class SecondOrder
+    public class SecondOrder
     {
         private Vec2 xp;
         private Vec2 y, yd;
@@ -29,6 +30,8 @@ namespace DynamicWin.Utils
 
         public Vec2 Update(float T, Vec2 x, Vec2? xd = default)
         {
+            if (!Settings.AllowAnimation) return x;
+
             if (xd == default)
             {
                 xd = (x - xp) / new Vec2(T, T);

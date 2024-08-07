@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DynamicWin.UI.UIElements
 {
-    internal class DWTextImageButton : DWButton
+    public class DWTextImageButton : DWButton
     {
         DWText text;
 

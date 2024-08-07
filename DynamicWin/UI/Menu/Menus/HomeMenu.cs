@@ -1,4 +1,5 @@
 ﻿using DynamicWin.Main;
+using DynamicWin.Resources;
 using DynamicWin.UI.UIElements;
 using DynamicWin.UI.UIElements.Custom;
 using DynamicWin.UI.Widgets;
@@ -10,10 +11,11 @@ using System.Runtime.CompilerServices;
 
 namespace DynamicWin.UI.Menu.Menus
 {
-    internal class HomeMenu : BaseMenu
+    public class HomeMenu : BaseMenu
     {
         public List<SmallWidgetBase> smallLeftWidgets = new List<SmallWidgetBase>();
         public List<SmallWidgetBase> smallRightWidgets = new List<SmallWidgetBase>();
+        public List<SmallWidgetBase> smallCenterWidgets = new List<SmallWidgetBase>();
 
         public List<WidgetBase> bigWidgets = new List<WidgetBase>();
 
@@ -24,8 +26,9 @@ namespace DynamicWin.UI.Menu.Menus
             float sizeTogether = 0f;
             smallLeftWidgets.ForEach(x => sizeTogether += x.GetWidgetSize().X);
             smallRightWidgets.ForEach(x => sizeTogether += x.GetWidgetSize().X);
+            smallCenterWidgets.ForEach(x => sizeTogether += x.GetWidgetSize().X);
 
-            sizeTogether += smallWidgetsSpacing * (smallLeftWidgets.Count + smallRightWidgets.Count + 0.25f) + middleWidgetsSpacing;
+            sizeTogether += smallWidgetsSpacing * (smallCenterWidgets.Count + smallLeftWidgets.Count + smallRightWidgets.Count + 0.25f) + middleWidgetsSpacing;
 
             size.X = (float)Math.Max(size.X, sizeTogether);
 
@@ -66,8 +69,10 @@ namespace DynamicWin.UI.Menu.Menus
 
                 sizeTogetherBiggest += bCD + (bigWidgetsSpacing * (bigWidgets.Count / maxBigWidgetInOneRow)) + topSpacing;
 
+                int lines = (int)Math.Round((decimal)((float)bigWidgets.Count / (float)maxBigWidgetInOneRow));
+
                 // Set the container height to the total height of all rows
-                size.Y = Math.Max(size.Y, sizeTogetherBiggest);
+                size.Y = Math.Max(size.Y, sizeTogetherBiggest + ((lines <= 1) ? topSpacing / 2f : topSpacing));
             }
 
             if (!isWidgetMode) size.Y = 250;
@@ -96,13 +101,23 @@ namespace DynamicWin.UI.Menu.Menus
 
             // Create elements
 
-            smallLeftWidgets.Add(new TimeWidget(smallWidgetsContainer, Vec2.zero, UIAlignment.MiddleLeft));
-            smallLeftWidgets.Add(new SmallVisualizerWidget(smallWidgetsContainer, Vec2.zero, UIAlignment.MiddleLeft));
-            smallRightWidgets.Add(new BatteryWidget(smallWidgetsContainer, Vec2.zero, UIAlignment.MiddleRight));
-            smallRightWidgets.Add(new UsedDevicesWidget(smallWidgetsContainer, Vec2.zero, UIAlignment.MiddleRight));
+            //smallLeftWidgets.Add(new TimeWidget(smallWidgetsContainer, Vec2.zero, UIAlignment.MiddleLeft));
+            //smallLeftWidgets.Add(new SmallVisualizerWidget(smallWidgetsContainer, Vec2.zero, UIAlignment.MiddleLeft));
+            //smallRightWidgets.Add(new BatteryWidget(smallWidgetsContainer, Vec2.zero, UIAlignment.MiddleRight));
+            //smallRightWidgets.Add(new UsedDevicesWidget(smallWidgetsContainer, Vec2.zero, UIAlignment.MiddleRight));
 
-            bigWidgets.Add(new MediaWidget(bigWidgetsContainer, Vec2.zero, UIAlignment.BottomCenter));
-            bigWidgets.Add(new TimerWidget(bigWidgetsContainer, Vec2.zero, UIAlignment.BottomCenter));
+            foreach (var smallWidget in Res.availableSmallWidgets)
+            {
+                smallCenterWidgets.Add((SmallWidgetBase)smallWidget.CreateWidgetInstance(smallWidgetsContainer, Vec2.zero, UIAlignment.Center));
+            }
+
+            //bigWidgets.Add(new MediaWidget(bigWidgetsContainer, Vec2.zero, UIAlignment.BottomCenter));
+            //bigWidgets.Add(new TimerWidget(bigWidgetsContainer, Vec2.zero, UIAlignment.BottomCenter));
+
+            foreach (var bigWidget in Res.availableBigWidgets)
+            {
+                bigWidgets.Add(bigWidget.CreateWidgetInstance(bigWidgetsContainer, Vec2.zero, UIAlignment.BottomCenter));
+            }
 
             topContainer = new UIObject(island, new Vec2(0, 30), new Vec2(island.currSize.X, 50))
             {
@@ -160,6 +175,10 @@ namespace DynamicWin.UI.Menu.Menus
             });
 
             smallRightWidgets.ForEach(x => { 
+                objects.Add(x);
+            });
+
+            smallCenterWidgets.ForEach(x => {
                 objects.Add(x);
             });
 
@@ -230,9 +249,26 @@ namespace DynamicWin.UI.Menu.Menus
                     }
                 }
 
+                { // Center Small Widgets
+                    float centerStackPos = 0f;
+                    foreach (var smallCenter in smallCenterWidgets)
+                    {
+                        smallCenter.Anchor.X = 1;
+                        smallCenter.LocalPosition.X = centerStackPos;
+
+                        centerStackPos -= smallWidgetsSpacing + smallCenter.GetWidgetSize().X;
+                    }
+
+                    foreach (var smallCenter in smallCenterWidgets)
+                    {
+                        smallCenter.LocalPosition.X -= centerStackPos / 2 + smallWidgetsSpacing;
+                    }
+                }
+
                 smallLeftWidgets.ForEach(x => x.SetActive(true));
                 smallRightWidgets.ForEach(x => x.SetActive(true));
-                
+                smallCenterWidgets.ForEach(x => x.SetActive(true));
+
                 if (wasHovering)
                 {
                     bigWidgets.ForEach(x => x.SetActive(false));
@@ -279,6 +315,7 @@ namespace DynamicWin.UI.Menu.Menus
                 if (!wasHovering)
                 {
                     smallLeftWidgets.ForEach(x => x.SetActive(false));
+                    smallCenterWidgets.ForEach(x => x.SetActive(false));
                     smallRightWidgets.ForEach(x => x.SetActive(false));
 
                     bigWidgets.ForEach(x => x.SetActive(isWidgetMode));

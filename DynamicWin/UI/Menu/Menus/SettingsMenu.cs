@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DynamicWin.UI.Menu.Menus
 {
-    internal class SettingsMenu : BaseMenu
+    public class SettingsMenu : BaseMenu
     {
 
         public override List<UIObject> InitializeMenu(IslandObject island)

@@ -41,6 +41,8 @@ namespace DynamicWin
 
             Res.Load();
             KeyHandler.Start();
+            new Theme();
+            Settings.InitializeSettings();
 
             MainForm mainForm = new MainForm();
             mainForm.Show();

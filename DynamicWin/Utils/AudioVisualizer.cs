@@ -9,7 +9,7 @@ using FftSharp;
 
 namespace DynamicWin.Utils
 {
-    internal class AudioVisualizer : UIObject
+    public class AudioVisualizer : UIObject
     {
         private int fftLength;
         private float[] fftValues;

@@ -15,7 +15,7 @@ using SkiaSharp.Views.WPF;
 
 namespace DynamicWin.Main
 {
-    internal class RendererMain : SKElement
+    public class RendererMain : SKElement
     {
         private System.Windows.Forms.Timer timer;
 
@@ -35,7 +35,6 @@ namespace DynamicWin.Main
         public RendererMain()
         {
             MenuManager m = new MenuManager();
-            Theme theme = new Theme();
 
             // Init control
 

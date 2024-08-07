@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DynamicWin.UI.Menu.Menus
 {
-    internal class TimerOverMenu : BaseMenu
+    public class TimerOverMenu : BaseMenu
     {
         DWText overText;
         System.Media.SoundPlayer player;

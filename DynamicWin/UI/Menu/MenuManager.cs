@@ -10,7 +10,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 namespace DynamicWin.UI.Menu
 {
-    internal class MenuManager
+    public class MenuManager
     {
         private BaseMenu activeMenu;
         public BaseMenu ActiveMenu { get => activeMenu; }
@@ -147,6 +147,12 @@ namespace DynamicWin.UI.Menu
 
                     if(RendererMain.Instance != null)
                         RendererMain.Instance.renderOffset.Y = Mathf.Lerp(0, yOffset, tEased);
+                };
+
+                menuAnimatorIn.onAnimationInterrupt += () =>
+                {
+                    LoadMenuEnd();
+                    return;
                 };
 
                 menuAnimatorIn.onAnimationEnd += () =>
