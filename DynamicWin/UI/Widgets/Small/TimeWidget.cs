@@ -12,14 +12,11 @@ namespace DynamicWin.UI.Widgets.Small
     {
         public bool IsSmallWidget => true;
 
+        public string WidgetName => "Time Display";
+
         public WidgetBase CreateWidgetInstance(UIObject? parent, Vec2 position, UIAlignment alignment = UIAlignment.TopCenter)
         {
             return new TimeWidget(parent, position, alignment);
-        }
-
-        public void RegisterWidget(out string widgetName)
-        {
-            widgetName = "Time Display";
         }
     }
 

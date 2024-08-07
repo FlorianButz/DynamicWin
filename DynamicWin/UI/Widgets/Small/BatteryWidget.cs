@@ -12,15 +12,11 @@ namespace DynamicWin.UI.Widgets.Small
     class RegisterBatteryWidget : IRegisterableWidget
     {
         public bool IsSmallWidget => true;
+        public string WidgetName => "Battery Display";
 
         public WidgetBase CreateWidgetInstance(UIObject? parent, Vec2 position, UIAlignment alignment = UIAlignment.TopCenter)
         {
             return new BatteryWidget(parent, position, alignment);
-        }
-
-        public void RegisterWidget(out string widgetName)
-        {
-            widgetName = "Battery Display";
         }
     }
 

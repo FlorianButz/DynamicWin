@@ -10,7 +10,7 @@ namespace DynamicWin.UI.Widgets
     public interface IRegisterableWidget
     {
         public bool IsSmallWidget { get; }
-        public void RegisterWidget(out string widgetName);
+        public string WidgetName { get; }
         public WidgetBase CreateWidgetInstance(UIObject? parent, Vec2 position, UIAlignment alignment = UIAlignment.TopCenter);
     }
 }

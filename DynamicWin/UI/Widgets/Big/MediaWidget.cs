@@ -14,15 +14,11 @@ namespace DynamicWin.UI.Widgets.Big
     class RegisterMediaWidget : IRegisterableWidget
     {
         public bool IsSmallWidget => false;
+        public string WidgetName => "Media Playback Control";
 
         public WidgetBase CreateWidgetInstance(UIObject? parent, Vec2 position, UIAlignment alignment = UIAlignment.TopCenter)
         {
             return new MediaWidget(parent, position, alignment);
-        }
-
-        public void RegisterWidget(out string widgetName)
-        {
-            widgetName = "Media Widget";
         }
     }
 

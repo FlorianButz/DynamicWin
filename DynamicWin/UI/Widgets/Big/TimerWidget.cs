@@ -12,15 +12,11 @@ namespace DynamicWin.UI.Widgets.Big
     class RegisterTimerWidget : IRegisterableWidget
     {
         public bool IsSmallWidget => false;
+        public string WidgetName => "Timer";
 
         public WidgetBase CreateWidgetInstance(UIObject? parent, Vec2 position, UIAlignment alignment = UIAlignment.TopCenter)
         {
             return new TimerWidget(parent, position, alignment);
-        }
-
-        public void RegisterWidget(out string widgetName)
-        {
-            widgetName = "Timer Widget";
         }
     }
 

@@ -80,7 +80,7 @@ namespace DynamicWin.UI.UIElements
             if (!hidden)
             {
                 if (!IsHovering)
-                    paint.ImageFilter = SKImageFilter.CreateDropShadow(1, 1, 25, 25, new Col(0, 0, 0).Override(a: 0.5f).Value());
+                    paint.ImageFilter = SKImageFilter.CreateDropShadow(1, 1, 7.5f, 7.5f, new Col(0, 0, 0).Override(a: 0.35f).Value());
                 else
                     paint.ImageFilter = SKImageFilter.CreateDropShadow(1, 1, 35, 35, (Theme.IslandBackground * 0.5f).Override(a: 0.85f).Value());
             }

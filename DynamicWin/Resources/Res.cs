@@ -105,7 +105,7 @@ namespace DynamicWin.Resources
             foreach (var registerableWidget in registerableWidgets)
             {
                 var iRegisterableWidgetInstance = (IRegisterableWidget)Activator.CreateInstance(registerableWidget);
-                iRegisterableWidgetInstance.RegisterWidget(out string widgetName);
+                var widgetName = iRegisterableWidgetInstance.WidgetName;
                 System.Diagnostics.Debug.WriteLine($"Registered widget: {widgetName}");
 
                 if(!iRegisterableWidgetInstance.IsSmallWidget)
@@ -137,12 +137,23 @@ namespace DynamicWin.Resources
 
                         foreach (var registerableExtension in extensions)
                         {
-                            var iRegisterableWidgetInstance = (IDynamicWinExtension)Activator.CreateInstance(registerableExtension);
-                            System.Diagnostics.Debug.WriteLine($"Extension sucessfully registered: {iRegisterableWidgetInstance.GetExtensionName()}");
-                            Res.extensions.Add(iRegisterableWidgetInstance);
+                            var iRegisterableExtensionInstance = (IDynamicWinExtension)Activator.CreateInstance(registerableExtension);
+                            System.Diagnostics.Debug.WriteLine($"Extension sucessfully registered: {iRegisterableExtensionInstance.ExtensionName}");
+                            Res.extensions.Add(iRegisterableExtensionInstance);
+
+                            foreach(var registerableWidget in iRegisterableExtensionInstance.GetExtensionWidgets())
+                            {
+                                var widgetName = registerableWidget.WidgetName;
+                                System.Diagnostics.Debug.WriteLine($"Registered widget: {widgetName}");
+
+                                if (!registerableWidget.IsSmallWidget)
+                                    availableBigWidgets.Add(registerableWidget);
+                                else
+                                    availableSmallWidgets.Add(registerableWidget);
+                            }
                         }
 
-                        var customRegisterableWidgets = DLL
+                        /*var customRegisterableWidgets = DLL
                             .SelectMany(s => s.GetTypes())
                             .Where(p => typeof(IRegisterableWidget).IsAssignableFrom(p) && p.IsClass);
 
@@ -156,7 +167,7 @@ namespace DynamicWin.Resources
                                 availableBigWidgets.Add(iRegisterableWidgetInstance);
                             else
                                 availableSmallWidgets.Add(iRegisterableWidgetInstance);
-                        }
+                        }*/
                     }
                 }
             }
