@@ -5,12 +5,18 @@
     <Compile Update="Main\MainForm.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Main\SettingsWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Main\MainForm.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Main\MainWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Main\SettingsWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

@@ -10,7 +10,7 @@ using System.Windows.Input;
 
 namespace DynamicWin.UI.UIElements.Custom
 {
-    public class Tray : UIObject
+    internal class Tray : UIObject
     {
         static string[]? cachedTrayFiles;
 

@@ -1,0 +1,109 @@
+﻿<Window x:Class="DynamicWin.Main.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DynamicWin.Main"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        mc:Ignorable="d"
+        MinHeight="450"
+        MinWidth="350"
+        WindowStyle="ToolWindow"
+        ShowInTaskbar="false"
+        Title="SettingsWindow" Height="500" Width="500">
+
+    <Window.Resources>
+        <SolidColorBrush Color="#ffffff" x:Key="Backdrop"/>
+        <SolidColorBrush Color="#757575" x:Key="Title"/>
+        <SolidColorBrush Color="#555555" x:Key="Text"/>
+        <SolidColorBrush Color="#7f8699" x:Key="TextSecond"/>
+        <SolidColorBrush Color="#aaaaaa" x:Key="Separator"/>
+        <SolidColorBrush Color="#dddddd" x:Key="SeparatorSecond"/>
+    </Window.Resources>
+
+    <Grid Background="{DynamicResource Backdrop}">
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="15">
+            <ScrollViewer Margin="0 0 0 35" Foreground="Black">
+                <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                    <TextBlock Text="General" Foreground="{DynamicResource Title}" FontSize="25" FontWeight="Black" />
+                    <Separator Background="{DynamicResource Separator}" Margin="0 15 35 15"/>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                        <ComboBox x:Name="IslandModeComboBox" SelectionChanged="SelectionChanged" Foreground="{DynamicResource TextSecond}" Margin="0 5 5 5" SelectedIndex="0" HorizontalContentAlignment="Left" HorizontalAlignment="Left">
+                            <ComboBoxItem Content="Notch"></ComboBoxItem>
+                            <ComboBoxItem Content="Island"></ComboBoxItem>
+                        </ComboBox>
+
+                        <Label Content="Island Mode" Foreground="{DynamicResource Text}" VerticalContentAlignment="Stretch" VerticalAlignment="Center" />
+                    </StackPanel>
+
+                    <Separator Background="{DynamicResource SeparatorSecond}" Margin="0 10 35 10"/>
+
+                    <CheckBox x:Name="AllowBlur" Foreground="{DynamicResource Text}" Click="Click" Content="Allow Blur" Margin="0 5 35 5"/>
+                    <CheckBox x:Name="AllowAnimation" Foreground="{DynamicResource Text}" Click="Click" Content="Allow Animation" Margin="0 5 35 5"/>
+                    <CheckBox x:Name="AllowAntiAliasing" Foreground="{DynamicResource Text}" Click="Click" Content="Allow Anti Aliasing" Margin="0 5 35 5"/>
+
+                    <Separator Background="{DynamicResource SeparatorSecond}" Margin="0 10 35 10"/>
+                    
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                        <ComboBox x:Name="BuiltInThemeComboBox" SelectionChanged="SelectionChanged"  Foreground="{DynamicResource TextSecond}" Margin="0 5 5 5" SelectedIndex="0" HorizontalContentAlignment="Left" HorizontalAlignment="Left">
+                            <ComboBoxItem Content="Dark"></ComboBoxItem>
+                            <ComboBoxItem Content="Light"></ComboBoxItem>
+                        </ComboBox>
+
+                        <Label Content="Built-In Theme" Foreground="{DynamicResource Text}" VerticalContentAlignment="Stretch" VerticalAlignment="Center" />
+                    </StackPanel>
+
+                    <CheckBox x:Name="UseCustomTheme" Foreground="{DynamicResource Text}" Content="Use Custom Theme" Click="UseCustomTheme_Click" Margin="0 5 35 5"/>
+
+                    <StackPanel Background="{DynamicResource SeparatorSecond}" Margin="0 0 35 0">
+                        <StackPanel Background="{DynamicResource SeparatorSecond}" Margin="10">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0 5 0 5">
+                                <xctk:ColorPicker x:Name="CTIslandColor" SelectedColorChanged="SelectedColorChanged" ColorMode="ColorCanvas" SelectedColor="#000000" Width="100"/>
+                                <Label Content="Island Color" Foreground="{DynamicResource Text}" VerticalContentAlignment="Stretch" VerticalAlignment="Center" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0 5 0 5">
+                                <xctk:ColorPicker x:Name="CTTextMain" SelectedColorChanged="SelectedColorChanged" ColorMode="ColorCanvas" SelectedColor="#ffffff" Width="100"/>
+                                <Label Content="Text Main" Foreground="{DynamicResource Text}" VerticalContentAlignment="Stretch" VerticalAlignment="Center" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0 5 0 5">
+                                <xctk:ColorPicker x:Name="CTTextSecond" SelectedColorChanged="SelectedColorChanged" ColorMode="ColorCanvas" SelectedColor="#a6a6a6" Width="100"/>
+                                <Label Content="Text Second" Foreground="{DynamicResource Text}" VerticalContentAlignment="Stretch" VerticalAlignment="Center" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0 5 0 5">
+                                <xctk:ColorPicker x:Name="CTTextThird" SelectedColorChanged="SelectedColorChanged" ColorMode="ColorCanvas" SelectedColor="#595959" Width="100"/>
+                                <Label Content="Text Third" Foreground="{DynamicResource Text}" VerticalContentAlignment="Stretch" VerticalAlignment="Center" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0 5 0 5">
+                                <xctk:ColorPicker x:Name="CTPrimary" SelectedColorChanged="SelectedColorChanged" ColorMode="ColorCanvas" SelectedColor="#6988b7" Width="100"/>
+                                <Label Content="Primary" Foreground="{DynamicResource Text}" VerticalContentAlignment="Stretch" VerticalAlignment="Center" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0 5 0 5">
+                                <xctk:ColorPicker x:Name="CTSecondary" SelectedColorChanged="SelectedColorChanged" ColorMode="ColorCanvas" SelectedColor="#061122" Width="100"/>
+                                <Label Content="Secondary" Foreground="{DynamicResource Text}" VerticalContentAlignment="Stretch" VerticalAlignment="Center" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0 5 0 5">
+                                <xctk:ColorPicker x:Name="CTSuccess" SelectedColorChanged="SelectedColorChanged" ColorMode="ColorCanvas" SelectedColor="#bad844" Width="100"/>
+                                <Label Content="Success" Foreground="{DynamicResource Text}" VerticalContentAlignment="Stretch" VerticalAlignment="Center" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0 5 0 5">
+                                <xctk:ColorPicker x:Name="CTError" SelectedColorChanged="SelectedColorChanged" ColorMode="ColorCanvas" SelectedColor="#d84444" Width="100"/>
+                                <Label Content="Error" Foreground="{DynamicResource Text}" VerticalContentAlignment="Stretch" VerticalAlignment="Center" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0 5 0 5">
+                                <xctk:ColorPicker x:Name="CTIconColor" SelectedColorChanged="SelectedColorChanged" ColorMode="ColorCanvas" SelectedColor="#ffffff" Width="100"/>
+                                <Label Content="IconColor" Foreground="{DynamicResource Text}" VerticalContentAlignment="Stretch" VerticalAlignment="Center" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0 5 0 5">
+                                <xctk:ColorPicker x:Name="CTWidgetBackground" SelectedColorChanged="SelectedColorChanged" ColorMode="ColorCanvas" SelectedColor="#11ffffff" Width="100"/>
+                                <Label Content="Widget Background" Foreground="{DynamicResource Text}" VerticalContentAlignment="Stretch" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+
+                </StackPanel>
+            </ScrollViewer>
+            <Button Content="Save and Apply Settings" VerticalAlignment="Bottom" Click="Button_Click" />
+        </Grid>
+    </Grid>
+</Window>

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DynamicWin.UI.UIElements.Custom
 {
-    public class DropFileElement : UIObject
+    internal class DropFileElement : UIObject
     {
         public DropFileElement(UIObject? parent, Vec2 position, Vec2 size, UIAlignment alignment = UIAlignment.TopCenter) : base(parent, position, size, alignment)
         {

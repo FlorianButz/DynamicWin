@@ -152,22 +152,6 @@ namespace DynamicWin.Resources
                                     availableSmallWidgets.Add(registerableWidget);
                             }
                         }
-
-                        /*var customRegisterableWidgets = DLL
-                            .SelectMany(s => s.GetTypes())
-                            .Where(p => typeof(IRegisterableWidget).IsAssignableFrom(p) && p.IsClass);
-
-                        foreach (var registerableWidget in customRegisterableWidgets)
-                        {
-                            var iRegisterableWidgetInstance = (IRegisterableWidget)Activator.CreateInstance(registerableWidget);
-                            iRegisterableWidgetInstance.RegisterWidget(out string widgetName);
-                            System.Diagnostics.Debug.WriteLine($"Registered widget: {widgetName}");
-
-                            if (!iRegisterableWidgetInstance.IsSmallWidget)
-                                availableBigWidgets.Add(iRegisterableWidgetInstance);
-                            else
-                                availableSmallWidgets.Add(iRegisterableWidgetInstance);
-                        }*/
                     }
                 }
             }

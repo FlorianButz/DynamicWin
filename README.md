@@ -1,6 +1,13 @@
 # DynamicWin
 
 <p align="center">
+  <img src="https://img.shields.io/badge/c%23-%23239120.svg?style=for-the-badge&logo=csharp&logoColor=white">
+  <a href="https://opensource.org/license/mit"><img src="https://img.shields.io/badge/MIT-MIT?style=for-the-badge&label=License&color=%23cca41a"></a>
+  <a href="https://www.youtube.com/@flofdev"><img src="https://img.shields.io/badge/YouTube-%23FF0000.svg?style=for-the-badge&logo=YouTube&logoColor=white"></a>
+  <a href="https://discord.gg/UHFuqB9NqR"><img src="https://dcbadge.limes.pink/api/server/https://discord.gg/UHFuqB9NqR)](https://discord.gg/UHFuqB9NqR"></a>
+</p>
+
+<p align="center">
   <img src="https://i0.wp.com/sixcolors.com/wp-content/uploads/2022/09/di-animated-clip.gif?ssl=1" alt="animated" />
 </p> // Replace this gif lol
 
@@ -154,4 +161,83 @@ Now you're done. Build the project and go to your project's output folder. (Most
 After that you can run DynamicWin and test your extension. This was of course a very bare bones example.
 
 > [!TIP]
-> It's best to look at the widgets that are already in DynamicWin and learn from them.
+> It's best to look at the widgets that are already in DynamicWin and learn from them. You can also check out 
+
+<br>
+Here is a small list of current UIObjects that can be used to make the widget creation process easier.
+
+## UIObject
+  - Constructor
+    - `UIObject? parent` is the parent UIObject, most times the widget itself.
+    - `Vec2 position` is the position of the UIObject.
+    - `Vec2 size` is the size of the UIObject.
+    - `UIAlignment alignment` is an optional paramenter which determins where inside the parent the object's zero point is.
+  - Important Methods
+    - `SetActive(bool)` sets the active state of the UIObject with an animation.
+    - `SilentSetActive(bool)` sets the active state of the UIObject without an animation.
+    - `SKRoundRect GetRect()` returns the bounds of the UIObject (`SKRoundRect`);
+    - `ContextMenu? CreateContextMenu()` is overriden if the UIObject is supposed to have a context (right click) menu using the WPF `ContextMenu` class.
+    - `AddLocalObject(UIObject)` adds another UIObject inside the UIObject that called it. Parent is automatically set to the caller UIObject.
+    - `DestroyLocalObject(UIObject obj)` removes the local UIObject.
+    - `GetColor(Col)` takes in a color and returns the same color but with correct transparency. Please use it whenever you use custom colors or colors from the Theme class.
+  - Important Fields / Properties
+    - `IsHovering` returns true if the mouse is over the UIObject.
+    - `IsMouseDown` returns true if the mouse is down over the UIObject. 
+    - `Color` returns the color of the object.
+    - `Position` returns the position of the object.
+    - `RawPosition` returns the actual position of the object without the screen transformation (use this when setting the `Position` field).
+    - `Anchor` is the anchor of the object. By default set to `(0.5f, 0.5f)` which means zero is in the middle of the UIObject.
+    - `Size` returns the size of the object.
+    - `IsEnabled` returns the active state of the UIObject.
+
+## DWText
+  - Constructor
+    - `string text` is the text.
+  - Important Methods
+    - `SetText(string)` sets the text with an animation.
+    - `SilentSetText(string)` sets the text without an animation.
+  - Important Fields / Properties
+    - `Font` is the Typeface of the text.
+    - `TextBounds` are the bounds of the text.
+    - `TextSize` is the size of the text.
+
+## WTextImageButton
+(Do not use. This is the base class of `DWTextButton`, `DWImageButton` and `DWTextImageButton`)
+  - Constructor
+    - `Action clickCallback` is an action that gets called on click.
+  - Important Fields / Properties
+    - `normalColor` is the color of the button when not hovered.
+    - `hoverColor` is the color of the button when hovered.
+    - `clickColor` is the color of the button when clicked.
+    - `colorSmoothingSpeed` is the speed at which the color updates.
+    - `normalScaleMulti` is the size of the button when not hovered.
+    - `hoverScaleMulti` is the size of the button when hovered.
+    - `normclickScaleMultialScaleMulti` is the size of the button when clicked.
+
+
+## DWTextButton
+  - Constructor
+    - `string buttonText` is the text on the button.
+  - Important Fields / Properties
+    - `normalTextSize` is the size of the text when not hovered.
+
+## DWImageButton
+  - Constructor
+    - `SKBitmap image` is the image on the button.
+  - Important Fields / Properties
+    - `imageScale` the scale multiplier of the image. Default is `0.85f`. `1f` would be the scale of the button.
+    - `Image` the image of the button.
+    
+## DWTextImageButton
+  - Constructor
+    - `SKBitmap image` is the text on the button.
+    - `string buttonText` is the text on the button.
+    - `Action clickCallback` is an action that gets called on click.
+  - Important Fields / Properties
+    - `imageScale` the scale multiplier of the image. Default is `0.85f`. `1f` would be the scale of the button.
+    - `normalTextSize` is the size of the text when not hovered.
+    - `Image` the image of the button.
+
+The `Res` class can be used to load in SKTypeface or SKBitmap (for DWText or DWImage).
+For colors the `Col` class is used. When applying the color to the paint `Col.Value()` has to be called to convert to `SKColor`. <br>
+Try to only use the colors available in the `Theme` class to provide color customizability to the user.

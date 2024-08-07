@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using DynamicWin.Main;
+using System.Globalization;
 
 namespace DynamicWin.Utils
 {
@@ -10,7 +11,32 @@ namespace DynamicWin.Utils
         {
             Instance = this;
 
-            var darkTheme = new ThemeHolder { 
+            UpdateTheme();
+        }
+        
+        public void ApplyTheme(ThemeHolder theme)
+        {
+            TextMain = GetColor(theme.TextMain);
+            TextSecond = GetColor(theme.TextSecond);
+            TextThird = GetColor(theme.TextThird);
+            Primary = GetColor(theme.Primary);
+            Secondary = GetColor(theme.Secondary);
+            IslandBackground = GetColor(theme.IslandColor);
+            Success = GetColor(theme.Success);
+            Error = GetColor(theme.Error);
+            IconColor = GetColor(theme.IconColor);
+            WidgetBackground = GetColor(theme.WidgetBackground);
+        }
+
+        public Col GetColor(string hex)
+        {
+            return Col.FromHex(hex);
+        }
+
+        public void UpdateTheme()
+        {
+            var darkTheme = new ThemeHolder
+            {
                 IslandColor = "#000000",
                 TextMain = "#ffffff",
                 TextSecond = "#a6a6a6",
@@ -37,27 +63,17 @@ namespace DynamicWin.Utils
                 WidgetBackground = "#11000000"
             };
 
-
-            ApplyTheme(darkTheme);
-        }
-        
-        public void ApplyTheme(ThemeHolder theme)
-        {
-            TextMain = GetColor(theme.TextMain);
-            TextSecond = GetColor(theme.TextSecond);
-            TextThird = GetColor(theme.TextThird);
-            Primary = GetColor(theme.Primary);
-            Secondary = GetColor(theme.Secondary);
-            IslandBackground = GetColor(theme.IslandColor);
-            Success = GetColor(theme.Success);
-            Error = GetColor(theme.Error);
-            IconColor = GetColor(theme.IconColor);
-            WidgetBackground = GetColor(theme.WidgetBackground);
-        }
-
-        public Col GetColor(string hex)
-        {
-            return Col.FromHex(hex);
+            if (!Settings.UseCustomTheme)
+            {
+                if (Settings.Theme == 0)
+                    ApplyTheme(darkTheme);
+                else
+                    ApplyTheme(lightTheme);
+            }
+            else
+            {
+                ApplyTheme(Settings.CustomTheme);
+            }
         }
 
         public static Col TextMain { get; set; }

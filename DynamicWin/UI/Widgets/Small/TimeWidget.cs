@@ -27,7 +27,7 @@ namespace DynamicWin.UI.Widgets.Small
         public TimeWidget(UIObject? parent, Vec2 position, UIAlignment alignment = UIAlignment.TopCenter) : base(parent, position, alignment)
         {
             timeText = new DWText(this, GetTime(), Vec2.zero, UIAlignment.Center);
-            timeText.textSize = 14;
+            timeText.TextSize = 14;
             AddLocalObject(timeText);
         }
 

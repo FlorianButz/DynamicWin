@@ -28,7 +28,7 @@ namespace DynamicWin.UI
         public Vec2 LocalPosition { get => localPosition; set => localPosition = value; }
         public Vec2 Anchor { get => anchor; set => anchor = value; }
         public Vec2 Size { get => size; set => size = value; }
-        public Col Color { get => new Col(color.r, color.g, color.b, color.a * alpha); set => color = value; }
+        public Col Color { get => new Col(color.r, color.g, color.b, color.a * Alpha); set => color = value; }
 
         private bool isHovering = false;
         private bool isMouseDown = false;
@@ -50,8 +50,12 @@ namespace DynamicWin.UI
         private bool isEnabled = true;
         public bool IsEnabled { get => isEnabled; set => SetActive(value); }
 
-        public float disableBlurSize = 50;
-        public float alpha = 1f;
+        public float blurSizeOnDisable = 50;
+
+        private float pAlpha = 1f;
+        private float oAlpha = 1f;
+
+        public float Alpha { get => (float) Math.Min(pAlpha, oAlpha); set => oAlpha = value; }
 
         protected void AddLocalObject(UIObject obj)
         {
@@ -241,6 +245,9 @@ namespace DynamicWin.UI
         {
             if (!isEnabled) return;
 
+            if (parent != null)
+                pAlpha = parent.Alpha;
+
             var rect = SKRect.Create(RendererMain.CursorPosition.X, RendererMain.CursorPosition.Y, 1, 1);
             isHovering = GetInteractionRect().Contains(rect);
 
@@ -333,7 +340,7 @@ namespace DynamicWin.UI
 
         public Col GetColor(Col col)
         {
-            return new Col(col.r, col.g, col.b, col.a * alpha);
+            return new Col(col.r, col.g, col.b, col.a * Alpha);
         }
 
         public void DestroyCall() 
@@ -378,15 +385,15 @@ namespace DynamicWin.UI
                 {
                     var tEased = Easings.EaseOutCubic(t);
 
-                    localBlurAmount = Mathf.Lerp(disableBlurSize, 0, tEased);
-                    alpha = Mathf.Lerp(0, 1, tEased);
+                    localBlurAmount = Mathf.Lerp(blurSizeOnDisable, 0, tEased);
+                    Alpha = Mathf.Lerp(0, 1, tEased);
                 }
                 else
                 {
                     var tEased = Easings.EaseOutCubic(t);
 
-                    localBlurAmount = Mathf.Lerp(0, disableBlurSize, tEased);
-                    alpha = Mathf.Lerp(1, 0, tEased);
+                    localBlurAmount = Mathf.Lerp(0, blurSizeOnDisable, tEased);
+                    Alpha = Mathf.Lerp(1, 0, tEased);
                 }
             };
             toggleAnim.onAnimationEnd += () =>

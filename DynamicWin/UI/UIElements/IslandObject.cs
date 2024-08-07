@@ -11,7 +11,7 @@ namespace DynamicWin.UI.UIElements
 
         public SecondOrder scaleSecondOrder;
 
-        public Vec2 secondOrderValuesExpand = new Vec2(3f, 0.6f);
+        public Vec2 secondOrderValuesExpand = new Vec2(3f, 0.55f);
         public Vec2 secondOrderValuesContract = new Vec2(3f, 0.9f);
 
         public bool hidden = false;
@@ -66,6 +66,8 @@ namespace DynamicWin.UI.UIElements
             }
 
             MainForm.Instance.Opacity = hidden ? 0.75f : 1f;
+
+            mode = Settings.IslandMode;
 
             topOffset = Mathf.Lerp(topOffset, (mode == IslandMode.Island) ? 15f : 5f, 15f * deltaTime);
         }

@@ -242,7 +242,7 @@ namespace DynamicWin.Utils
                         var rRect = new SKRoundRect(rect, roundRadius);
 
                         Col pCol = Col.Lerp(Secondary, Primary, Mathf.Clamp(barHeight[i] * 2 + (averageAmplitude / 2), 0, 1));
-                        paint.Color = pCol.Value();
+                        paint.Color = GetColor(pCol).Value();
 
                         canvas.DrawRoundRect(rRect, paint);
                     }
@@ -259,7 +259,7 @@ namespace DynamicWin.Utils
                         var rRect = new SKRoundRect(rect, roundRadius);
 
                         Col pCol = Col.Lerp(Secondary, Primary, Mathf.Clamp(smoothAverageAmps[i], 0, 1));
-                        paint.Color = pCol.Value();
+                        paint.Color = GetColor(pCol).Value();
 
                         canvas.DrawRoundRect(rRect, paint);
                     }

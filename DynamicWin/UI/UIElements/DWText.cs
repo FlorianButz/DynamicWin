@@ -13,7 +13,8 @@ namespace DynamicWin.UI.UIElements
         private string text = "";
         public string Text { get { return text; } set { SetText(value); } }
 
-        public float textSize = 24;
+        private float textSize = 24;
+        public float TextSize { get => textSize; set => textSize = value; }
 
         private Vec2 textBounds;
 
@@ -39,6 +40,7 @@ namespace DynamicWin.UI.UIElements
         public override void Draw(SKCanvas canvas)
         {
             var paint = GetPaint();
+            paint.Color = Color.Value();
             paint.TextSize = textSize;
             paint.Typeface = font;
 
@@ -91,7 +93,7 @@ namespace DynamicWin.UI.UIElements
 
                     textSize = Mathf.Lerp(ogTextSize, ogTextSize * 1.5f, t);
                     localBlurAmount = Mathf.Lerp(0, 10, t);
-                    alpha = Mathf.Lerp(1, 0, x);
+                    Alpha = Mathf.Lerp(1, 0, x);
                 }
                 else
                 {
@@ -101,7 +103,7 @@ namespace DynamicWin.UI.UIElements
 
                     textSize = Mathf.Lerp(ogTextSize / 2.5f, ogTextSize, t);
                     localBlurAmount = Mathf.Lerp(10, 0, t);
-                    alpha = Mathf.Lerp(0, 1, x);
+                    Alpha = Mathf.Lerp(0, 1, x);
                 }
             };
 

@@ -66,6 +66,15 @@ namespace DynamicWin.Utils
                 (byte)(b * 255));
         }
 
+        public System.Windows.Media.Color ValueSystemMedia()
+        {
+            return System.Windows.Media.Color.FromArgb(
+                (byte)(a * 255),
+                (byte)(r * 255),
+                (byte)(g * 255),
+                (byte)(b * 255));
+        }
+
         public Col Inverted()
         {
             return new Col(1f - r, 1f - g, 1f - g, a);

@@ -16,7 +16,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DynamicWin.UI.UIElements.Custom
 {
-    public class TrayFile : UIObject
+    internal class TrayFile : UIObject
     {
         string file;
         Bitmap thumbnail;
@@ -47,7 +47,7 @@ namespace DynamicWin.UI.UIElements.Custom
             fileTitle = new DWText(this, DWText.Truncate(Path.GetFileNameWithoutExtension(file), 8) + Path.GetExtension(file), new Vec2(0, -10), UIAlignment.BottomCenter)
             {
                 Color = Theme.TextSecond,
-                textSize = 11
+                TextSize = 11
             };
 
             AddLocalObject(fileTitle);
@@ -60,13 +60,13 @@ namespace DynamicWin.UI.UIElements.Custom
             AddLocalObject(new DWText(this, modifyString, new Vec2(0, 7.5f), UIAlignment.BottomCenter)
             {
                 Color = Theme.TextThird,
-                textSize = 10f
+                TextSize = 10f
             });
 
             AddLocalObject(new DWText(this, fileSize, new Vec2(0, 17.5f), UIAlignment.BottomCenter)
             {
                 Color = Theme.TextThird,
-                textSize = 10f
+                TextSize = 10f
             });
 
             fileIconImage = new DWImage(this, Resources.Res.FileIcon, new Vec2(0, 30), new Vec2(50, 50), UIAlignment.TopCenter);

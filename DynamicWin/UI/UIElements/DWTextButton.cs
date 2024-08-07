@@ -22,7 +22,7 @@ namespace DynamicWin.UI.UIElements
             text = new DWText(this, buttonText, Vec2.zero, UIAlignment.Center);
             AddLocalObject(text);
 
-            Text.textSize = normalTextSize;
+            Text.TextSize = normalTextSize;
         }
 
         public override void Update(float deltaTime)
@@ -40,7 +40,7 @@ namespace DynamicWin.UI.UIElements
             else
                 currentTextSize *= normalScaleMulti.Magnitude;
 
-            Text.textSize = Mathf.Lerp(Text.textSize, currentTextSize, textSizeSmoothSpeed * deltaTime);
+            Text.TextSize = Mathf.Lerp(Text.TextSize, currentTextSize, textSizeSmoothSpeed * deltaTime);
         }
     }
 }

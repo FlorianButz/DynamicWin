@@ -10,20 +10,34 @@ namespace DynamicWin.Main
 {
     public class Settings
     {
-        public static IslandObject.IslandMode IslandMode { get; set; }
-        public static bool AllowBlur { get; set; }
-        public static bool AllowAnimation { get; set; }
-        public static bool AntiAliasing { get; set; }
+        private static IslandObject.IslandMode islandMode;
+        private static bool allowBlur;
+        private static bool allowAnimation;
+        private static bool antiAliasing;
+        private static int theme;
+        private static bool useCustomTheme;
+        private static ThemeHolder customTheme;
 
-        public static bool UseCustomTheme { get; set; }
-        public static ThemeHolder CustomTheme { get; set; }
+        public static IslandObject.IslandMode IslandMode { get => islandMode; set => islandMode = value; }
+        public static bool AllowBlur { get => allowBlur; set => allowBlur = value; }
+        public static bool AllowAnimation { get => allowAnimation; set => allowAnimation = value; }
+        public static bool AntiAliasing { get => antiAliasing; set => antiAliasing = value; }
+
+        public static int Theme { get => theme; set => theme = value; }
+
+        public static bool UseCustomTheme { get => useCustomTheme; set => useCustomTheme = value; }
+        public static ThemeHolder CustomTheme { get => customTheme; set => customTheme = value; }
 
         public static void InitializeSettings()
         {
-            IslandMode = IslandObject.IslandMode.Notch;
+            System.Diagnostics.Debug.WriteLine("wdjoadjia");
+
+            IslandMode = IslandObject.IslandMode.Island;
             AllowBlur = true;
             AllowAnimation = true;
             AntiAliasing = true;
+
+            Settings.Theme = 0;
 
             UseCustomTheme = false;
             CustomTheme = new ThemeHolder
@@ -47,7 +61,7 @@ namespace DynamicWin.Main
         static void AfterSettingsLoaded()
         {
             if(UseCustomTheme)
-                Theme.Instance.ApplyTheme(CustomTheme);
+                DynamicWin.Utils.Theme.Instance.ApplyTheme(CustomTheme);
         }
     }
 }

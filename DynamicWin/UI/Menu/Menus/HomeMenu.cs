@@ -152,7 +152,7 @@ namespace DynamicWin.UI.Menu.Menus
 
             var settingsButton = new DWImageButton(topContainer, Resources.Res.Settings, new Vec2(-20f, 0), new Vec2(20, 20), () =>
             {
-                MenuManager.OpenMenu(new SettingsMenu());
+                new SettingsWindow();
             },
             UIAlignment.MiddleRight);
             settingsButton.normalColor = Col.Transparent;

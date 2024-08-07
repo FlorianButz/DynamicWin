@@ -47,6 +47,7 @@ namespace DynamicWin.Main
             MainForm.Instance.AllowDrop = true;
         }
 
+
         public bool isDragging = false;
 
         public void OnScroll(object? sender, System.Windows.Input.MouseWheelEventArgs e)
@@ -54,7 +55,7 @@ namespace DynamicWin.Main
             onScrollEvent?.Invoke(e);
         }
 
-        void AddRenderer()
+        public void AddRenderer()
         {
             if (RendererMain.Instance != null) RendererMain.Instance.Destroy();
 

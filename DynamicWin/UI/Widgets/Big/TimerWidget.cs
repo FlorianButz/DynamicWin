@@ -45,7 +45,7 @@ namespace DynamicWin.UI.Widgets.Big
 
             timerText = new DWText(parent, "00:00:00", new Vec2(15, 0f), UIAlignment.MiddleLeft)
             {
-                textSize = 45,
+                TextSize = 45,
                 Font = Resources.Res.InterRegular
             };
             timerText.Anchor.X = 0;
@@ -216,7 +216,7 @@ namespace DynamicWin.UI.Widgets.Big
         {
             base.Update(deltaTime);
 
-            timerText.textSize = Mathf.Lerp(timerText.textSize, isTimerRunning ? 29 : 25, 10f * deltaTime);
+            timerText.TextSize = Mathf.Lerp(timerText.TextSize, isTimerRunning ? 29 : 25, 10f * deltaTime);
 
             var tOff = -5f;
             var mul = 0.365f;
@@ -248,7 +248,7 @@ namespace DynamicWin.UI.Widgets.Big
             base.DrawWidget(canvas);
 
             var paint = GetPaint();
-            paint.Color = Theme.WidgetBackground.Value();
+            paint.Color = GetColor(Theme.WidgetBackground).Value();
             canvas.DrawRoundRect(GetRect(), paint);
         }
     }

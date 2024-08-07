@@ -9,7 +9,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace DynamicWin.UI.UIElements.Custom
 {
-    public class DWTextGroup : UIObject
+    internal class DWTextGroup : UIObject
     {
         List<DWText> textPieces = new List<DWText>();
 
@@ -67,7 +67,7 @@ namespace DynamicWin.UI.UIElements.Custom
                 {
                     var textPiece = new DWText(this, c.ToString(), new Vec2(xAdded, 0));
                     xAdded += textPiece.TextBounds.X;
-                    textPiece.textSize = textSize;
+                    textPiece.TextSize = textSize;
                     textPieces.Add(textPiece);
                     textPiece.SilentSetActive(false);
                     textPiece.SetActive(true);
@@ -77,7 +77,7 @@ namespace DynamicWin.UI.UIElements.Custom
                 else
                 {
                     var textPiece = textPieces[counter];
-                    textPiece.textSize = textSize;
+                    textPiece.TextSize = textSize;
                     textPiece.Text = c.ToString();
                 }
                 counter++;

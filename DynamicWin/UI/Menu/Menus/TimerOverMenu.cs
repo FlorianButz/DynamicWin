@@ -20,7 +20,7 @@ namespace DynamicWin.UI.Menu.Menus
 
             overText = new DWText(island, "Timer Over!", new Utils.Vec2(0, 0), UIAlignment.Center)
             {
-                textSize = 20,
+                TextSize = 20,
                 Font = Resources.Res.InterBold
             };
 
@@ -46,7 +46,7 @@ namespace DynamicWin.UI.Menu.Menus
             var delta = RendererMain.Instance.DeltaTime;
             sinCycle += delta * speed;
 
-            overText.textSize = Mathf.Remap((float)Math.Sin(sinCycle), -1, 1, 15, 25);
+            overText.TextSize = Mathf.Remap((float)Math.Sin(sinCycle), -1, 1, 15, 25);
 
             if (RendererMain.Instance.MainIsland.IsHovering && sinCycle >= 1)
                 MenuManager.CloseOverlay();

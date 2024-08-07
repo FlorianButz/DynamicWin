@@ -37,6 +37,11 @@ namespace DynamicWin.UI.Widgets.Big
         DWText title;
         DWText artist;
 
+        protected override float GetWidgetWidth()
+        {
+            return base.GetWidgetWidth() * 2f;
+        }
+
         public MediaWidget(UIObject? parent, Vec2 position, UIAlignment alignment = UIAlignment.TopCenter) : base(parent, position, alignment)
         {
             InitMediaPlayer();
@@ -100,7 +105,7 @@ namespace DynamicWin.UI.Widgets.Big
             {
                 Color = Theme.TextSecond,
                 Font = Resources.Res.InterBold,
-                textSize = 16
+                TextSize = 16
             };
             noMediaPlaying.SilentSetActive(false);
             AddLocalObject(noMediaPlaying);
@@ -109,7 +114,7 @@ namespace DynamicWin.UI.Widgets.Big
             {
                 Color = Theme.TextSecond,
                 Font = Resources.Res.InterBold,
-                textSize = 15
+                TextSize = 15
             };
             title.SilentSetActive(false);
             AddLocalObject(title);
@@ -118,7 +123,7 @@ namespace DynamicWin.UI.Widgets.Big
             {
                 Color = Theme.TextThird,
                 Font = Resources.Res.InterRegular,
-                textSize = 13
+                TextSize = 13
             };
             artist.SilentSetActive(false);
             AddLocalObject(artist);
@@ -147,8 +152,8 @@ namespace DynamicWin.UI.Widgets.Big
 
                     if (string.IsNullOrEmpty(error))
                     {
-                        title.Text = DWText.Truncate(titleString, 20);
-                        artist.Text = DWText.Truncate(artistString, 28);
+                        title.Text = DWText.Truncate(titleString, (GetWidgetWidth() == 400 ? 50 : 20));
+                        artist.Text = DWText.Truncate(artistString, (GetWidgetWidth() == 400 ? 60 : 28));
                     }
                     else
                     {
@@ -197,13 +202,15 @@ namespace DynamicWin.UI.Widgets.Big
         public override void DrawWidget(SKCanvas canvas)
         {
             var paint = GetPaint();
-            paint.Color = Theme.WidgetBackground.Value();
+            paint.Color = GetColor(Theme.WidgetBackground).Value();
             canvas.DrawRoundRect(GetRect(), paint);
 
             int saveCanvas = canvas.Save();
 
             canvas.ClipRoundRect(GetRect());
-            audioVisualizerBig.blurAmount = 12.5f;
+
+            audioVisualizerBig.Alpha = 0.75f;
+            audioVisualizerBig.blurAmount = 15f;
             audioVisualizerBig.DrawCall(canvas);
 
             canvas.RestoreToCount(saveCanvas);
@@ -225,7 +232,7 @@ namespace DynamicWin.UI.Widgets.Big
 
                 canvas.DrawBitmap(Resources.Res.Spotify, SKRect.Create(x, y, w, h), paint);
 
-                paint.Color = spotifyCol.Override(a: 0.25f * Color.a).Value();
+                paint.Color = GetColor(spotifyCol.Override(a: 0.25f * Color.a)).Value();
                 paint.StrokeWidth = 2f;
 
                 float[] intervals = { 5, 10 };
