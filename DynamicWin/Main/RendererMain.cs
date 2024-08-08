@@ -1,14 +1,18 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows.Threading;
 using DynamicWin.Resources;
 using DynamicWin.UI;
 using DynamicWin.UI.Menu;
 using DynamicWin.UI.Menu.Menus;
 using DynamicWin.UI.UIElements;
 using DynamicWin.Utils;
+using OpenTK.Graphics;
+using OpenTK;
 using SkiaSharp;
 using SkiaSharp.Views.Desktop;
 using SkiaSharp.Views.WPF;
@@ -17,7 +21,7 @@ namespace DynamicWin.Main
 {
     public class RendererMain : SKElement
     {
-        private System.Windows.Forms.Timer timer;
+        //private DispatcherTimer timer;
 
         private IslandObject islandObject;
         public IslandObject MainIsland { get => islandObject; }
@@ -32,6 +36,9 @@ namespace DynamicWin.Main
 
         public Vec2 renderOffset = Vec2.zero;
 
+        public Action<float> onUpdate;
+        public Action<SKCanvas> onDraw;
+
         public RendererMain()
         {
             MenuManager m = new MenuManager();
@@ -44,13 +51,22 @@ namespace DynamicWin.Main
             m.Init();
 
             // Set up the timer
-            timer = new System.Windows.Forms.Timer
-            {
-                Interval = 14
-            };
+            /*            timer = new System.Windows.Forms.Timer
+                        {
+                            Interval = 14
+                        };
+                        timer.Tick += (sender, args) => Update();
+                        timer.Tick += (sender, args) => Render();
+                        timer.Start();*/
+
+            /*timer = new DispatcherTimer();
             timer.Tick += (sender, args) => Update();
             timer.Tick += (sender, args) => Render();
-            timer.Start();
+            timer.Interval = TimeSpan.FromMilliseconds(8);
+            timer.Start();*/
+
+            MainForm.Instance.onMainFormRender += Update;
+            MainForm.Instance.onMainFormRender += Render;
 
             KeyHandler.onKeyDown += OnKeyRegistered;
 
@@ -67,8 +83,10 @@ namespace DynamicWin.Main
 
         public void Destroy()
         {
-            timer.Stop();
-            timer.Dispose();
+            //timer.Stop();
+
+            MainForm.Instance.onMainFormRender -= Update;
+            MainForm.Instance.onMainFormRender -= Render;
 
             KeyHandler.onKeyDown -= OnKeyRegistered;
 
@@ -107,7 +125,11 @@ namespace DynamicWin.Main
             else
                 deltaTime = 1f / 1000f;
 
+            onUpdate?.Invoke(DeltaTime);
+
             // Update Menu
+
+            MenuManager.Instance.Update(DeltaTime);
 
             if (MenuManager.Instance.ActiveMenu != null)
                 MenuManager.Instance.ActiveMenu.Update();
@@ -134,11 +156,28 @@ namespace DynamicWin.Main
 
         private void Render()
         {
-            this.InvalidateVisual();
+            Dispatcher.Invoke((Action)(() =>
+            {
+                this.InvalidateVisual();
+            }));
         }
 
         public int canvasWithoutClip;
         bool isInitialized = false;
+
+        GRContext Context;
+
+        public SKSurface GetOpenGlSurface(int width, int height)
+        {
+            if (Context == null)
+            {
+                GLControl control = new GLControl(new GraphicsMode(32, 24, 8, 4));
+                control.MakeCurrent();
+                Context = GRContext.CreateGl();
+            }
+            var gpuSurface = SKSurface.Create(Context, true, new SKImageInfo(width, height));
+            return gpuSurface;
+        }
 
         protected override void OnPaintSurface(SKPaintSurfaceEventArgs e)
         {
@@ -148,16 +187,40 @@ namespace DynamicWin.Main
 
             // Render
 
-            var canvas = e.Surface.Canvas;
-            if (canvas == null) return;
+            // Set your desired scale factor (e.g., 0.5 for half resolution)
+            float scaleFactor = 0.9f;
+
+            // Get the canvas and information about the surface
+            SKSurface surface = e.Surface;
+            SKCanvas canvas = surface.Canvas;
+            SKImageInfo info = e.Info;
+
             canvas.Clear(SKColors.Transparent);
+
+            int notScaled = canvas.Save();
+
+            // Apply scaling to render at a lower resolution
+            canvas.Scale(scaleFactor);
 
             canvasWithoutClip = canvas.Save();
 
             if(islandObject.maskInToIsland) Mask(canvas);
             islandObject.DrawCall(canvas);
 
-            if (MainIsland.hidden) return;
+            if (MainIsland.hidden)
+            {
+                // Draw the scaled-down image at full size
+                SKRect destRect2 = new SKRect(0, 0, info.Width / scaleFactor, info.Height / scaleFactor);
+
+                var i2 = surface.Snapshot();
+
+                canvas.Clear(SKColors.Transparent);
+
+                var paint2 = new SKPaint();
+                paint2.FilterQuality = SKFilterQuality.Low;
+
+                canvas.DrawImage(i2, destRect2, paint2);
+            }
 
             bool hasContextMenu = false;
             foreach (UIObject uiObject in objects)
@@ -184,7 +247,23 @@ namespace DynamicWin.Main
                 uiObject.DrawCall(canvas);
             }
 
-            if(!hasContextMenu) ContextMenu = null;
+            onDraw?.Invoke(canvas);
+
+            if (!hasContextMenu) ContextMenu = null;
+
+            canvas.RestoreToCount(notScaled);
+
+            // Draw the scaled-down image at full size
+            SKRect destRect = new SKRect(0, 0, info.Width / scaleFactor, info.Height / scaleFactor);
+            
+            var i = surface.Snapshot();
+
+            canvas.Clear(SKColors.Transparent);
+
+            var paint = new SKPaint();
+            paint.FilterQuality = SKFilterQuality.Low;
+
+            canvas.DrawImage(i, destRect, paint);
 
             canvas.Flush();
         }
@@ -201,7 +280,6 @@ namespace DynamicWin.Main
             islandMask.Deflate(new SKSize(1, 1));
             return islandMask;
         }
-
     }
 
 }

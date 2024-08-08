@@ -95,7 +95,7 @@ namespace DynamicWin.Utils
                     smoothAverageAmps[a] = Mathf.Lerp(smoothAverageAmps[a], averageAmps[a], barUpSmoothing * deltaTime);
                 }
 
-                if (avAmpsMode && updateTick % 6 == 0)
+                if (avAmpsMode && updateTick % 4 == 0)
                 {
                     for (int a = averageAmps.Length - 2; a >= 0; a--)
                     {

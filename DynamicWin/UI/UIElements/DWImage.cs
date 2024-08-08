@@ -37,6 +37,8 @@ namespace DynamicWin.UI.UIElements
         {
             var paint = GetPaint();
 
+            if (image == null) return;
+
             if (allowIconThemeColor)
             {
                 var imageFilter = SKImageFilter.CreateBlendMode(SKBlendMode.DstIn,

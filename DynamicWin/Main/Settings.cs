@@ -1,8 +1,11 @@
-﻿using DynamicWin.UI.UIElements;
+﻿using DynamicWin.Resources;
+using DynamicWin.UI.UIElements;
 using DynamicWin.Utils;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,34 +28,61 @@ namespace DynamicWin.Main
 
         public static int Theme { get => theme; set => theme = value; }
 
-        public static bool UseCustomTheme { get => useCustomTheme; set => useCustomTheme = value; }
-        public static ThemeHolder CustomTheme { get => customTheme; set => customTheme = value; }
+        public static List<string> smallWidgetsLeft;
+        public static List<string> smallWidgetsRight;
+        public static List<string> smallWidgetsMiddle;
+        public static List<string> bigWidgets;
+
+        //public static ThemeHolder CustomTheme { get => customTheme; set => customTheme = value; }
 
         public static void InitializeSettings()
         {
-            System.Diagnostics.Debug.WriteLine("wdjoadjia");
-
-            IslandMode = IslandObject.IslandMode.Island;
-            AllowBlur = true;
-            AllowAnimation = true;
-            AntiAliasing = true;
-
-            Settings.Theme = 0;
-
-            UseCustomTheme = false;
-            CustomTheme = new ThemeHolder
+            if (SaveManager.Contains("settings"))
             {
-                IslandColor = "#1A535C", // Deep Teal (background)
-                TextMain = "#FFFD82", // Bright Yellow (main text)
-                TextSecond = "#FF6B6B", // Coral Red (secondary text)
-                TextThird = "#4ECDC4", // Mint Green (tertiary text)
-                Primary = "#FFE66D", // Sunshine Yellow (primary color)
-                Secondary = "#FF1654", // Watermelon Pink (secondary color)
-                Success = "#06D6A0", // Aquamarine (success color)
-                Error = "#EF476F", // Punch Pink (error color)
-                IconColor = "#FFD166", // Mango Yellow (icon color)
-                WidgetBackground = "#11FFFFFF" // Mango Yellow (icon color)
-            };
+                IslandMode = ((Int64)SaveManager.Get("settings.islandmode") == 0) ? IslandObject.IslandMode.Island : IslandObject.IslandMode.Notch;
+
+                AllowBlur = (bool)SaveManager.Get("settings.allowblur");
+                AllowAnimation = (bool)SaveManager.Get("settings.allowanimtion");
+                AntiAliasing = (bool)SaveManager.Get("settings.antialiasing");
+
+                Theme = (int)((Int64)SaveManager.Get("settings.theme"));
+
+                Settings.smallWidgetsLeft = new List<string>();
+                Settings.smallWidgetsRight = new List<string>();
+                Settings.smallWidgetsMiddle = new List<string>();
+                Settings.bigWidgets = new List<string>();
+
+                var smallWidgetsLeft = (JArray)SaveManager.Get("settings.smallwidgetsleft");
+                var smallWidgetsRight = (JArray)SaveManager.Get("settings.smallwidgetsright");
+                var smallWidgetsMiddle = (JArray)SaveManager.Get("settings.smallwidgetsmiddle");
+                var bigWidgets = (JArray)SaveManager.Get("settings.bigwidgets");
+
+                foreach (var x in smallWidgetsLeft)
+                    Settings.smallWidgetsLeft.Add(x.ToString());
+                foreach (var x in smallWidgetsRight)
+                    Settings.smallWidgetsLeft.Add(x.ToString());
+                foreach (var x in smallWidgetsMiddle)
+                    Settings.smallWidgetsMiddle.Add(x.ToString());
+                foreach (var x in bigWidgets)
+                    Settings.bigWidgets.Add(x.ToString());
+            }
+            else
+            {
+                smallWidgetsLeft = new List<string>();
+                smallWidgetsRight = new List<string>();
+                smallWidgetsMiddle = new List<string>();
+                bigWidgets = new List<string>();
+
+                IslandMode = IslandObject.IslandMode.Island;
+                AllowBlur = true;
+                AllowAnimation = true;
+                AntiAliasing = true;
+                
+                Settings.Theme = 0;
+
+                SaveManager.SaveData.Add("settings", 1);
+            }
+
 
             // This must be run after loading all settings
             AfterSettingsLoaded();
@@ -60,8 +90,25 @@ namespace DynamicWin.Main
 
         static void AfterSettingsLoaded()
         {
-            if(UseCustomTheme)
-                DynamicWin.Utils.Theme.Instance.ApplyTheme(CustomTheme);
+            DynamicWin.Utils.Theme.Instance.UpdateTheme();
+        }
+
+        public static void Save()
+        {
+            SaveManager.Add("settings.islandmode", (IslandMode == IslandObject.IslandMode.Island) ? 0 : 1);
+
+            SaveManager.Add("settings.allowblur", AllowBlur);
+            SaveManager.Add("settings.allowanimtion", AllowAnimation);
+            SaveManager.Add("settings.antialiasing", AntiAliasing);
+
+            SaveManager.Add("settings.theme", Theme);
+
+            SaveManager.Add("settings.smallwidgetsleft", smallWidgetsLeft);
+            SaveManager.Add("settings.smallwidgetsright", smallWidgetsRight);
+            SaveManager.Add("settings.smallwidgetsmiddle", smallWidgetsMiddle);
+            SaveManager.Add("settings.bigwidgets", bigWidgets);
+
+            SaveManager.SaveAll();
         }
     }
 }

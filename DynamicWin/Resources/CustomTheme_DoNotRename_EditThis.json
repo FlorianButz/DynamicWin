@@ -1,0 +1,12 @@
+{
+  "IslandColor": "#000000",
+  "TextMain": "#dd11dd",
+  "TextSecond": "#aa11aa",
+  "TextThird": "#661166",
+  "Primary": "#dd11dd",
+  "Secondary": "#111111",
+  "Success": "#991199",
+  "Error": "#3311933",
+  "IconColor": "#dd11dd",
+  "WidgetBackground": "#11ffffff"
+}

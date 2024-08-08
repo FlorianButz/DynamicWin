@@ -59,6 +59,8 @@ namespace DynamicWin.UI.UIElements
                 textBounds = new Vec2(blob.Bounds.Width, blob.Bounds.Height);
             }
 
+            Size = textBounds;
+
             //canvas.DrawRoundRect(GetRect(), paint);
         }
 
@@ -107,11 +109,13 @@ namespace DynamicWin.UI.UIElements
                 }
             };
 
+            AddLocalObject(changeTextAnim);
             changeTextAnim.Start();
             changeTextAnim.onAnimationEnd += () =>
             {
                 this.text = text;
                 textSize = ogTextSize;
+                DestroyLocalObject(changeTextAnim);
             };
         }
 

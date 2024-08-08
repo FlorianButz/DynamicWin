@@ -101,23 +101,7 @@ namespace DynamicWin.UI.Menu.Menus
 
             // Create elements
 
-            //smallLeftWidgets.Add(new TimeWidget(smallWidgetsContainer, Vec2.zero, UIAlignment.MiddleLeft));
-            //smallLeftWidgets.Add(new SmallVisualizerWidget(smallWidgetsContainer, Vec2.zero, UIAlignment.MiddleLeft));
-            //smallRightWidgets.Add(new BatteryWidget(smallWidgetsContainer, Vec2.zero, UIAlignment.MiddleRight));
-            //smallRightWidgets.Add(new UsedDevicesWidget(smallWidgetsContainer, Vec2.zero, UIAlignment.MiddleRight));
 
-            foreach (var smallWidget in Res.availableSmallWidgets)
-            {
-                smallCenterWidgets.Add((SmallWidgetBase)smallWidget.CreateWidgetInstance(smallWidgetsContainer, Vec2.zero, UIAlignment.Center));
-            }
-
-            //bigWidgets.Add(new MediaWidget(bigWidgetsContainer, Vec2.zero, UIAlignment.BottomCenter));
-            //bigWidgets.Add(new TimerWidget(bigWidgetsContainer, Vec2.zero, UIAlignment.BottomCenter));
-
-            foreach (var bigWidget in Res.availableBigWidgets)
-            {
-                bigWidgets.Add(bigWidget.CreateWidgetInstance(bigWidgetsContainer, Vec2.zero, UIAlignment.BottomCenter));
-            }
 
             topContainer = new UIObject(island, new Vec2(0, 30), new Vec2(island.currSize.X, 50))
             {
@@ -152,7 +136,8 @@ namespace DynamicWin.UI.Menu.Menus
 
             var settingsButton = new DWImageButton(topContainer, Resources.Res.Settings, new Vec2(-20f, 0), new Vec2(20, 20), () =>
             {
-                new SettingsWindow();
+                //new SettingsWindow();
+                MenuManager.OpenMenu(new SettingsMenu());
             },
             UIAlignment.MiddleRight);
             settingsButton.normalColor = Col.Transparent;
@@ -168,13 +153,58 @@ namespace DynamicWin.UI.Menu.Menus
 
             bigMenuItems.Add(tray);
 
-            // Add lists
+            // Get all widgets
+
+            Dictionary<string, IRegisterableWidget> smallWidgets = new Dictionary<string, IRegisterableWidget>();
+            Dictionary<string, IRegisterableWidget> widgets = new Dictionary<string, IRegisterableWidget>();
+
+            foreach (var widget in Res.availableSmallWidgets)
+            {
+                smallWidgets.Add(widget.GetType().FullName, widget);
+                System.Diagnostics.Debug.WriteLine(widget.GetType().FullName);
+            }
+
+            foreach (var widget in Res.availableBigWidgets)
+            {
+                widgets.Add(widget.GetType().FullName, widget);
+                System.Diagnostics.Debug.WriteLine(widget.GetType().FullName);
+            }
+
+            // Create widgets
+
+            foreach (var smallWidget in Settings.smallWidgetsMiddle)
+            {
+                var widget = smallWidgets[smallWidget.ToString()];
+
+                smallCenterWidgets.Add((SmallWidgetBase)widget.CreateWidgetInstance(smallWidgetsContainer, Vec2.zero, UIAlignment.Center));
+            }
+
+            foreach (var smallWidget in Settings.smallWidgetsLeft)
+            {
+                var widget = smallWidgets[smallWidget.ToString()];
+
+                smallLeftWidgets.Add((SmallWidgetBase)widget.CreateWidgetInstance(smallWidgetsContainer, Vec2.zero, UIAlignment.MiddleLeft));
+            }
+
+            foreach (var smallWidget in Settings.smallWidgetsRight)
+            {
+                var widget = smallWidgets[smallWidget.ToString()];
+
+                smallRightWidgets.Add((SmallWidgetBase)widget.CreateWidgetInstance(smallWidgetsContainer, Vec2.zero, UIAlignment.MiddleRight));
+            }
+
+            foreach (var bigWidget in Settings.bigWidgets)
+            {
+                var widget = widgets[bigWidget.ToString()];
+
+                bigWidgets.Add((WidgetBase)widget.CreateWidgetInstance(bigWidgetsContainer, Vec2.zero, UIAlignment.BottomCenter));
+            }
 
             smallLeftWidgets.ForEach(x => {
                 objects.Add(x);
             });
 
-            smallRightWidgets.ForEach(x => { 
+            smallRightWidgets.ForEach(x => {
                 objects.Add(x);
             });
 
@@ -182,13 +212,15 @@ namespace DynamicWin.UI.Menu.Menus
                 objects.Add(x);
             });
 
-            bigMenuItems.ForEach(x =>
-            {
+            bigWidgets.ForEach(x => {
                 objects.Add(x);
                 x.SilentSetActive(false);
-                });
+            });
 
-            bigWidgets.ForEach(x => {
+            // Add lists
+
+            bigMenuItems.ForEach(x =>
+            {
                 objects.Add(x);
                 x.SilentSetActive(false);
                 });

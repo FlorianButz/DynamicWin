@@ -1,6 +1,7 @@
 ﻿using DynamicWin.Main;
 using DynamicWin.Resources;
 using DynamicWin.Utils;
+using Microsoft.Win32;
 using System.Configuration;
 using System.Data;
 using System.Diagnostics;
@@ -16,6 +17,41 @@ namespace DynamicWin
         {
             DynamicWinMain m = new DynamicWinMain();
             m.Run();
+        }
+
+        private void AddToStartup()
+        {
+            try
+            {
+                // Set the registry key
+                string appName = "DynamicWin";
+                string appPath = Process.GetCurrentProcess().MainModule.FileName;
+
+                RegistryKey key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
+                if (key.GetValue(appName) == null)
+                {
+                    key.SetValue(appName, appPath);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions here
+                MessageBox.Show($"Failed to add application to startup: {ex.Message}");
+            }
+        }
+
+        private void SetHighPriority()
+        {
+            try
+            {
+                Process currentProcess = Process.GetCurrentProcess();
+                currentProcess.PriorityClass = ProcessPriorityClass.RealTime;
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions here
+                MessageBox.Show($"Failed to set process priority: {ex.Message}");
+            }
         }
 
 
@@ -39,6 +75,11 @@ namespace DynamicWin
                 return;
             }
 
+            //AddToStartup();
+            //SetHighPriority();
+
+            SaveManager.LoadData();
+
             Res.Load();
             KeyHandler.Start();
             new Theme();
@@ -52,6 +93,8 @@ namespace DynamicWin
         protected override void OnExit(ExitEventArgs e)
         {
             base.OnExit(e);
+
+            SaveManager.SaveAll();
 
             KeyHandler.Stop();
             GC.KeepAlive(mutex); // Important

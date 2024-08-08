@@ -1,5 +1,9 @@
 ﻿using DynamicWin.Main;
+using Newtonsoft.Json;
 using System.Globalization;
+using System.IO;
+using System.Reflection;
+using System.Windows;
 
 namespace DynamicWin.Utils
 {
@@ -33,7 +37,7 @@ namespace DynamicWin.Utils
             return Col.FromHex(hex);
         }
 
-        public void UpdateTheme()
+        public void UpdateTheme(bool refreshRenderer = false)
         {
             var darkTheme = new ThemeHolder
             {
@@ -63,7 +67,7 @@ namespace DynamicWin.Utils
                 WidgetBackground = "#11000000"
             };
 
-            if (!Settings.UseCustomTheme)
+            if (Settings.Theme != -1)
             {
                 if (Settings.Theme == 0)
                     ApplyTheme(darkTheme);
@@ -72,8 +76,45 @@ namespace DynamicWin.Utils
             }
             else
             {
-                ApplyTheme(Settings.CustomTheme);
+                try
+                {
+                    string defaultTheme = "{\r\n  \"IslandColor\": \"#000000\",\r\n  \"TextMain\": \"#dd11dd\",\r\n  \"TextSecond\": \"#aa11aa\",\r\n  \"TextThird\": \"#661166\",\r\n  \"Primary\": \"#dd11dd\",\r\n  \"Secondary\": \"#111111\",\r\n  \"Success\": \"#991199\",\r\n  \"Error\": \"#3311933\",\r\n  \"IconColor\": \"#dd11dd\",\r\n  \"WidgetBackground\": \"#11ffffff\"\r\n}";
+
+                    var directory = SaveManager.SavePath;
+                    var fileName = "Theme.dwt";
+                    
+                    if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
+
+                    var fullPath = Path.Combine(directory, fileName);
+                    if (!File.Exists(fullPath))
+                    {
+                        File.Create(fullPath);
+                        File.WriteAllText(fullPath, defaultTheme);
+                    }
+
+                    var json = File.ReadAllText(fullPath);
+                    
+                    if(string.IsNullOrEmpty(json))
+                    {
+                        File.WriteAllText(fullPath, defaultTheme);
+                        json = defaultTheme;
+                    }
+                    
+                    System.Diagnostics.Debug.WriteLine("Loaded theme: " + json);
+
+                    var customTheme = new ThemeHolder();
+                    customTheme = JsonConvert.DeserializeObject<ThemeHolder>(json);
+                    ApplyTheme(customTheme);
+                }
+                catch(Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine("Couldn't load custom theme.");
+                    ApplyTheme(darkTheme);
+                }
             }
+
+            if (refreshRenderer)
+                MainForm.Instance.AddRenderer();
         }
 
         public static Col TextMain { get; set; }

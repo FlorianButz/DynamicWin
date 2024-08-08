@@ -85,6 +85,14 @@ namespace DynamicWin.UI.Menu
         Animator menuAnimatorIn;
         Animator menuAnimatorOut;
 
+        public void Update(float deltaTime)
+        {
+            if (menuAnimatorIn != null)
+                menuAnimatorIn.Update(deltaTime);
+            if (menuAnimatorOut != null)
+                menuAnimatorOut.Update(deltaTime);
+        }
+
         private void SetActiveMenu(BaseMenu newActiveMenu)
         {
             if (menuAnimatorIn != null && menuAnimatorIn.IsRunning) return;
@@ -177,12 +185,15 @@ namespace DynamicWin.UI.Menu
                         return;
                     }
 
+                    activeMenu.UiObjects.Remove(menuAnimatorIn);
+
                     menuAnimatorOut.Start();
                 };
             }
 
             if (menuAnimatorIn == null) menuAnimatorOut.Start();
-            else menuAnimatorIn.Start();
+            else 
+                menuAnimatorIn.Start();
         }
 
         void LoadMenuEnd()

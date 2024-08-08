@@ -11,9 +11,9 @@ namespace DynamicWin.UI.UIElements
     {
         // Button Color
 
-        public Col normalColor = new Col(1f, 1f, 1f, 0.25f);
-        public Col hoverColor = new Col(1f, 1f, 1f, 0.45f);
-        public Col clickColor = new Col(1f, 1f, 1f, 0.15f);
+        public Col normalColor = Theme.IconColor.Override(a: 0.15f);
+        public Col hoverColor = Theme.IconColor.Override(a: 0.25f);
+        public Col clickColor = Theme.IconColor.Override(a: 0.65f);
 
         public float colorSmoothingSpeed = 15f;
 

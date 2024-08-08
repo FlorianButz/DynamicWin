@@ -21,6 +21,9 @@ namespace DynamicWin.UI.UIElements
         public enum IslandMode { Island, Notch };
         public IslandMode mode = Settings.IslandMode;
 
+        float dropShadowStrength = 0f;
+        float dropShadowSize = 0f;
+
         public IslandObject() : base(null, Vec2.zero, new Vec2(250, 50), UIAlignment.TopCenter)
         {
             currSize = Size;
@@ -70,6 +73,9 @@ namespace DynamicWin.UI.UIElements
             mode = Settings.IslandMode;
 
             topOffset = Mathf.Lerp(topOffset, (mode == IslandMode.Island) ? 15f : 5f, 15f * deltaTime);
+
+            dropShadowStrength = Mathf.Lerp(dropShadowStrength, IsHovering ? 0.75f : 0.25f, 10f * deltaTime);
+            dropShadowSize = Mathf.Lerp(dropShadowSize, IsHovering ? 35f : 7.5f, 10f * deltaTime);
         }
 
         public override void Draw(SKCanvas canvas)
@@ -81,10 +87,7 @@ namespace DynamicWin.UI.UIElements
 
             if (!hidden)
             {
-                if (!IsHovering)
-                    paint.ImageFilter = SKImageFilter.CreateDropShadow(1, 1, 7.5f, 7.5f, new Col(0, 0, 0).Override(a: 0.35f).Value());
-                else
-                    paint.ImageFilter = SKImageFilter.CreateDropShadow(1, 1, 35, 35, (Theme.IslandBackground * 0.5f).Override(a: 0.85f).Value());
+                paint.ImageFilter = SKImageFilter.CreateDropShadow(1, 1, dropShadowSize, dropShadowSize, new Col(0, 0, 0).Override(a: dropShadowStrength).Value());
             }
 
             canvas.DrawRoundRect(GetRect(), paint);

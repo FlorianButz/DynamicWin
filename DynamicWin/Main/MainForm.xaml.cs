@@ -4,6 +4,7 @@ using DynamicWin.UI.Menu.Menus;
 using DynamicWin.Utils;
 using Microsoft.VisualBasic;
 using OpenTK.Input;
+using SkiaSharp;
 using SkiaSharp.Views.Desktop;
 using SkiaSharp.Views.WPF;
 using System;
@@ -17,6 +18,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media;
 
 namespace DynamicWin.Main
 {
@@ -27,9 +29,17 @@ namespace DynamicWin.Main
 
         public static Action<System.Windows.Input.MouseWheelEventArgs> onScrollEvent;
 
+
+        private DateTime _lastRenderTime;
+        private readonly TimeSpan _targetElapsedTime = TimeSpan.FromMilliseconds(16); // ~60 FPS
+
+        public Action onMainFormRender;
+
         public MainForm()
         {
             InitializeComponent();
+
+            CompositionTarget.Rendering += OnRendering;
 
             instance = this;
 
@@ -47,6 +57,16 @@ namespace DynamicWin.Main
             MainForm.Instance.AllowDrop = true;
         }
 
+        private void OnRendering(object? sender, EventArgs e)
+        {
+            var currentTime = DateTime.Now;
+            if (currentTime - _lastRenderTime >= _targetElapsedTime)
+            {
+                _lastRenderTime = currentTime;
+
+                onMainFormRender.Invoke();
+            }
+        }
 
         public bool isDragging = false;
 
@@ -102,8 +122,6 @@ namespace DynamicWin.Main
             try
             {
                 isLocalDrag = true;
-
-                RendererMain.Instance.MainIsland.hidden = true;
 
                 DataObject dataObject = new DataObject(DataFormats.FileDrop, files);
                 var effects = DragDrop.DoDragDrop((DependencyObject)this, dataObject, DragDropEffects.Move | DragDropEffects.Copy);

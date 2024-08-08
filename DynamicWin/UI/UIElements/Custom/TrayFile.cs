@@ -210,10 +210,10 @@ namespace DynamicWin.UI.UIElements.Custom
                 //var rect = SKRect.Create(Position.X - 15, Position.Y, Size.X + 30, Size.Y);
                 //var rRect = new SKRoundRect(rect, roundRadius);
 
-                var textR = SKRect.Create(fileTitle.Position.X, fileTitle.Position.Y,
+                var textR = SKRect.Create(fileTitle.Position.X, fileTitle.Position.Y + 1.5f,
                     fileTitle.Size.X, fileTitle.Size.Y);
-                var roundTextRect = new SKRoundRect(textR, 1.5f);
-                roundTextRect.Inflate(5f, 5f);
+                textR.Inflate(-2.5f, 0);
+                var roundTextRect = new SKRoundRect(textR, 5f);
 
                 var thumbnailR = SKRect.Create(fileIconImage.Position.X, fileIconImage.Position.Y,
                     fileIconImage.Size.X, fileIconImage.Size.Y + 5);

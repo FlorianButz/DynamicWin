@@ -399,8 +399,10 @@ namespace DynamicWin.UI
             toggleAnim.onAnimationEnd += () =>
             {
                 this.isEnabled = isEnabled;
+                DestroyLocalObject(toggleAnim);
             };
 
+            AddLocalObject(toggleAnim);
             toggleAnim.Start();
         }
 
