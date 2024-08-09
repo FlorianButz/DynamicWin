@@ -98,11 +98,11 @@ namespace DynamicWin.UI.UIElements
             {
                 var path = new SKPath();
 
-                var awidth = (float)(Math.Max(Size.Magnitude / 16, 50));
-                var aheight = (float)(Math.Max(Size.Magnitude / 8, 20f)) + (LocalPosition.Y - topOffset);
+                var awidth = (float)(Math.Max(Size.Magnitude / 16, 25));
+                var aheight = (float)(Math.Max(Size.Magnitude / 8, 15)) + (LocalPosition.Y - topOffset);
+                var y = 5;
 
                 { // Left notch curve
-                    var y = LocalPosition.Y - topOffset;
 
                     var x = Position.X - awidth;
 
@@ -116,7 +116,6 @@ namespace DynamicWin.UI.UIElements
                 }
 
                 { // Right notch curve
-                    var y = Position.Y - topOffset;
 
                     var x = Position.X + Size.X + awidth;
 

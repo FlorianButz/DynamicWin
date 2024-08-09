@@ -102,9 +102,22 @@ namespace DynamicWin.Main
 
         void OnKeyRegistered(Keys key, KeyModifier modifier)
         {
-            if(key == Keys.LWin && modifier.isCtrlDown)
+            if (key == Keys.LWin && modifier.isCtrlDown)
             {
                 islandObject.hidden = !islandObject.hidden;
+            }
+
+            if (key == Keys.VolumeDown || key == Keys.VolumeMute || key == Keys.VolumeUp)
+            {
+                if (MenuManager.Instance.ActiveMenu is HomeMenu)
+                {
+                    MenuManager.OpenOverlayMenu(new VolumeAdjustMenu(), 100f);
+                }
+                else
+                {
+                    if (VolumeAdjustMenu.timerUntilClose != null)
+                        VolumeAdjustMenu.timerUntilClose = 0f;
+                }
             }
         }
 
@@ -140,6 +153,8 @@ namespace DynamicWin.Main
             // Update logic here
 
             islandObject.UpdateCall(DeltaTime);
+
+            if (MainIsland.hidden) return;
 
             foreach (UIObject uiObject in objects)
             {
@@ -187,9 +202,6 @@ namespace DynamicWin.Main
 
             // Render
 
-            // Set your desired scale factor (e.g., 0.5 for half resolution)
-            float scaleFactor = 0.9f;
-
             // Get the canvas and information about the surface
             SKSurface surface = e.Surface;
             SKCanvas canvas = surface.Canvas;
@@ -197,30 +209,12 @@ namespace DynamicWin.Main
 
             canvas.Clear(SKColors.Transparent);
 
-            int notScaled = canvas.Save();
-
-            // Apply scaling to render at a lower resolution
-            canvas.Scale(scaleFactor);
-
             canvasWithoutClip = canvas.Save();
 
             if(islandObject.maskInToIsland) Mask(canvas);
             islandObject.DrawCall(canvas);
 
-            if (MainIsland.hidden)
-            {
-                // Draw the scaled-down image at full size
-                SKRect destRect2 = new SKRect(0, 0, info.Width / scaleFactor, info.Height / scaleFactor);
-
-                var i2 = surface.Snapshot();
-
-                canvas.Clear(SKColors.Transparent);
-
-                var paint2 = new SKPaint();
-                paint2.FilterQuality = SKFilterQuality.Low;
-
-                canvas.DrawImage(i2, destRect2, paint2);
-            }
+            if (MainIsland.hidden) return;
 
             bool hasContextMenu = false;
             foreach (UIObject uiObject in objects)
@@ -238,6 +232,20 @@ namespace DynamicWin.Main
                     ContextMenu = contextMenu;
                 }
 
+                foreach(UIObject obj in uiObject.LocalObjects)
+                {
+                    if (obj.IsHovering && obj.GetContextMenu() != null)
+                    {
+                        hasContextMenu = true;
+
+                        var contextMenu = obj.GetContextMenu();
+                        //contextMenu.BackColor = Theme.IslandBackground.ValueSystem();
+                        //contextMenu.ForeColor = Theme.TextMain.ValueSystem();
+
+                        ContextMenu = contextMenu;
+                    }
+                }
+
                 if (uiObject.maskInToIsland)
                 {
                     Mask(canvas);
@@ -250,20 +258,6 @@ namespace DynamicWin.Main
             onDraw?.Invoke(canvas);
 
             if (!hasContextMenu) ContextMenu = null;
-
-            canvas.RestoreToCount(notScaled);
-
-            // Draw the scaled-down image at full size
-            SKRect destRect = new SKRect(0, 0, info.Width / scaleFactor, info.Height / scaleFactor);
-            
-            var i = surface.Snapshot();
-
-            canvas.Clear(SKColors.Transparent);
-
-            var paint = new SKPaint();
-            paint.FilterQuality = SKFilterQuality.Low;
-
-            canvas.DrawImage(i, destRect, paint);
 
             canvas.Flush();
         }

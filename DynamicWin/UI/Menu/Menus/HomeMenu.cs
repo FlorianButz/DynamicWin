@@ -8,6 +8,7 @@ using DynamicWin.UI.Widgets.Small;
 using DynamicWin.Utils;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows.Forms;
 
 namespace DynamicWin.UI.Menu.Menus
 {
@@ -67,12 +68,10 @@ namespace DynamicWin.UI.Menu.Menus
                     }
                 }
 
-                sizeTogetherBiggest += bCD + (bigWidgetsSpacing * (bigWidgets.Count / maxBigWidgetInOneRow)) + topSpacing;
-
-                int lines = (int)Math.Round((decimal)((float)bigWidgets.Count / (float)maxBigWidgetInOneRow));
+                sizeTogetherBiggest += bCD + (bigWidgetsSpacing * (int)Math.Floor((float)(bigWidgets.Count / maxBigWidgetInOneRow))) + topSpacing;
 
                 // Set the container height to the total height of all rows
-                size.Y = Math.Max(size.Y, sizeTogetherBiggest + ((lines <= 1) ? topSpacing / 2f : topSpacing));
+                size.Y = Math.Max(size.Y, sizeTogetherBiggest + topSpacing);
             }
 
             if (!isWidgetMode) size.Y = 250;
@@ -100,8 +99,6 @@ namespace DynamicWin.UI.Menu.Menus
             bigWidgetsContainer = new UIObject(island, Vec2.zero, IslandSize(), UIAlignment.Center);
 
             // Create elements
-
-
 
             topContainer = new UIObject(island, new Vec2(0, 30), new Vec2(island.currSize.X, 50))
             {
@@ -160,12 +157,14 @@ namespace DynamicWin.UI.Menu.Menus
 
             foreach (var widget in Res.availableSmallWidgets)
             {
+                if (smallWidgets.ContainsKey(widget.GetType().FullName)) continue;
                 smallWidgets.Add(widget.GetType().FullName, widget);
                 System.Diagnostics.Debug.WriteLine(widget.GetType().FullName);
             }
 
             foreach (var widget in Res.availableBigWidgets)
             {
+                if (widgets.ContainsKey(widget.GetType().FullName)) continue;
                 widgets.Add(widget.GetType().FullName, widget);
                 System.Diagnostics.Debug.WriteLine(widget.GetType().FullName);
             }
@@ -174,6 +173,7 @@ namespace DynamicWin.UI.Menu.Menus
 
             foreach (var smallWidget in Settings.smallWidgetsMiddle)
             {
+                if (!smallWidgets.ContainsKey(smallWidget.ToString())) continue;
                 var widget = smallWidgets[smallWidget.ToString()];
 
                 smallCenterWidgets.Add((SmallWidgetBase)widget.CreateWidgetInstance(smallWidgetsContainer, Vec2.zero, UIAlignment.Center));
@@ -181,6 +181,7 @@ namespace DynamicWin.UI.Menu.Menus
 
             foreach (var smallWidget in Settings.smallWidgetsLeft)
             {
+                if (!smallWidgets.ContainsKey(smallWidget.ToString())) continue;
                 var widget = smallWidgets[smallWidget.ToString()];
 
                 smallLeftWidgets.Add((SmallWidgetBase)widget.CreateWidgetInstance(smallWidgetsContainer, Vec2.zero, UIAlignment.MiddleLeft));
@@ -188,6 +189,7 @@ namespace DynamicWin.UI.Menu.Menus
 
             foreach (var smallWidget in Settings.smallWidgetsRight)
             {
+                if (!smallWidgets.ContainsKey(smallWidget.ToString())) continue;
                 var widget = smallWidgets[smallWidget.ToString()];
 
                 smallRightWidgets.Add((SmallWidgetBase)widget.CreateWidgetInstance(smallWidgetsContainer, Vec2.zero, UIAlignment.MiddleRight));
@@ -195,6 +197,7 @@ namespace DynamicWin.UI.Menu.Menus
 
             foreach (var bigWidget in Settings.bigWidgets)
             {
+                if (!widgets.ContainsKey(bigWidget.ToString())) continue;
                 var widget = widgets[bigWidget.ToString()];
 
                 bigWidgets.Add((WidgetBase)widget.CreateWidgetInstance(bigWidgetsContainer, Vec2.zero, UIAlignment.BottomCenter));
@@ -232,7 +235,7 @@ namespace DynamicWin.UI.Menu.Menus
         public float bigWidgetsSpacing = 15;
         int maxBigWidgetInOneRow = 2;
 
-        public float smallWidgetsSpacing = 15;
+        public float smallWidgetsSpacing = 20;
         public float middleWidgetsSpacing = 35;
 
         bool wasHovering = false;

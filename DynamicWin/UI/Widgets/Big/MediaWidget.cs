@@ -37,10 +37,10 @@ namespace DynamicWin.UI.Widgets.Big
         DWText title;
         DWText artist;
 
-        protected override float GetWidgetWidth()
+        /*protected override float GetWidgetWidth()
         {
             return base.GetWidgetWidth() * 2f;
-        }
+        }*/
 
         public MediaWidget(UIObject? parent, Vec2 position, UIAlignment alignment = UIAlignment.TopCenter) : base(parent, position, alignment)
         {
@@ -95,7 +95,7 @@ namespace DynamicWin.UI.Widgets.Big
             AddLocalObject(audioVisualizer);
 
             audioVisualizerBig = new AudioVisualizer(this, new Vec2(0, 0), GetWidgetSize(), length: 16, alignment: UIAlignment.Center,
-                Primary: spotifyCol.Override(a: 0.25f), Secondary: spotifyCol.Override(a: 0.1f) * 0.1f)
+                Primary: spotifyCol.Override(a: 0.35f), Secondary: spotifyCol.Override(a: 0.025f) * 0.1f)
             {
                 divisor = 2f
             };
@@ -138,7 +138,7 @@ namespace DynamicWin.UI.Widgets.Big
         {
             base.Update(deltaTime);
 
-            if (cycle % 64 == 0)
+            if (cycle % 32 == 0)
             {
                 isSpotifyAvaliable = IsSpotifyAvaliable();
 

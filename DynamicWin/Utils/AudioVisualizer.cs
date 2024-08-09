@@ -48,9 +48,15 @@ namespace DynamicWin.Utils
             fftValues = new float[length];
             barHeight = new float[length];
 
-            capture = new WasapiLoopbackCapture();
-            capture.DataAvailable += OnDataAvailable;
-            capture.StartRecording();
+            try
+            {
+                capture = new WasapiLoopbackCapture();
+                capture.DataAvailable += OnDataAvailable;
+                capture.StartRecording();
+            }catch(Exception e)
+            {
+                return;
+            }
         }
 
         public override void OnDestroy()
@@ -68,13 +74,13 @@ namespace DynamicWin.Utils
             }
         }
 
-        int updateTick = 0;
+        float updateTick = 0;
 
         public override void Update(float deltaTime)
         {
             base.Update(deltaTime);
 
-            updateTick++;
+            updateTick += 1000 * deltaTime;
 
             if (fftValues == null || fftValues.Length == 0) return;
 
@@ -95,8 +101,9 @@ namespace DynamicWin.Utils
                     smoothAverageAmps[a] = Mathf.Lerp(smoothAverageAmps[a], averageAmps[a], barUpSmoothing * deltaTime);
                 }
 
-                if (avAmpsMode && updateTick % 4 == 0)
+                if (avAmpsMode && (updateTick > 75))
                 {
+                    updateTick = 0;
                     for (int a = averageAmps.Length - 2; a >= 0; a--)
                     {
                         averageAmps[a + 1] = averageAmps[a];
@@ -241,7 +248,7 @@ namespace DynamicWin.Utils
                         var rect = SKRect.Create(Position.X + i * barWidth, Position.Y + (height / 2) - bH / 2, barWidth - 5f, bH);
                         var rRect = new SKRoundRect(rect, roundRadius);
 
-                        Col pCol = Col.Lerp(Secondary, Primary, Mathf.Clamp(barHeight[i] * 2 + (averageAmplitude / 2), 0, 1));
+                        Col pCol = Col.Lerp(Secondary, Primary, Mathf.Clamp(barHeight[i], 0, 1));
                         paint.Color = GetColor(pCol).Value();
 
                         canvas.DrawRoundRect(rRect, paint);

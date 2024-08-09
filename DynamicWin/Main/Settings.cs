@@ -60,7 +60,7 @@ namespace DynamicWin.Main
                 foreach (var x in smallWidgetsLeft)
                     Settings.smallWidgetsLeft.Add(x.ToString());
                 foreach (var x in smallWidgetsRight)
-                    Settings.smallWidgetsLeft.Add(x.ToString());
+                    Settings.smallWidgetsRight.Add(x.ToString());
                 foreach (var x in smallWidgetsMiddle)
                     Settings.smallWidgetsMiddle.Add(x.ToString());
                 foreach (var x in bigWidgets)

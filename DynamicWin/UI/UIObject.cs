@@ -46,6 +46,7 @@ namespace DynamicWin.UI
         public bool maskInToIsland = true;
 
         private List<UIObject> localObjects = new List<UIObject>();
+        public List<UIObject> LocalObjects { get => localObjects; }
 
         private bool isEnabled = true;
         public bool IsEnabled { get => isEnabled; set => SetActive(value); }

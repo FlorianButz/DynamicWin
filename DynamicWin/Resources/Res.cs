@@ -43,6 +43,11 @@ namespace DynamicWin.Resources
         public static SKBitmap Check;
         public static SKBitmap Add;
 
+        public static SKBitmap AddWidget;
+
+        public static SKBitmap VolumeOn;
+        public static SKBitmap VolumeOff;
+
         public static string TimerOverSound = "Resources\\sounds\\TimerOver.wav";
 
         private static HomeMenu homeMenu;
@@ -89,6 +94,11 @@ namespace DynamicWin.Resources
             ArrowDown = LoadImg("Resources\\icons\\home\\ArrowDown.png");
             Check = LoadImg("Resources\\icons\\home\\Check.png");
             Add = LoadImg("Resources\\icons\\home\\Add.png");
+
+            AddWidget = LoadImg("Resources\\icons\\settings\\AddWidget.png");
+
+            VolumeOn = LoadImg("Resources\\icons\\home\\VolumeOn.png");
+            VolumeOff = LoadImg("Resources\\icons\\home\\VolumeOff.png");
 
             RegisterWidgets();
 

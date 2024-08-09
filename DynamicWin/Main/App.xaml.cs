@@ -19,6 +19,8 @@ namespace DynamicWin
             m.Run();
         }
 
+        public static string Version { get => "0.0.1" + "dev"; }
+
         private void AddToStartup()
         {
             try

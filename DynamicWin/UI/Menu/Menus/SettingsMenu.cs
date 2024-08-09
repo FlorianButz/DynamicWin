@@ -1,16 +1,21 @@
 ﻿using DynamicWin.Main;
 using DynamicWin.Resources;
 using DynamicWin.UI.UIElements;
+using DynamicWin.UI.Widgets;
+using DynamicWin.UI.Widgets.Small;
 using DynamicWin.Utils;
 using Newtonsoft.Json.Linq;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Navigation;
+using System.Xml.Linq;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace DynamicWin.UI.Menu.Menus
@@ -53,14 +58,6 @@ namespace DynamicWin.UI.Menu.Menus
         {
             var objects = base.InitializeMenu(island);
 
-            var backBtn = new DWTextButton(island, "Apply and Back", new Vec2(0, -45), new Vec2(350, 40), () => { SaveAndBack(); }, UIAlignment.BottomCenter)
-            {
-                roundRadius = 25
-            };
-            backBtn.Text.Font = Resources.Res.InterBold;
-
-            objects.Add(backBtn);
-
             var generalTitle = new DWText(island, "General", new Vec2(25, 0), UIAlignment.TopLeft);
             generalTitle.Font = Res.InterBold;
             generalTitle.Anchor.X = 0;
@@ -70,6 +67,7 @@ namespace DynamicWin.UI.Menu.Menus
             {
                 var islandModesTitle = new DWText(island, "Island Mode", new Vec2(25, 0), UIAlignment.TopLeft);
                 islandModesTitle.Font = Res.InterRegular;
+                islandModesTitle.Color = Theme.TextSecond;
                 islandModesTitle.TextSize = 15;
                 islandModesTitle.Anchor.X = 0;
                 objects.Add(islandModesTitle);
@@ -121,77 +119,68 @@ namespace DynamicWin.UI.Menu.Menus
 
             var widgetsTitle = new DWText(island, "Widgets", new Vec2(25, 0), UIAlignment.TopLeft);
             widgetsTitle.Font = Res.InterBold;
+            widgetsTitle.Color = Theme.TextSecond;
             widgetsTitle.Anchor.X = 0;
             objects.Add(widgetsTitle);
 
             {
-                var wTitle = new DWText(island, "Small Widgets Left", new Vec2(25, 0), UIAlignment.TopLeft);
+                var wTitle = new DWText(island, "Small Widgets (Right click to add / edit)", new Vec2(25, 0), UIAlignment.TopLeft);
                 wTitle.Font = Res.InterRegular;
+                wTitle.Color = Theme.TextSecond;
                 wTitle.TextSize = 15;
                 wTitle.Anchor.X = 0;
                 objects.Add(wTitle);
+
+                smallWidgetAdder = new SmallWidgetAdder(island, Vec2.zero, new Vec2(IslandSize().X - 50, 35), UIAlignment.TopCenter);
+                objects.Add(smallWidgetAdder);
             }
 
             {
-                var wTitle = new DWText(island, "Small Widgets Middle", new Vec2(25, 0), UIAlignment.TopLeft);
+                var wTitle = new DWText(island, "Big Widgets (Right click to add / edit)", new Vec2(25, 15), UIAlignment.TopLeft);
                 wTitle.Font = Res.InterRegular;
+                wTitle.Color = Theme.TextSecond;
                 wTitle.TextSize = 15;
                 wTitle.Anchor.X = 0;
                 objects.Add(wTitle);
+
+                bigWidgetAdder = new BigWidgetAdder(island, Vec2.zero, new Vec2(IslandSize().X - 50, 35), UIAlignment.TopCenter);
+                objects.Add(bigWidgetAdder);
             }
 
+            objects.Add(new DWText(island, "Software Version: " + DynamicWinMain.Version, new Vec2(25, 0), UIAlignment.TopLeft)
             {
-                var wTitle = new DWText(island, "Small Widgets Right", new Vec2(25, 0), UIAlignment.TopLeft);
-                wTitle.Font = Res.InterRegular;
-                wTitle.TextSize = 15;
-                wTitle.Anchor.X = 0;
-                objects.Add(wTitle);
-            }
+                Color = Theme.TextThird,
+                Anchor = new Vec2(0, 0.5f),
+                TextSize = 15
+            });
 
+            objects.Add(new DWText(island, "Licensed under the MIT license.", new Vec2(25, 0), UIAlignment.TopLeft)
             {
-                var wTitle = new DWTextImageButton(island, Res.Add, "Big Widgets", new Vec2(25, 0), new Vec2(125, 25), null, UIAlignment.TopLeft);
+                Color = Theme.TextThird,
+                Anchor = new Vec2(0, 0.5f),
+                TextSize = 15
+            });
 
-                wTitle.clickCallback = () =>
-                {
-                    var ctx = new System.Windows.Controls.ContextMenu();
+            var backBtn = new DWTextButton(island, "Apply and Back", new Vec2(0, -45), new Vec2(350, 40), () => { SaveAndBack(); }, UIAlignment.BottomCenter)
+            {
+                roundRadius = 25
+            };
+            backBtn.Text.Font = Resources.Res.InterBold;
 
-                    foreach (var availableWidget in Res.availableBigWidgets)
-                    {
-                        if (Settings.bigWidgets.Contains(availableWidget.GetType().FullName)) continue;
+            bottomMask = new UIObject(island, Vec2.zero, new Vec2(IslandSizeBig().X + 100, 200), UIAlignment.BottomCenter)
+            {
+                Color = Theme.IslandBackground
+            };
 
-                        var item = new MenuItem() { Header = availableWidget.GetType().Namespace.Split('.')[0] + ": " + availableWidget.WidgetName };
-                        item.Click += (x, y) =>
-                        {
-                            Settings.bigWidgets.Add(availableWidget.GetType().FullName);
-                            System.Diagnostics.Debug.WriteLine(availableWidget.GetType().FullName);
-
-                            wTitle.SetActive(true);
-                        };
-
-                        ctx.Items.Add(item);
-                    }
-
-                    MainForm.Instance.ContextMenu = ctx;
-                    MainForm.Instance.ContextMenu.IsOpen = true;
-                    MainForm.Instance.ContextMenu = null;
-
-                    wTitle.SilentSetActive(false);
-                };
-
-                wTitle.Text.Font = Res.InterRegular;
-                wTitle.Text.alignment = UIAlignment.MiddleLeft;
-                wTitle.Text.Anchor.X = 0f;
-                wTitle.Text.LocalPosition.X = 37.5f;
-                wTitle.Text.TextSize = 15;
-                wTitle.hoverScaleMulti = Vec2.one * 1.05f;
-                wTitle.clickScaleMulti = Vec2.one * 0.975f;
-                wTitle.Anchor.X = 0;
-
-                objects.Add(wTitle);
-            }
+            objects.Add(bottomMask);
+            objects.Add(backBtn);
 
             return objects;
         }
+
+        UIObject bottomMask;
+        SmallWidgetAdder smallWidgetAdder;
+        BigWidgetAdder bigWidgetAdder;
 
         float yScrollOffset = 0f;
         float ySmoothScroll = 0f;
@@ -201,41 +190,550 @@ namespace DynamicWin.UI.Menu.Menus
             base.Update();
 
             ySmoothScroll = Mathf.Lerp(ySmoothScroll,
-                yScrollOffset, 5f * RendererMain.Instance.DeltaTime);
+                yScrollOffset, 10f * RendererMain.Instance.DeltaTime);
 
+            bottomMask.blurAmount = 15;
+
+            var yScrollLim = 0f;
             var yPos = 35f;
             var spacing = 15f;
 
-            for(int i = 1; i < 9; i++)
+            for(int i = 0; i < UiObjects.Count - 2; i++)
             {
                 var uiObject = UiObjects[i];
                 uiObject.LocalPosition.Y = yPos + ySmoothScroll;
                 yPos += uiObject.Size.Y + spacing;
-            }
 
-            yPos = 35f;
-
-            for (int i = 9; i < UiObjects.Count; i++)
-            {
-                var uiObject = UiObjects[i];
-                uiObject.LocalPosition.Y = yPos + ySmoothScroll;
-                uiObject.LocalPosition.X = 275;
-
-                yPos += uiObject.Size.Y + spacing;
+                if (yPos > IslandSize().Y - 45) yScrollLim += uiObject.Size.Y + spacing;
             }
 
             yScrollOffset = Mathf.Lerp(yScrollOffset,
-                Mathf.Clamp(yScrollOffset, 0f, -yPos), 15f * RendererMain.Instance.DeltaTime);
+                Mathf.Clamp(yScrollOffset, -yScrollLim, 0f), 15f * RendererMain.Instance.DeltaTime);
         }
 
         public override Vec2 IslandSize()
         {
-            return new Vec2(745, 470);
+            var vec = new Vec2(450, 475);
+
+            if(smallWidgetAdder != null)
+            {
+                vec.X = Math.Max(vec.X, smallWidgetAdder.Size.X + 50);
+            }
+
+            return vec;
         }
 
         public override Vec2 IslandSizeBig()
         {
-            return new Vec2(750, 475);
+            return IslandSize() + 5;
+        }
+    }
+
+    internal class BigWidgetAdder : UIObject
+    {
+        AddNew addNew;
+
+        public BigWidgetAdder(UIObject? parent, Vec2 position, Vec2 size, UIAlignment alignment = UIAlignment.TopCenter) : base(parent, position, size, alignment)
+        {
+            Color = Theme.WidgetBackground.Override(a: 0.1f);
+            roundRadius = 20;
+
+            Anchor.Y = 0;
+
+            addNew = new AddNew(this, Vec2.zero, new Vec2(size.X, 45), UIAlignment.BottomLeft);
+            addNew.Anchor.Y = 0;
+            AddLocalObject(addNew);
+
+            UpdateWidgetDisplay();
+        }
+
+        public override void Update(float deltaTime)
+        {
+            base.Update(deltaTime);
+
+            int line = (int)(Math.Floor(displays.Count / maxE));
+
+            addNew.LocalPosition.Y  = Mathf.Lerp(addNew.LocalPosition.Y, -line * 45 - 45, 15f * deltaTime);
+            addNew.LocalPosition.X  = Mathf.Lerp(addNew.LocalPosition.X, isDisplayEven() ? Size.X / 2f : Size.X / 1.3333333f, 15f * deltaTime);
+            addNew.Size.X           = Mathf.Lerp(addNew.Size.X, isDisplayEven() ? Size.X : Size.X / 2, 15f * deltaTime);
+
+            var lines2 = (int)Math.Max(1, (displays.Count / maxE + 1));
+            Size.Y = Mathf.Lerp(Size.Y, lines2 * 45, 15f * RendererMain.Instance.DeltaTime);
+        }
+
+        bool isDisplayEven()
+        {
+            return displays.Count % 2 == 0;
+        }
+
+        List<BigWidgetAdderDisplay> displays = new List<BigWidgetAdderDisplay>();
+        float maxE = 2;
+
+        void UpdateWidgetDisplay()
+        {
+            displays.ForEach((x) => DestroyLocalObject(x));
+            displays.Clear();
+
+            Dictionary<string, IRegisterableWidget> bigWidgets = new Dictionary<string, IRegisterableWidget>();
+
+
+            foreach (var widget in Res.availableBigWidgets)
+            {
+                if (bigWidgets.ContainsKey(widget.GetType().FullName)) continue;
+                bigWidgets.Add(widget.GetType().FullName, widget);
+                System.Diagnostics.Debug.WriteLine(widget.GetType().FullName);
+            }
+
+            float xPos = 0f;
+
+            int c = 0;
+            foreach (var bigWidget in Settings.bigWidgets)
+            {
+                if (!bigWidgets.ContainsKey(bigWidget)) continue;
+
+                var widget = bigWidgets[bigWidget.ToString()];
+
+                var display = new BigWidgetAdderDisplay(this, widget.WidgetName, UIAlignment.BottomLeft);
+
+                display.onEditRemoveWidget += () => {
+                    Settings.bigWidgets.Remove(bigWidget);
+                    UpdateWidgetDisplay();
+                };
+
+                display.onEditMoveWidgetRight += () => {
+                    int index = Math.Clamp(Settings.bigWidgets.IndexOf(bigWidget) + 1, 0, Settings.bigWidgets.Count - 1);
+                    Settings.bigWidgets.Remove(bigWidget);
+
+                    Settings.bigWidgets.Insert(index, bigWidget);
+                    UpdateWidgetDisplay();
+                };
+
+                display.onEditMoveWidgetLeft += () => {
+                    int index = Math.Clamp(Settings.bigWidgets.IndexOf(bigWidget) - 1, 0, Settings.bigWidgets.Count - 1);
+                    Settings.bigWidgets.Remove(bigWidget);
+
+                    Settings.bigWidgets.Insert(index, bigWidget);
+                    UpdateWidgetDisplay();
+                };
+
+                int line = (int)(Math.Round(c / maxE));
+
+                display.LocalPosition.X = xPos - (line * Size.X);
+                display.LocalPosition.Y -= 45 + line * 45;
+                xPos += display.Size.X;
+
+                displays.Add(display);
+                AddLocalObject(display);
+
+                c++;
+            }
+        }
+
+        public override ContextMenu? GetContextMenu()
+        {
+            var ctx = new System.Windows.Controls.ContextMenu();
+            bool anyWidgetsLeft = false;
+
+            foreach (var availableWidget in Res.availableBigWidgets)
+            {
+                if (Settings.bigWidgets.Contains(availableWidget.GetType().FullName)) continue;
+
+                anyWidgetsLeft = true;
+
+                var item = new MenuItem() { Header = availableWidget.GetType().Namespace.Split('.')[0] + ": " + availableWidget.WidgetName };
+                item.Click += (x, y) =>
+                {
+                    Settings.bigWidgets.Add(availableWidget.GetType().FullName);
+                    UpdateWidgetDisplay();
+                };
+
+                ctx.Items.Add(item);
+            }
+
+            if (!anyWidgetsLeft)
+            {
+                var ctx2 = new ContextMenu();
+                ctx2.Items.Add(new MenuItem()
+                {
+                    Header = "No Widgets Available.",
+                    IsEnabled = false
+                });
+                return ctx2;
+            }
+
+            return ctx;
+        }
+    }
+
+    internal class AddNew : UIObject
+    {
+        public AddNew(UIObject? parent, Vec2 position, Vec2 size, UIAlignment alignment = UIAlignment.TopCenter) : base(parent, position, size, alignment)
+        {
+            AddLocalObject(new DWImage(this, Res.Add, Vec2.zero, new Vec2(15, 15), UIAlignment.Center)
+            {
+                Color = Theme.IconColor
+            });
+
+            Color = Theme.IconColor.Override(a: 0.4f);
+        }
+
+        public override void Draw(SKCanvas canvas)
+        {
+            var paint = GetPaint();
+
+            var placeRect = new SKRoundRect(SKRect.Create(Position.X, Position.Y, Size.X, Size.Y), 25);
+            placeRect.Deflate(5, 5);
+
+            float[] intervals = { 10, 10 };
+            paint.PathEffect = SKPathEffect.CreateDash(intervals, 0f);
+
+            paint.IsStroke = true;
+            paint.StrokeCap = SKStrokeCap.Round;
+            paint.StrokeJoin = SKStrokeJoin.Round;
+            paint.StrokeWidth = 2f;
+
+            canvas.DrawRoundRect(placeRect, paint);
+
+            placeRect.Deflate(5f, 5f);
+            paint.Color = Color.Override(a: 0.05f).Value();
+            paint.IsStroke = false;
+
+            canvas.DrawRoundRect(placeRect, paint);
+        }
+    }
+
+    internal class BigWidgetAdderDisplay : UIObject
+    {
+        public BigWidgetAdderDisplay(UIObject? parent, string widgetName, UIAlignment alignment = UIAlignment.TopCenter) : base(parent, Vec2.zero, Vec2.zero, alignment)
+        {
+            Size.X = parent.Size.X / 2;
+            Size.Y = 45;
+
+            Anchor = Vec2.zero;
+
+            AddLocalObject(new DWText(this, DWText.Truncate(widgetName, 25), Vec2.zero, UIAlignment.Center)
+            {
+                TextSize = 14
+            });
+
+            roundRadius = 45;
+
+            color = Theme.WidgetBackground.Override(a: 0.15f);
+        }
+
+        public override void Draw(SKCanvas canvas)
+        {
+            int canvasRestore = canvas.Save();
+
+            var p = Position + Size / 2;
+            canvas.Scale(this.s, this.s, p.X, p.Y);
+
+            var paint = GetPaint();
+            var rect = GetRect();
+
+            paint.Color = color.Value();
+
+            rect.Deflate(5, 5);
+            canvas.DrawRoundRect(rect, paint);
+
+            canvas.RestoreToCount(canvasRestore);
+        }
+
+        Col color;
+        float s = 1;
+
+        public override void Update(float deltaTime)
+        {
+            base.Update(deltaTime);
+
+            color.a = Mathf.Lerp(color.a, IsHovering ? 0.2f : 0.15f, 7.5f * deltaTime);
+            s = Mathf.Lerp(s, IsHovering ? 1.025f : 1, 15f * deltaTime);
+        }
+
+        public Action onEditRemoveWidget;
+        public Action onEditMoveWidgetLeft;
+        public Action onEditMoveWidgetRight;
+
+        public override ContextMenu? GetContextMenu()
+        {
+            var ctx = new System.Windows.Controls.ContextMenu();
+
+            MenuItem remove = new MenuItem() { Header = "Remove" };
+            remove.Click += (x, y) => onEditRemoveWidget?.Invoke();
+
+            MenuItem pL = new MenuItem() { Header = "<- Push Left" };
+            pL.Click += (x, y) => onEditMoveWidgetLeft?.Invoke();
+
+            MenuItem pR = new MenuItem() { Header = "Push Right ->" };
+            pR.Click += (x, y) => onEditMoveWidgetRight?.Invoke();
+
+            ctx.Items.Add(remove);
+            ctx.Items.Add(pL);
+            ctx.Items.Add(pR);
+
+            return ctx;
+        }
+    }
+
+    internal class SmallWidgetAdder : UIObject
+    {
+        public SmallWidgetAdder(UIObject? parent, Vec2 position, Vec2 size, UIAlignment alignment = UIAlignment.TopCenter) : base(parent, position, size, alignment)
+        {
+            Color = Theme.WidgetBackground.Override(a: 0.1f);
+            roundRadius = 25;
+
+            container = new UIObject(this, Vec2.zero, new Vec2(size.X - 100, size.Y), UIAlignment.Center);
+            container.Color = Col.Transparent;
+            AddLocalObject(container);
+
+            UpdateWidgetDisplay();
+        }
+
+        UIObject container;
+
+        public List<SmallWidgetBase> smallLeftWidgets = new List<SmallWidgetBase>();
+        public List<SmallWidgetBase> smallRightWidgets = new List<SmallWidgetBase>();
+        public List<SmallWidgetBase> smallCenterWidgets = new List<SmallWidgetBase>();
+
+        void UpdateWidgetDisplay()
+        {
+            smallRightWidgets.ForEach((x) => DestroyLocalObject(x));
+            smallLeftWidgets.ForEach((x) => DestroyLocalObject(x));
+            smallCenterWidgets.ForEach((x) => DestroyLocalObject(x));
+
+            smallRightWidgets.Clear();
+            smallLeftWidgets.Clear();
+            smallCenterWidgets.Clear();
+
+            Dictionary<string, IRegisterableWidget> smallWidgets = new Dictionary<string, IRegisterableWidget>();
+
+
+            foreach (var widget in Res.availableSmallWidgets)
+            {
+                smallWidgets.Add(widget.GetType().FullName, widget);
+                System.Diagnostics.Debug.WriteLine(widget.GetType().FullName);
+            }
+
+            foreach (var smallWidget in Settings.smallWidgetsMiddle)
+            {
+                if (!smallWidgets.ContainsKey(smallWidget)) continue;
+
+                var widget = smallWidgets[smallWidget.ToString()];
+
+                var instance = (SmallWidgetBase)widget.CreateWidgetInstance(container, Vec2.zero, UIAlignment.Center);
+                instance.isEditMode = true;
+
+                instance.onEditRemoveWidget += () => {
+                    Settings.smallWidgetsMiddle.Remove(smallWidget);
+                    UpdateWidgetDisplay();
+                };
+
+                instance.onEditMoveWidgetLeft += () => {
+                    int index = Math.Clamp(Settings.smallWidgetsMiddle.IndexOf(smallWidget) + 1, 0, Settings.smallWidgetsMiddle.Count - 1);
+                    Settings.smallWidgetsMiddle.Remove(smallWidget);
+
+                    Settings.smallWidgetsMiddle.Insert(index, smallWidget);
+                    UpdateWidgetDisplay();
+                };
+
+                instance.onEditMoveWidgetRight += () => {
+                    int index = Math.Clamp(Settings.smallWidgetsMiddle.IndexOf(smallWidget) - 1, 0, Settings.smallWidgetsMiddle.Count - 1);
+                    Settings.smallWidgetsMiddle.Remove(smallWidget);
+
+                    Settings.smallWidgetsMiddle.Insert(index, smallWidget);
+                    UpdateWidgetDisplay();
+                };
+
+                smallCenterWidgets.Add(instance);
+            }
+
+            foreach (var smallWidget in Settings.smallWidgetsLeft)
+            {
+                if (!smallWidgets.ContainsKey(smallWidget)) continue;
+
+                var widget = smallWidgets[smallWidget.ToString()];
+
+                var instance = (SmallWidgetBase)widget.CreateWidgetInstance(container, Vec2.zero, UIAlignment.MiddleLeft);
+                instance.isEditMode = true;
+
+                instance.onEditRemoveWidget += () => {
+                    Settings.smallWidgetsLeft.Remove(smallWidget);
+                    UpdateWidgetDisplay();
+                };
+
+                instance.onEditMoveWidgetLeft += () => {
+                    int index = Math.Clamp(Settings.smallWidgetsLeft.IndexOf(smallWidget) + 1, 0, Settings.smallWidgetsLeft.Count - 1);
+                    Settings.smallWidgetsLeft.Remove(smallWidget);
+
+                    Settings.smallWidgetsLeft.Insert(index, smallWidget);
+                    UpdateWidgetDisplay();
+                };
+
+                instance.onEditMoveWidgetRight += () => {
+                    int index = Math.Clamp(Settings.smallWidgetsLeft.IndexOf(smallWidget) - 1, 0, Settings.smallWidgetsLeft.Count - 1);
+                    Settings.smallWidgetsLeft.Remove(smallWidget);
+
+                    Settings.smallWidgetsLeft.Insert(index, smallWidget);
+                    UpdateWidgetDisplay();
+                };
+
+                smallLeftWidgets.Add(instance);
+            }
+
+            foreach (var smallWidget in Settings.smallWidgetsRight)
+            {
+                if (!smallWidgets.ContainsKey(smallWidget)) continue;
+
+                var widget = smallWidgets[smallWidget.ToString()];
+
+                var instance = (SmallWidgetBase)widget.CreateWidgetInstance(container, Vec2.zero, UIAlignment.MiddleRight);
+                instance.isEditMode = true;
+
+                instance.onEditRemoveWidget += () => {
+                    Settings.smallWidgetsRight.Remove(smallWidget);
+                    UpdateWidgetDisplay();
+                };
+
+                instance.onEditMoveWidgetLeft += () => {
+                    int index = Math.Clamp(Settings.smallWidgetsRight.IndexOf(smallWidget) + 1, 0, Settings.smallWidgetsRight.Count - 1);
+                    Settings.smallWidgetsRight.Remove(smallWidget);
+
+                    Settings.smallWidgetsRight.Insert(index, smallWidget);
+                    UpdateWidgetDisplay();
+                };
+
+                instance.onEditMoveWidgetRight += () => {
+                    int index = Math.Clamp(Settings.smallWidgetsRight.IndexOf(smallWidget) - 1, 0, Settings.smallWidgetsRight.Count - 1);
+                    Settings.smallWidgetsRight.Remove(smallWidget);
+
+                    Settings.smallWidgetsRight.Insert(index, smallWidget);
+                    UpdateWidgetDisplay();
+                };
+
+                smallRightWidgets.Add(instance);
+            }
+
+            smallCenterWidgets.ForEach((x) => AddLocalObject(x));
+            smallLeftWidgets.ForEach((x) => AddLocalObject(x));
+            smallRightWidgets.ForEach((x) => AddLocalObject(x));
+        }
+
+        public float smallWidgetsSpacing = 30;
+        public float middleWidgetsSpacing = 35;
+
+        public override void Update(float deltaTime)
+        {
+            base.Update(deltaTime);
+
+            { // Left Small Widgets
+                float leftStackedPos = 15f;
+                foreach (var smallLeft in smallLeftWidgets)
+                {
+                    smallLeft.Anchor.X = 0;
+                    smallLeft.LocalPosition.X = leftStackedPos;
+
+                    leftStackedPos += smallWidgetsSpacing + smallLeft.GetWidgetSize().X;
+                }
+            }
+
+            { // Right Small Widgets
+                float rightStackedPos = -15f;
+                foreach (var smallRight in smallRightWidgets)
+                {
+                    smallRight.Anchor.X = 1;
+                    smallRight.LocalPosition.X = rightStackedPos;
+
+                    rightStackedPos -= smallWidgetsSpacing + smallRight.GetWidgetSize().X;
+                }
+            }
+
+            { // Center Small Widgets
+                float centerStackPos = 0f;
+                foreach (var smallCenter in smallCenterWidgets)
+                {
+                    smallCenter.Anchor.X = 1;
+                    smallCenter.LocalPosition.X = centerStackPos;
+
+                    centerStackPos -= smallWidgetsSpacing + smallCenter.GetWidgetSize().X;
+                }
+
+                foreach (var smallCenter in smallCenterWidgets)
+                {
+                    smallCenter.LocalPosition.X -= centerStackPos / 2 + smallWidgetsSpacing;
+                }
+            }
+
+            Vec2 size = Size;
+
+            float sizeTogether = 0f;
+            smallLeftWidgets.ForEach(x => sizeTogether += x.GetWidgetSize().X);
+            smallRightWidgets.ForEach(x => sizeTogether += x.GetWidgetSize().X);
+            smallCenterWidgets.ForEach(x => sizeTogether += x.GetWidgetSize().X);
+
+            sizeTogether += smallWidgetsSpacing * (smallCenterWidgets.Count + smallLeftWidgets.Count + smallRightWidgets.Count + 0.25f) + middleWidgetsSpacing;
+
+            size.X = (float)Math.Max(size.X, sizeTogether);
+        }
+
+        public override ContextMenu? GetContextMenu()
+        {
+            var ctx = new System.Windows.Controls.ContextMenu();
+            bool anyWidgetsLeft = false;
+
+            MenuItem left = new MenuItem() { Header = "Left" };
+            MenuItem middle = new MenuItem() { Header = "Middle" };
+            MenuItem right = new MenuItem() { Header = "Right" };
+
+            foreach (var availableWidget in Res.availableSmallWidgets)
+            {
+                if (Settings.smallWidgetsRight.Contains(availableWidget.GetType().FullName) ||
+                    Settings.smallWidgetsLeft.Contains(availableWidget.GetType().FullName) ||
+                    Settings.smallWidgetsMiddle.Contains(availableWidget.GetType().FullName)) continue;
+
+                anyWidgetsLeft = true;
+
+                var itemR = new MenuItem() { Header = availableWidget.GetType().Namespace.Split('.')[0] + ": " + availableWidget.WidgetName };
+                itemR.Click += (x, y) =>
+                {
+                    Settings.smallWidgetsRight.Add(availableWidget.GetType().FullName);
+                    UpdateWidgetDisplay();
+                };
+
+                var itemM = new MenuItem() { Header = availableWidget.GetType().Namespace.Split('.')[0] + ": " + availableWidget.WidgetName };
+                itemM.Click += (x, y) =>
+                {
+                    Settings.smallWidgetsMiddle.Add(availableWidget.GetType().FullName);
+                    UpdateWidgetDisplay();
+                };
+
+                var itemL = new MenuItem() { Header = availableWidget.GetType().Namespace.Split('.')[0] + ": " + availableWidget.WidgetName };
+                itemL.Click += (x, y) =>
+                {
+                    Settings.smallWidgetsLeft.Add(availableWidget.GetType().FullName);
+                    UpdateWidgetDisplay();
+                };
+
+                left.Items.Add(itemL);
+                middle.Items.Add(itemM);
+                right.Items.Add(itemR);
+            }
+
+            ctx.Items.Add(left);
+            ctx.Items.Add(middle);
+            ctx.Items.Add(right);
+
+            if (!anyWidgetsLeft)
+            {
+                var ctx2 = new ContextMenu();
+                ctx2.Items.Add(new MenuItem()
+                {
+                    Header = "No Widgets Available.",
+                    IsEnabled = false
+                });
+                return ctx2;
+            }
+
+            return ctx;
         }
     }
 
