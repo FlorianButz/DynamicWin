@@ -161,7 +161,7 @@ Now you're done. Build the project and go to your project's output folder. (Most
 After that you can run DynamicWin and test your extension. This was of course a very bare bones example.
 
 > [!TIP]
-> It's best to look at the widgets that are already in DynamicWin and learn from them. You can also check out 
+> It's best to look at the widgets that are already in DynamicWin and learn from them.
 
 <br>
 Here is a small list of current UIObjects that can be used to make the widget creation process easier.
