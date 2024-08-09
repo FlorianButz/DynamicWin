@@ -30,7 +30,7 @@ I wanted to give you a peak at what went into this project and why/how I made it
 
 # Features
 > [!NOTE]
-> Only the checked features are currently available.
+> Only the checked features are currently available. The unchecked ones are not guaranteed to come, but are on my mind.
 
 DynamicWin has a variety of features, currently including: <br>
 
@@ -52,6 +52,7 @@ DynamicWin has a variety of features, currently including: <br>
 - [x] Device Usage Detector <sub>(Indicates if camera / microphone is in use)</sub>
 - [x] Power State Display <sub>(Shows battery in form of icons. If no battery is found it shows a connector icon instead)</sub>
 - [ ] Timer <sub>(Displaying current running timer)</sub>
+- [ ] CPU/GPU Usage Display
 
 ## File Tray <br>
 Files can be dragged over the island to add them to the file tray. The tray can be accessed when hovering over the island and clicking on the 'Tray' button. The files are stored until they are dragged out again. They can also be removed by selecting the file and right clicking. A context menu will popup and you can click on - **"Remove Selected Files"** or **"Remove Selected Files"** to copy the files. <br>
