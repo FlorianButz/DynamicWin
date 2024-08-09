@@ -41,8 +41,7 @@ DynamicWin has a variety of features, currently including: <br>
 ## Big Widgets
 - [x] Media Playback Widget
 - [x] Timer Widget
-- [ ] Weather Widget
-- [ ] Voicemeeter implementation Widget
+- [ ] Voicemeeter integration Widget
 - [ ] "Shortcuts" Widget <sub>(Can be configured to a certain action like opening an app or link)</sub>
 - [ ] Calendar Widget
 - [ ] Tuya Smart integration <sub>(Will probably be turned in to one widget with the shortcuts)</sub>
