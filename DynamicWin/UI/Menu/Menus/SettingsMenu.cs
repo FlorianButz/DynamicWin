@@ -135,6 +135,13 @@ namespace DynamicWin.UI.Menu.Menus
                 objects.Add(smallWidgetAdder);
             }
 
+            objects.Add(new DWText(island, " ", new Vec2(25, 0), UIAlignment.TopLeft)
+            {
+                Color = Theme.TextThird,
+                Anchor = new Vec2(0, 0.5f),
+                TextSize = 5
+            });
+
             {
                 var wTitle = new DWText(island, "Big Widgets (Right click to add / edit)", new Vec2(25, 15), UIAlignment.TopLeft);
                 wTitle.Font = Res.InterRegular;
@@ -146,6 +153,14 @@ namespace DynamicWin.UI.Menu.Menus
                 bigWidgetAdder = new BigWidgetAdder(island, Vec2.zero, new Vec2(IslandSize().X - 50, 35), UIAlignment.TopCenter);
                 objects.Add(bigWidgetAdder);
             }
+
+
+            objects.Add(new DWText(island, " ", new Vec2(25, 0), UIAlignment.TopLeft)
+            {
+                Color = Theme.TextThird,
+                Anchor = new Vec2(0, 0.5f),
+                TextSize = 20
+            });
 
             objects.Add(new DWText(island, "Software Version: " + DynamicWinMain.Version, new Vec2(25, 0), UIAlignment.TopLeft)
             {

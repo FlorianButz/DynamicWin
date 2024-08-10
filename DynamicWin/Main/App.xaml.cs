@@ -2,6 +2,7 @@
 using DynamicWin.Resources;
 using DynamicWin.Utils;
 using Microsoft.Win32;
+using NAudio.CoreAudioApi;
 using System.Configuration;
 using System.Data;
 using System.Diagnostics;
@@ -12,6 +13,9 @@ namespace DynamicWin
 {
     public partial class DynamicWinMain : Application
     {
+        public static MMDevice defaultDevice;
+
+
         [STAThread]
         public static void Main()
         {
@@ -80,11 +84,16 @@ namespace DynamicWin
             //AddToStartup();
             //SetHighPriority();
 
+            var devEnum = new MMDeviceEnumerator();
+            defaultDevice = devEnum.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
+
             SaveManager.LoadData();
 
             Res.Load();
             KeyHandler.Start();
             new Theme();
+
+            new HardwareMonitor();
 
             Settings.InitializeSettings();
 
@@ -97,6 +106,7 @@ namespace DynamicWin
             base.OnExit(e);
 
             SaveManager.SaveAll();
+            HardwareMonitor.Stop();
 
             KeyHandler.Stop();
             GC.KeepAlive(mutex); // Important

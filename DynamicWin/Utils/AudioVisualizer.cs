@@ -48,15 +48,9 @@ namespace DynamicWin.Utils
             fftValues = new float[length];
             barHeight = new float[length];
 
-            try
-            {
-                capture = new WasapiLoopbackCapture();
-                capture.DataAvailable += OnDataAvailable;
-                capture.StartRecording();
-            }catch(Exception e)
-            {
-                return;
-            }
+            capture = new WasapiLoopbackCapture(DynamicWinMain.defaultDevice);
+            capture.DataAvailable += OnDataAvailable;
+            capture.StartRecording();
         }
 
         public override void OnDestroy()

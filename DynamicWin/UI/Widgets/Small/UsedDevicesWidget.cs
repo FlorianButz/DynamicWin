@@ -35,7 +35,7 @@ namespace DynamicWin.UI.Widgets.Small
 
         protected override float GetWidgetWidth()
         {
-            return 20;
+            return camDotSizeCurrent * 4 + micDotSizeCurrent * 4;
         }
 
         float sinCycleCamera = 1f;

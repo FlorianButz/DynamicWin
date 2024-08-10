@@ -8,8 +8,8 @@
 </p>
 
 <p align="center">
-  <img src="https://i0.wp.com/sixcolors.com/wp-content/uploads/2022/09/di-animated-clip.gif?ssl=1" alt="animated" />
-</p> // Replace this gif lol
+  <img src="ReadmeFiles/IslandGif-1_Volume.gif" style="border-radius:15px" alt="animated" width="1000" height="auto" />
+</p>
 
 ### What is it?
 A [Dynamic Island](https://support.apple.com/de-de/guide/iphone/iph28f50d10d/ios) inspired Windows App that brings in a bunch of features like widgets or a file tray that works like a clipboard.
@@ -55,11 +55,18 @@ DynamicWin has a variety of features, currently including: <br>
 - [ ] CPU/GPU Usage Display
 
 ## File Tray <br>
+
+<p align="center">
+  <img style="border-radius:15px" src="ReadmeFiles/IslandGif-2_Tray.gif" alt="animated" width="1000" height="auto" />
+</p>
+
 Files can be dragged over the island to add them to the file tray. The tray can be accessed when hovering over the island and clicking on the 'Tray' button. The files are stored until they are dragged out again. They can also be removed by selecting the file and right clicking. A context menu will popup and you can click on - **"Remove Selected Files"** or **"Remove Selected Files"** to copy the files. <br>
 Idea for the future: An implementation of a service like [SnapDrop](https://snapdrop.net) to allow for an "AirDrop" kind of feature using the file tray.
 
 ## Spotify Integration
-The Media Playback Widget automatically detects when an instance of the Spotify app is running (Desktop version only). It will display the current playing song name and the artist. Login to the Spotify service on the app is **not** required.
+
+<p><img align="left" height="150" style="border-radius:15px" src="ReadmeFiles/IslandGif-3_Spotify.gif">The Media Playback Widget automatically detects when an instance of the Spotify app is running (Desktop version only). It will display the current playing song name and the artist. Login to the Spotify service on the app is <b>not</b> required.</p>
+<br><br><br>
 
 ## Mod Support
 **Yes! You can add your own small widgets and big widgets by creating a custom extension!** <br>

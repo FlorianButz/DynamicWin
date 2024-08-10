@@ -9,14 +9,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AudioSwitcher.AudioApi.CoreAudio" Version="3.0.3" />
     <PackageReference Include="FftSharp" Version="2.1.0" />
+    <PackageReference Include="LibreHardwareMonitorLib" Version="0.9.3" />
     <PackageReference Include="NAudio" Version="2.2.1" />
     <PackageReference Include="NAudio.Wasapi" Version="2.2.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="SkiaSharp" Version="2.88.8" />
     <PackageReference Include="SkiaSharp.Views" Version="2.88.8" />
     <PackageReference Include="SkiaSharp.Views.WPF" Version="2.88.8" />
+    <PackageReference Include="System.Management" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -60,6 +61,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Resources\icons\home\ArrowUp.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\icons\home\Brightness.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Resources\icons\home\Check.png">

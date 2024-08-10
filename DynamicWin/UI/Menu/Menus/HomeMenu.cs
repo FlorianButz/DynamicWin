@@ -20,6 +20,25 @@ namespace DynamicWin.UI.Menu.Menus
 
         public List<WidgetBase> bigWidgets = new List<WidgetBase>();
 
+        float songSizeAddition = 0f;
+        float songLocalPosXAddition = 0f;
+
+        public void NextSong()
+        {
+            if (RendererMain.Instance.MainIsland.IsHovering) return;
+
+            songSizeAddition = 45;
+            songLocalPosXAddition = 45;
+        }
+
+        public void PrevSong()
+        {
+            if (RendererMain.Instance.MainIsland.IsHovering) return;
+
+            songSizeAddition = 45;
+            songLocalPosXAddition = -45;
+        }
+
         public override Vec2 IslandSize()
         {
             Vec2 size = new Vec2(200, 35);
@@ -31,7 +50,7 @@ namespace DynamicWin.UI.Menu.Menus
 
             sizeTogether += smallWidgetsSpacing * (smallCenterWidgets.Count + smallLeftWidgets.Count + smallRightWidgets.Count + 0.25f) + middleWidgetsSpacing;
 
-            size.X = (float)Math.Max(size.X, sizeTogether);
+            size.X = (float)Math.Max(size.X, sizeTogether) + songSizeAddition;
 
             return size;
         }
@@ -228,14 +247,33 @@ namespace DynamicWin.UI.Menu.Menus
                 x.SilentSetActive(false);
                 });
 
+            next = new DWImage(island, Res.Next, new Vec2(-7.5f, 0), new Vec2(15, 15), UIAlignment.MiddleRight)
+            {
+                Anchor = new Vec2(1, 0.5f),
+                blurSizeOnDisable = 3f
+            };
+            next.SilentSetActive(false);
+            objects.Add(next);
+
+            previous = new DWImage(island, Res.Previous, new Vec2(7.5f, 0), new Vec2(15, 15), UIAlignment.MiddleLeft)
+            {
+                Anchor = new Vec2(0, 0.5f),
+                blurSizeOnDisable = 3f
+            };
+            previous.SilentSetActive(false);
+            objects.Add(previous);
+
             return objects;
         }
+
+        DWImage next;
+        DWImage previous;
 
         public float topSpacing = 20;
         public float bigWidgetsSpacing = 15;
         int maxBigWidgetInOneRow = 2;
 
-        public float smallWidgetsSpacing = 20;
+        public float smallWidgetsSpacing = 10;
         public float middleWidgetsSpacing = 35;
 
         bool wasHovering = false;
@@ -256,10 +294,28 @@ namespace DynamicWin.UI.Menu.Menus
             widgetButton.hoverColor = Col.Lerp(widgetButton.hoverColor, isWidgetMode ? Col.White.Override(a: 0.075f) : Col.Transparent, 15f * RendererMain.Instance.DeltaTime);
             trayButton.hoverColor = Col.Lerp(trayButton.hoverColor, (!isWidgetMode) ? Col.White.Override(a: 0.075f) : Col.Transparent, 15f * RendererMain.Instance.DeltaTime);
 
+            RendererMain.Instance.MainIsland.LocalPosition.X = Mathf.Lerp(RendererMain.Instance.MainIsland.LocalPosition.X,
+                songLocalPosXAddition, 2f * RendererMain.Instance.DeltaTime);
+            songLocalPosXAddition = Mathf.Lerp(songLocalPosXAddition, 0f, 10 * RendererMain.Instance.DeltaTime);
+            songSizeAddition = Mathf.Lerp(songSizeAddition, 0f, 10 * RendererMain.Instance.DeltaTime);
+
+            if(Math.Abs(songLocalPosXAddition) < 5f)
+            {
+                if(next.IsEnabled)
+                    next.SetActive(false);
+                if (previous.IsEnabled)
+                    previous.SetActive(false);
+            }
+            else if (songLocalPosXAddition > 15f)
+                next.SetActive(true);
+            else if (songLocalPosXAddition < -15f)
+                previous.SetActive(true);
+
             if (!RendererMain.Instance.MainIsland.IsHovering)
             {
-                var smallContainerSize = IslandSize();
+                var smallContainerSize = IslandSize() - songSizeAddition;
                 smallContainerSize -= sCD;
+                smallWidgetsContainer.LocalPosition.X = -RendererMain.Instance.MainIsland.LocalPosition.X;
                 smallWidgetsContainer.Size = smallContainerSize;
 
                 { // Left Small Widgets

@@ -68,6 +68,8 @@ namespace DynamicWin.Main
             MainForm.Instance.onMainFormRender += Update;
             MainForm.Instance.onMainFormRender += Render;
 
+            initialScreenBrightness = BrightnessAdjustMenu.GetBrightness();
+
             KeyHandler.onKeyDown += OnKeyRegistered;
 
             {
@@ -119,12 +121,22 @@ namespace DynamicWin.Main
                         VolumeAdjustMenu.timerUntilClose = 0f;
                 }
             }
+
+            if(key == Keys.MediaNextTrack || key == Keys.MediaPreviousTrack)
+            {
+                if (MenuManager.Instance.ActiveMenu is HomeMenu)
+                {
+                    if (key == Keys.MediaNextTrack) Res.HomeMenu.NextSong(); else Res.HomeMenu.PrevSong();
+                }
+            }
         }
 
         float deltaTime = 0f;
         public float DeltaTime { get { return deltaTime; } private set => deltaTime = value; }
 
         Stopwatch? updateStopwatch;
+
+        int initialScreenBrightness = 0;
 
         // Called once every frame to update values
 
@@ -138,7 +150,27 @@ namespace DynamicWin.Main
             else
                 deltaTime = 1f / 1000f;
 
+            updateStopwatch = new Stopwatch();
+            updateStopwatch.Start();
+
             onUpdate?.Invoke(DeltaTime);
+
+            if(BrightnessAdjustMenu.GetBrightness() != initialScreenBrightness)
+            {
+                initialScreenBrightness = BrightnessAdjustMenu.GetBrightness();
+                if (MenuManager.Instance.ActiveMenu is HomeMenu)
+                {
+                    MenuManager.OpenOverlayMenu(new BrightnessAdjustMenu(), 100f);
+                }
+                else
+                {
+                    if (BrightnessAdjustMenu.timerUntilClose != null)
+                    {
+                        BrightnessAdjustMenu.PressBK();
+                        BrightnessAdjustMenu.timerUntilClose = 0f;
+                    }
+                }
+            }
 
             // Update Menu
 
@@ -160,11 +192,6 @@ namespace DynamicWin.Main
             {
                 uiObject.UpdateCall(DeltaTime);
             }
-
-            // End of update
-
-            updateStopwatch = new Stopwatch();
-            updateStopwatch.Start();
         }
 
         // Called once every frame to render frame, called after Update
@@ -182,7 +209,7 @@ namespace DynamicWin.Main
 
         GRContext Context;
 
-        public SKSurface GetOpenGlSurface(int width, int height)
+/*        public SKSurface GetOpenGlSurface(int width, int height)
         {
             if (Context == null)
             {
@@ -192,7 +219,7 @@ namespace DynamicWin.Main
             }
             var gpuSurface = SKSurface.Create(Context, true, new SKImageInfo(width, height));
             return gpuSurface;
-        }
+        }*/
 
         protected override void OnPaintSurface(SKPaintSurfaceEventArgs e)
         {
@@ -209,6 +236,9 @@ namespace DynamicWin.Main
 
             canvas.Clear(SKColors.Transparent);
 
+            //var mainScale = 2f;
+            //canvas.Scale(mainScale, mainScale, MainIsland.Position.X + MainIsland.currSize.X / 2, 0);
+
             canvasWithoutClip = canvas.Save();
 
             if(islandObject.maskInToIsland) Mask(canvas);
@@ -220,6 +250,7 @@ namespace DynamicWin.Main
             foreach (UIObject uiObject in objects)
             {
                 canvas.RestoreToCount(canvasWithoutClip);
+                canvasWithoutClip = canvas.Save();
 
                 if(uiObject.IsHovering && uiObject.GetContextMenu() != null)
                 {

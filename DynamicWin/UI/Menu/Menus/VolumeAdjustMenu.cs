@@ -1,8 +1,10 @@
-﻿using AudioSwitcher.AudioApi.CoreAudio;
-using DynamicWin.Main;
+﻿using DynamicWin.Main;
 using DynamicWin.Resources;
 using DynamicWin.UI.UIElements;
+using DynamicWin.UI.UIElements.Custom;
 using DynamicWin.Utils;
+using NAudio.CoreAudioApi;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,18 +22,15 @@ namespace DynamicWin.UI.Menu.Menus
 
         double GetVolumePercent()
         {
-            // Get the current volume (0-100%)
-            double volume = defaultPlaybackDevice.Volume;
+            var volume = DynamicWinMain.defaultDevice.AudioEndpointVolume;
 
-            return volume;
+            return volume.MasterVolumeLevelScalar * 100;
         }
 
         bool IsMuted()
         {
-            return defaultPlaybackDevice.IsMuted;
+            return DynamicWinMain.defaultDevice.AudioEndpointVolume.Mute;
         }
-
-        static CoreAudioDevice defaultPlaybackDevice;
 
         DWImage volumeImage;
         UIObject mutedBg;
@@ -42,21 +41,14 @@ namespace DynamicWin.UI.Menu.Menus
 
         float shakeStrength = 0f;
 
+        float islandScale = 1.25f;
+
         public VolumeAdjustMenu()
         {
             instance = this;
             timerUntilClose = 0f;
 
             shakeStrength = 0f;
-
-            if (defaultPlaybackDevice == null)
-            {
-                // Initialize the CoreAudioController
-                var controller = new CoreAudioController();
-
-                // Get the default playback device (speakers/headphones)
-                defaultPlaybackDevice = controller.DefaultPlaybackDevice;
-            }
         }
 
         public override List<UIObject> InitializeMenu(IslandObject island)
@@ -80,7 +72,7 @@ namespace DynamicWin.UI.Menu.Menus
             muteText.Color = Theme.Error;
             objects.Add(muteText);
 
-            volume = new DWProgressBar(island, new Vec2(-15, 0), new Vec2(100, 10), UIAlignment.MiddleRight);
+            volume = new DWProgressBar(island, new Vec2(-20, 0), new Vec2(150, 5f), UIAlignment.MiddleRight);
             volume.Anchor.X = 1;
             objects.Add(volume);
 
@@ -108,14 +100,20 @@ namespace DynamicWin.UI.Menu.Menus
         {
             base.Update();
 
-            if (timerUntilClose > 3.5f) MenuManager.CloseOverlay();
+            if (timerUntilClose > 2.75f) MenuManager.CloseOverlay();
+
+            islandScale = Mathf.Lerp(islandScale, 1f, 5f * RendererMain.Instance.DeltaTime);
 
             var volume = GetVolumePercent();
             var isMuted = IsMuted();
 
             if (volume <= 0f || isMuted)
             {
-                mute = true;
+                if (!mute)
+                {
+                    mute = true;
+                    islandScale = 1.05f;
+                }
 
                 volumeImage.Image = Res.VolumeOff;
                 RendererMain.Instance.MainIsland.LocalPosition.X = Mathf.Lerp(RendererMain.Instance.MainIsland.LocalPosition.X,
@@ -131,10 +129,12 @@ namespace DynamicWin.UI.Menu.Menus
                 {
                     seconds = 0f;
                     timer = 0f;
+                    islandScale = 1.25f;
 
                     mute = false;
                 }
 
+                this.volume.value = 0f;
 
                 RendererMain.Instance.MainIsland.LocalPosition.X = Mathf.Lerp(RendererMain.Instance.MainIsland.LocalPosition.X,
                     (float)Math.Sin(timer) * shakeStrength, 10f * RendererMain.Instance.DeltaTime);
@@ -154,42 +154,22 @@ namespace DynamicWin.UI.Menu.Menus
             timerUntilClose += RendererMain.Instance.DeltaTime;
 
             this.volume.value = (float)volume / 100f;
+
+            var volXOffset = KeyHandler.keyDown.Contains(System.Windows.Forms.Keys.VolumeUp) ? 2f :
+                KeyHandler.keyDown.Contains(System.Windows.Forms.Keys.VolumeDown) ? -2f : 0;
+
+            this.volume.LocalPosition.X = Mathf.Lerp(this.volume.LocalPosition.X, volXOffset, 
+                (Math.Abs(volXOffset) > Math.Abs(this.volume.LocalPosition.X) ? 4.5f : 2.5f) * RendererMain.Instance.DeltaTime);
         }
 
         public override Vec2 IslandSize()
         {
-            return new Vec2(250, 35);
-        }
-    }
-
-    internal class DWProgressBar : UIObject
-    {
-        UIObject content;
-
-        public float value = 1f;
-        public float originalSize = 0f;
-
-        public DWProgressBar(UIObject? parent, Vec2 position, Vec2 size, UIAlignment alignment = UIAlignment.TopCenter) : base(parent, position, size, alignment)
-        {
-            content = new UIObject(this, Vec2.zero, size, UIAlignment.MiddleRight);
-            content.Anchor.X = 0;
-
-            originalSize = content.Size.X;
-
-            roundRadius = 15f;
-            content.roundRadius = 15f;
-
-            Color = Theme.IconColor.Override(a: 0.25f);
-            content.Color = Theme.IconColor.Override(a: 1f);
-
-            AddLocalObject(content);
+            return new Vec2(250, 35) * islandScale;
         }
 
-        public override void Update(float deltaTime)
+        public override Vec2 IslandSizeBig()
         {
-            base.Update(deltaTime);
-
-            content.Size.X = originalSize * value;
+            return base.IslandSizeBig() * 1.05f;
         }
     }
 }

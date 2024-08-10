@@ -136,6 +136,8 @@ namespace DynamicWin.UI.Widgets.Big
         }
 
         bool isTimerRunning = false;
+        public bool IsTimerRunning { get { return isTimerRunning; } }
+        
         int initialSecondsSet = 0;
 
         public void ChangeTimerTime(int seconds, int minutes, int hours)
