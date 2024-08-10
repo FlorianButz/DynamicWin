@@ -78,7 +78,7 @@ Loading an extension from someone else is very simple. You just need to drag the
 Mods can contain malicious code that can mess up your system, so always check a mod's source code or let a trustworthy person check it for you.
 
 # Known Issues
-The performance might not be the best on older hardware or laptops. I will try my best to add performance options to the settings menu but cannot guarantee a smooth experience for everyone. <br><br>
+The performance might not be the best. I will try my best to add performance options to the settings menu but cannot guarantee a smooth experience for everyone. <br><br>
 
 The app might suddenly disappear and upon trying to reopen it a message box will tell you that only one instance of the app can run at the same time. To fix this, open task manager and find the process "DynamicWin". Kill it and start the app again. <br><br>
 
