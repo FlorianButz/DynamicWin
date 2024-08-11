@@ -94,7 +94,8 @@ namespace DynamicWin.Main
             isDragging = true;
             e.Effects = DragDropEffects.Copy;
 
-            if (!(MenuManager.Instance.ActiveMenu is DropFileMenu))
+            if (!(MenuManager.Instance.ActiveMenu is DropFileMenu)
+                && !(MenuManager.Instance.ActiveMenu is ConfigureShortcutMenu))
             {
                 MenuManager.OpenMenu(new DropFileMenu());
             }
@@ -105,6 +106,8 @@ namespace DynamicWin.Main
             //System.Diagnostics.Debug.WriteLine("DragLeave");
 
             isDragging = false;
+
+            if (MenuManager.Instance.ActiveMenu is ConfigureShortcutMenu) return;
             MenuManager.OpenMenu(Res.HomeMenu);
         }
 
@@ -173,7 +176,14 @@ namespace DynamicWin.Main
         {
             isDragging = false;
 
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            if(MenuManager.Instance.ActiveMenu is ConfigureShortcutMenu)
+            {
+                if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                {
+                    ConfigureShortcutMenu.DropData(e);
+                }
+            }
+            else if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 DropFileMenu.Drop(e);
                 MenuManager.Instance.QueueOpenMenu(Res.HomeMenu);

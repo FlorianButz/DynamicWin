@@ -10,11 +10,11 @@ namespace DynamicWin.UI.UIElements.Custom
 {
     internal class DropFileElement : UIObject
     {
-        public DropFileElement(UIObject? parent, Vec2 position, Vec2 size, UIAlignment alignment = UIAlignment.TopCenter) : base(parent, position, size, alignment)
+        public DropFileElement(UIObject? parent, Vec2 position, Vec2 size, string displayText = "Drop Files to Tray", int tSize = 24, UIAlignment alignment = UIAlignment.TopCenter) : base(parent, position, size, alignment)
         {
             roundRadius = 25;
 
-            AddLocalObject(new DWText(null, "Drop Files to Tray", Vec2.zero, UIAlignment.Center) { Font = Resources.Res.InterBold });
+            AddLocalObject(new DWText(null, displayText, Vec2.zero, UIAlignment.Center) { Font = Resources.Res.InterBold, TextSize = tSize });
         }
 
         Col currentCol = Theme.Secondary;

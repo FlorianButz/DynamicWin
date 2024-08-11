@@ -41,8 +41,6 @@ namespace DynamicWin.UI.Widgets.Big
 
         public TimerWidget(UIObject? parent, Vec2 position, UIAlignment alignment = UIAlignment.TopCenter) : base(parent, position, alignment)
         {
-            instance = this;
-
             timerText = new DWText(parent, "00:00:00", new Vec2(15, 0f), UIAlignment.MiddleLeft)
             {
                 TextSize = 45,
@@ -125,20 +123,24 @@ namespace DynamicWin.UI.Widgets.Big
             };
             AddLocalObject(secondLess);
 
-            hourMore.Image.Color = Col.White.Override(a: 0.15f);
-            hourLess.Image.Color = Col.White.Override(a: 0.15f);
-            minuteMore.Image.Color = Col.White.Override(a: 0.15f);
-            minuteLess.Image.Color = Col.White.Override(a: 0.15f);
-            secondMore.Image.Color = Col.White.Override(a: 0.15f);
-            secondLess.Image.Color = Col.White.Override(a: 0.15f);
+            hourMore.Image.Color = Theme.IconColor.Override(a: 0.45f);
+            hourLess.Image.Color = Theme.IconColor.Override(a: 0.45f);
+            minuteMore.Image.Color = Theme.IconColor.Override(a: 0.45f);
+            minuteLess.Image.Color = Theme.IconColor.Override(a: 0.45f);
+            secondMore.Image.Color = Theme.IconColor.Override(a: 0.45f);
+            secondLess.Image.Color = Theme.IconColor.Override(a: 0.45f);
 
-            ChangeTimerTime(0, 5, 0);
+            if (instance == null)
+            {
+                instance = this;
+                ChangeTimerTime(0, 5, 0);
+            }
         }
 
-        bool isTimerRunning = false;
+        static bool isTimerRunning = false;
         public bool IsTimerRunning { get { return isTimerRunning; } }
         
-        int initialSecondsSet = 0;
+        static int initialSecondsSet = 0;
 
         public void ChangeTimerTime(int seconds, int minutes, int hours)
         {
@@ -158,22 +160,12 @@ namespace DynamicWin.UI.Widgets.Big
         {
             if (isTimerRunning) StopTimer();
             else StartTimer();
-
-            if (isTimerRunning) startStopButton.Image.Image = Resources.Res.Stop;
-            else startStopButton.Image.Image = Resources.Res.Play;
         }
 
         public void StopTimer()
         {
-            timer.Stop();
+            instance.timer.Stop();
             isTimerRunning = false;
-
-            TimeSpan t = TimeSpan.FromSeconds(initialSecondsSet);
-            string answer = string.Format("{0:D2}:{1:D2}:{2:D2}",
-                            t.Hours,
-                            t.Minutes,
-                            t.Seconds);
-            timerText.SetText(answer);
         }
 
         void TimerEnd()
@@ -184,7 +176,7 @@ namespace DynamicWin.UI.Widgets.Big
             MenuManager.OpenOverlayMenu(new TimerOverMenu(), 15f);
         }
 
-        int elapsedSeconds = 0;
+        static int elapsedSeconds = 0;
         public void StartTimer()
         {
             instance = this;
@@ -201,15 +193,6 @@ namespace DynamicWin.UI.Widgets.Big
                     TimerEnd();
                     return;
                 }
-
-                TimeSpan t = TimeSpan.FromSeconds(initialSecondsSet - elapsedSeconds);
-
-                string answer = string.Format("{0:D2}:{1:D2}:{2:D2}",
-                                t.Hours,
-                                t.Minutes,
-                                t.Seconds);
-
-                timerText.SilentSetText(answer);
             };
             timer.Start();
         }
@@ -243,6 +226,18 @@ namespace DynamicWin.UI.Widgets.Big
             minuteMore.SetActive(!isTimerRunning);
             secondLess.SetActive(!isTimerRunning);
             secondMore.SetActive(!isTimerRunning);
+
+            if (isTimerRunning) startStopButton.Image.Image = Resources.Res.Stop;
+            else startStopButton.Image.Image = Resources.Res.Play;
+
+            TimeSpan ts = TimeSpan.FromSeconds(initialSecondsSet - elapsedSeconds);
+
+            string answer = string.Format("{0:D2}:{1:D2}:{2:D2}",
+                            isTimerRunning ? ts.Hours : t.Hours,
+                            isTimerRunning ? ts.Minutes : t.Minutes,
+                            isTimerRunning ? ts.Seconds : t.Seconds);
+
+            timerText.SilentSetText(answer);
         }
 
         public override void DrawWidget(SKCanvas canvas)

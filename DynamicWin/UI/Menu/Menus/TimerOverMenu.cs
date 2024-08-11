@@ -97,7 +97,7 @@ namespace DynamicWin.UI.Menu.Menus
         }
 
         public float waveSize = 0;
-        public float waveGrowSpeed = 50f;
+        public float waveGrowSpeed = 65f;
 
         public override void Update(float deltaTime)
         {
@@ -112,7 +112,8 @@ namespace DynamicWin.UI.Menu.Menus
         public override void Draw(SKCanvas canvas)
         {
             var paint = GetPaint();
-            var rect = GetRect();
+
+            var rect = SKRect.Create(Position.X, Position.Y, Size.X, Size.Y);
 
             canvas.ClipRoundRect(RendererMain.Instance.MainIsland.GetRect(), SKClipOperation.Difference, true);
 
@@ -120,9 +121,11 @@ namespace DynamicWin.UI.Menu.Menus
             paint.IsStroke = true;
             paint.StrokeWidth = 5f;
 
-            rect.Inflate(waveSize - 35, waveSize - 20);
+            rect.Inflate(waveSize - 35, waveSize - 25);
 
-            canvas.DrawRoundRect(rect, paint);
+            var rRect = new SKRoundRect(rect, roundRadius * (waveSize / 5));
+
+            canvas.DrawRoundRect(rRect, paint);
         }
     }
 }

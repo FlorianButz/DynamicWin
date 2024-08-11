@@ -55,6 +55,12 @@ namespace DynamicWin.Utils
                 data[key] = value;
         }
 
+        public static void Remove(string key)
+        {
+            if (Contains(key))
+                data.Remove(key);
+        }
+
         public static object Get(string key)
         {
             if (Contains(key))

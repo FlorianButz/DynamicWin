@@ -73,6 +73,10 @@ namespace DynamicWin.Main
                 smallWidgetsMiddle = new List<string>();
                 bigWidgets = new List<string>();
 
+                smallWidgetsRight.Add("DynamicWin.UI.Widgets.Small.RegisterUsedDevicesWidget");
+                smallWidgetsLeft.Add("DynamicWin.UI.Widgets.Small.RegisterTimeWidget");
+                bigWidgets.Add("DynamicWin.UI.Widgets.Big.RegisterMediaWidget");
+
                 IslandMode = IslandObject.IslandMode.Island;
                 AllowBlur = true;
                 AllowAnimation = true;

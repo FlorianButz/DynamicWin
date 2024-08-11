@@ -50,6 +50,17 @@ namespace DynamicWin.Resources
 
         public static SKBitmap Brightness;
 
+        public static SKBitmap Weather;
+        public static SKBitmap Location;
+        public static SKBitmap Cloudy;
+        public static SKBitmap Sunny;
+        public static SKBitmap Rainy;
+        public static SKBitmap Windy;
+        public static SKBitmap Thunderstorm;
+        public static SKBitmap Foggy;
+        public static SKBitmap Snowy;
+        public static SKBitmap SevereWeatherWarning;
+
         public static string TimerOverSound = "Resources\\sounds\\TimerOver.wav";
 
         private static HomeMenu homeMenu;
@@ -102,6 +113,17 @@ namespace DynamicWin.Resources
             VolumeOn = LoadImg("Resources\\icons\\home\\VolumeOn.png");
             VolumeOff = LoadImg("Resources\\icons\\home\\VolumeOff.png");
             Brightness = LoadImg("Resources\\icons\\home\\Brightness.png");
+
+            Location = LoadImg("Resources\\icons\\home\\Location.png");
+            Weather = LoadImg("Resources\\icons\\home\\Weather.png");
+            Cloudy = LoadImg("Resources\\icons\\weather\\Cloudy.png");
+            Sunny = LoadImg("Resources\\icons\\weather\\Sunny.png");
+            Rainy = LoadImg("Resources\\icons\\weather\\Rainy.png");
+            Windy = LoadImg("Resources\\icons\\weather\\Windy.png");
+            Thunderstorm = LoadImg("Resources\\weather\\home\\Thunderstorm.png");
+            Foggy = LoadImg("Resources\\icons\\weather\\Foggy.png");
+            Snowy = LoadImg("Resources\\icons\\weather\\Snowy.png");
+            SevereWeatherWarning = LoadImg("Resources\\icons\\weather\\SevereWeatherWarning.png");
 
             RegisterWidgets();
 

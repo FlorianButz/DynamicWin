@@ -24,11 +24,6 @@ namespace DynamicWin.UI.UIElements
         {
             image = sprite;
             this.maskOwnRect = maskOwnRect;
-        }
-
-        public override void Update(float deltaTime)
-        {
-            base.Update(deltaTime);
 
             Color = Theme.IconColor;
         }
@@ -42,7 +37,7 @@ namespace DynamicWin.UI.UIElements
             if (allowIconThemeColor)
             {
                 var imageFilter = SKImageFilter.CreateBlendMode(SKBlendMode.DstIn,
-                        SKImageFilter.CreateColorFilter(SKColorFilter.CreateBlendMode(Color.Override(a: 1f).Value(), SKBlendMode.Darken)));
+                        SKImageFilter.CreateColorFilter(SKColorFilter.CreateBlendMode(Color.Value(), SKBlendMode.Multiply)));
 
                 if (GetBlur() != 0f)
                 {

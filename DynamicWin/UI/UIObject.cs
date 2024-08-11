@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using static System.Net.Mime.MediaTypeNames;
@@ -78,6 +79,20 @@ namespace DynamicWin.UI
             this.alignment = alignment;
 
             this.contextMenu = CreateContextMenu();
+
+            RendererMain.Instance.ContextMenuOpening += CtxOpen;
+            RendererMain.Instance.ContextMenuClosing += CtxClose;
+        }
+
+        void CtxOpen(object sender, RoutedEventArgs e)
+        {
+            if(RendererMain.Instance.ContextMenu != null)
+                canInteract = false;
+        }
+
+        void CtxClose(object sender, RoutedEventArgs e)
+        {
+            canInteract = true;
         }
 
         public Vec2 GetScreenPosFromRawPosition(Vec2 position, Vec2 Size = null, UIAlignment alignment = UIAlignment.None, UIObject parent = null)
@@ -242,6 +257,8 @@ namespace DynamicWin.UI
             return Math.Max(blurAmount, localBlurAmount);
         }
 
+        bool canInteract = true;
+        
         public void UpdateCall(float deltaTime)
         {
             if (!isEnabled) return;
@@ -249,32 +266,36 @@ namespace DynamicWin.UI
             if (parent != null)
                 pAlpha = parent.Alpha;
 
-            var rect = SKRect.Create(RendererMain.CursorPosition.X, RendererMain.CursorPosition.Y, 1, 1);
-            isHovering = GetInteractionRect().Contains(rect);
+            if (canInteract)
+            {
+                var rect = SKRect.Create(RendererMain.CursorPosition.X, RendererMain.CursorPosition.Y, 1, 1);
+                isHovering = GetInteractionRect().Contains(rect);
 
-            if (!isGlobalMouseDown && Mouse.LeftButton == MouseButtonState.Pressed)
-            {
-                isGlobalMouseDown = true;
-                OnGlobalMouseDown();
-            } else if (isGlobalMouseDown && !(Mouse.LeftButton == MouseButtonState.Pressed))
-            {
-                isGlobalMouseDown = false;
-                OnGlobalMouseUp();
-            }
+                if (!isGlobalMouseDown && Mouse.LeftButton == MouseButtonState.Pressed)
+                {
+                    isGlobalMouseDown = true;
+                    OnGlobalMouseDown();
+                }
+                else if (isGlobalMouseDown && !(Mouse.LeftButton == MouseButtonState.Pressed))
+                {
+                    isGlobalMouseDown = false;
+                    OnGlobalMouseUp();
+                }
 
-            if (IsHovering && !IsMouseDown && Mouse.LeftButton == MouseButtonState.Pressed)
-            {
-                IsMouseDown = true;
-                OnMouseDown();
-            }
-            else if (IsHovering && IsMouseDown && !(Mouse.LeftButton == MouseButtonState.Pressed))
-            {
-                IsMouseDown = false;
-                OnMouseUp();
-            }
-            else if (IsMouseDown && !(Mouse.LeftButton == MouseButtonState.Pressed))
-            {
-                IsMouseDown = false;
+                if (IsHovering && !IsMouseDown && Mouse.LeftButton == MouseButtonState.Pressed)
+                {
+                    IsMouseDown = true;
+                    OnMouseDown();
+                }
+                else if (IsHovering && IsMouseDown && !(Mouse.LeftButton == MouseButtonState.Pressed))
+                {
+                    IsMouseDown = false;
+                    OnMouseUp();
+                }
+                else if (IsMouseDown && !(Mouse.LeftButton == MouseButtonState.Pressed))
+                {
+                    IsMouseDown = false;
+                }
             }
 
             Update(deltaTime);

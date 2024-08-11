@@ -42,7 +42,7 @@ namespace DynamicWin.UI.Menu.Menus
         {
             var objects = base.InitializeMenu(island);
             
-            var dropObj = new DropFileElement(island, Vec2.zero, new Vec2(400, 150), UIAlignment.Center);
+            var dropObj = new DropFileElement(island, Vec2.zero, new Vec2(400, 150), alignment: UIAlignment.Center);
             objects.Add(dropObj);
 
             return objects;
