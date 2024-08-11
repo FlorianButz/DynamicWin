@@ -41,8 +41,9 @@ DynamicWin has a variety of features, currently including: <br>
 ## Big Widgets
 - [x] Media Playback Widget
 - [x] Timer Widget
+- [x] Weather Widget
 - [ ] Voicemeeter integration Widget
-- [ ] "Shortcuts" Widget <sub>(Can be configured to a certain action like opening an app or link)</sub>
+- [x] Shortcuts Widget <sub>(Can be configured to open a file, e.g. Shortcut, .EXE or any other filetype.)</sub>
 - [ ] Calendar Widget
 - [ ] Tuya Smart integration <sub>(Will probably be turned in to one widget with the shortcuts)</sub>
 
@@ -51,8 +52,8 @@ DynamicWin has a variety of features, currently including: <br>
 - [x] Music Visualizer
 - [x] Device Usage Detector <sub>(Indicates if camera / microphone is in use)</sub>
 - [x] Power State Display <sub>(Shows battery in form of icons. If no battery is found it shows a connector icon instead)</sub>
-- [ ] Timer <sub>(Displaying current running timer)</sub>
-- [ ] CPU/GPU Usage Display
+- [x] Timer <sub>(Displaying current running timer)</sub>
+- [x] CPU/GPU Usage Display
 
 ## File Tray <br>
 
