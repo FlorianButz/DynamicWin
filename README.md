@@ -41,8 +41,9 @@ DynamicWin has a variety of features, currently including: <br>
 ## Big Widgets
 - [x] Media Playback Widget
 - [x] Timer Widget
+- [x] Weather Widget
 - [ ] Voicemeeter integration Widget
-- [ ] "Shortcuts" Widget <sub>(Can be configured to a certain action like opening an app or link)</sub>
+- [x] Shortcuts Widget <sub>(Can be configured to open a file, e.g. Shortcut, .EXE or any other filetype.)</sub>
 - [ ] Calendar Widget
 - [ ] Tuya Smart integration <sub>(Will probably be turned in to one widget with the shortcuts)</sub>
 
@@ -51,8 +52,8 @@ DynamicWin has a variety of features, currently including: <br>
 - [x] Music Visualizer
 - [x] Device Usage Detector <sub>(Indicates if camera / microphone is in use)</sub>
 - [x] Power State Display <sub>(Shows battery in form of icons. If no battery is found it shows a connector icon instead)</sub>
-- [ ] Timer <sub>(Displaying current running timer)</sub>
-- [ ] CPU/GPU Usage Display
+- [x] Timer <sub>(Displaying current running timer)</sub>
+- [x] CPU/GPU Usage Display
 
 ## File Tray <br>
 
@@ -78,7 +79,7 @@ Loading an extension from someone else is very simple. You just need to drag the
 Mods can contain malicious code that can mess up your system, so always check a mod's source code or let a trustworthy person check it for you.
 
 # Known Issues
-The performance might not be the best on older hardware or laptops. I will try my best to add performance options to the settings menu but cannot guarantee a smooth experience for everyone. <br><br>
+The performance might not be the best. I will try my best to add performance options to the settings menu but cannot guarantee a smooth experience for everyone. <br><br>
 
 The app might suddenly disappear and upon trying to reopen it a message box will tell you that only one instance of the app can run at the same time. To fix this, open task manager and find the process "DynamicWin". Kill it and start the app again. <br><br>
 
