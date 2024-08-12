@@ -65,7 +65,7 @@ Files can be dragged over the island to add them to the file tray. The tray can 
 Idea for the future: An implementation of a service like [SnapDrop](https://snapdrop.net) to allow for an "AirDrop" kind of feature using the file tray.
 
 > [!WARNING]
-> If you are using the file tray to import files in to an adobe app (e.g. After Effects) make sure to not remove the files from the tray. Apps that only copy a link to the file will loose it after you remove the file from the tray.
+> If you are using the file tray to import files in to an app (e.g. After Effects) make sure to not remove the files from the tray. Apps that only copy a link to the file will loose it after you remove the file from the tray.
 
 ## Spotify Integration
 
