@@ -91,6 +91,7 @@ namespace DynamicWin.UI.Widgets.Big
             AddLocalObject(shortcutTitle);
 
             shortcutIcon = new DWImage(this, Res.FileIcon, new Vec2(0, 0), new Vec2(20, 20), UIAlignment.MiddleLeft);
+            shortcutIcon.allowIconThemeColor = false;
             shortcutIcon.SilentSetActive(false);
             AddLocalObject(shortcutIcon);
 
