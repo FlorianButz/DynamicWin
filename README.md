@@ -71,7 +71,7 @@ Idea for the future: An implementation of a service like [SnapDrop](https://snap
 
 ## Mod Support
 **Yes! You can add your own small widgets and big widgets by creating a custom extension!** <br>
-Loading an extension from someone else is very simple. You just need to drag the **Mod.dll** file in to the *Extensions* folder that is located in the application directory. 
+Loading an extension from someone else is very simple. You just need to drag the **Mod.dll** file in to the *Extensions* folder that is located in the `%appdata%/Roaming/DynamicWin` directory. 
 
 > [!WARNING]
 > **Please never load a mod that is not tested to be safe!**
@@ -165,7 +165,7 @@ public List<IRegisterableWidget> GetExtensionWidgets() // Returns all Widgets th
 }
 ```
 
-Now you're done. Build the project and go to your project's output folder. (Most times located under `\bin\Debug\net8.0\` or `\bin\Release\net8.0\` and move **ONLY** the DLL file that has the name of your project in to the `Extensions` folder of DynamicWin. In this case, my output DLL is called `TestExtension.dll`. <br><br>
+Now you're done. Build the project and go to your project's output folder. (Most times located under `\bin\Debug\net8.0\` or `\bin\Release\net8.0\` and move **ONLY** the DLL file that has the name of your project in to the `%appdata%/Roaming/DynamicWin/Extensions` folder. In this case, my output DLL is called `TestExtension.dll`. <br><br>
 After that you can run DynamicWin and test your extension. This was of course a very bare bones example.
 
 > [!TIP]
