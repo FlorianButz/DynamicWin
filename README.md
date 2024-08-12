@@ -80,13 +80,8 @@ Mods can contain malicious code that can mess up your system, so always check a 
 
 ## Custom Themes
 
-<p style="display: flex; justify-content: center; flex-wrap: wrap; gap: 25px; margin:25px">
-  <img src="ReadmeFiles/Island_Theme1.png" alt="Theme 1" style="border-radius:25px; max-width: 30%; height: auto;">
-  <img src="ReadmeFiles/Island_Theme2.png" alt="Theme 2" style="border-radius:25px; max-width: 30%; height: auto;">
-  <img src="ReadmeFiles/Island_Theme3.png" alt="Theme 3" style="border-radius:25px; max-width: 30%; height: auto;">
-  <img src="ReadmeFiles/Island_Theme4.png" alt="Theme 4" style="border-radius:25px; max-width: 30%; height: auto;">
-  <img src="ReadmeFiles/Island_Theme5.png" alt="Theme 5" style="border-radius:25px; max-width: 30%; height: auto;">
-  <img src="ReadmeFiles/Island_Theme6.png" alt="Theme 6" style="border-radius:25px; max-width: 30%; height: auto;">
+<p align="center">
+  <img style="border-radius:15px; margin:15px 0 15px 0" src="ReadmeFiles/Themes.png" alt="animated" width="100%" height="auto" />
 </p>
 
 > [!NOTE]
