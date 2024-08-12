@@ -64,6 +64,9 @@ DynamicWin has a variety of features, currently including: <br>
 Files can be dragged over the island to add them to the file tray. The tray can be accessed when hovering over the island and clicking on the 'Tray' button. The files are stored until they are dragged out again. They can also be removed by selecting the file and right clicking. A context menu will popup and you can click on - **"Remove Selected Files"** or **"Remove Selected Files"** to copy the files. <br>
 Idea for the future: An implementation of a service like [SnapDrop](https://snapdrop.net) to allow for an "AirDrop" kind of feature using the file tray.
 
+> [!WARNING]
+> If you are using the file tray to import files in to an adobe app (e.g. After Effects) make sure to not remove the files from the tray. Apps that only copy a link to the file will loose it after you remove the file from the tray.
+
 ## Spotify Integration
 
 <p><img align="left" height="150" style="border-radius:15px; margin:0 25 0 0" src="ReadmeFiles/IslandGif-3_Spotify.gif">The Media Playback Widget automatically detects when an instance of the Spotify app is running (Desktop version only). It will display the current playing song name and the artist. Login to the Spotify service on the app is <b>not</b> required.</p>
