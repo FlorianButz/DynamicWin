@@ -28,6 +28,9 @@ WPF is a powerful UI framework, however to archive the look and feel of this app
 ### Why am I writing all of this instead of talking about the features?
 I wanted to give you a peak at what went into this project and why/how I made it.
 
+<br>
+Quick disclaimer: The code is terribly structured and almost un-maintainable as it was only meant to be a small side project so please don't expect too much from me :)
+
 # Features
 > [!NOTE]
 > Only the checked features are currently available. The unchecked ones are not guaranteed to come, but are on my mind.
