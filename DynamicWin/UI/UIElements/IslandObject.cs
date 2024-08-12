@@ -58,12 +58,16 @@ namespace DynamicWin.UI.UIElements
                 }
 
                 Size = scaleSecondOrder.Update(deltaTime, currSize);
+                //Size = Vec2.lerp(Size, currSize, deltaTime * 15f);
+
                 LocalPosition.Y = Mathf.Lerp(LocalPosition.Y, topOffset, 15f * deltaTime);
             }
             else
             {
                 scaleSecondOrder.SetValues(secondOrderValuesContract.X, secondOrderValuesContract.Y, 0.1f);
+
                 Size = scaleSecondOrder.Update(deltaTime, new Vec2(500, 15));
+                //Size = Vec2.lerp(Size, new Vec2(500, 10), deltaTime * 15f);
 
                 LocalPosition.Y = Mathf.Lerp(LocalPosition.Y, -Size.Y + 15f, 15f * deltaTime);
             }

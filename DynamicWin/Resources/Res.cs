@@ -155,7 +155,7 @@ namespace DynamicWin.Resources
 
             // Loading in custom DLLs
 
-            var dirPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Extensions");
+            var dirPath = Path.Combine(SaveManager.SavePath, "Extensions");
 
             if (!Directory.Exists(dirPath))
             {

@@ -304,7 +304,7 @@ namespace DynamicWin.UI.UIElements.Custom
 
         public static string[]? GetFiles()
         {
-            var dirPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "TrayFiles");
+            var dirPath = Path.Combine(SaveManager.SavePath, "TrayFiles");
 
             if (!Directory.Exists(dirPath))
             {
@@ -317,7 +317,7 @@ namespace DynamicWin.UI.UIElements.Custom
 
         public static void AddFiles(string[] files)
         {
-            var dirPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "TrayFiles");
+            var dirPath = Path.Combine(SaveManager.SavePath, "TrayFiles");
 
             if (!Directory.Exists(dirPath))
             {

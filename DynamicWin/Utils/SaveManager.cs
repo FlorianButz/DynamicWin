@@ -14,11 +14,13 @@ namespace DynamicWin.Utils
         private static Dictionary<string, object> data = new Dictionary<string, object>();
         public static Dictionary<string, object> SaveData { get { return data; } set => data = value; }
 
-        public static string SavePath = Environment.SpecialFolder.ApplicationData + @"\DynamicWin\";
-        static string fileName = "Settings.dws";
+        public static string SavePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "DynamicWin");
+        static string fileName = "Settings.json";
 
         public static void LoadData()
         {
+            System.Diagnostics.Debug.WriteLine(SavePath);
+
             if (!Directory.Exists(SavePath)) Directory.CreateDirectory(SavePath);
 
             var fullPath = Path.Combine(SavePath, fileName);

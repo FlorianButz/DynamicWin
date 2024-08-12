@@ -299,8 +299,6 @@ namespace DynamicWin.UI.Menu.Menus
                 System.Diagnostics.Debug.WriteLine(widget.GetType().FullName);
             }
 
-            float xPos = 0f;
-
             int c = 0;
             foreach (var bigWidget in Settings.bigWidgets)
             {
@@ -331,11 +329,10 @@ namespace DynamicWin.UI.Menu.Menus
                     UpdateWidgetDisplay();
                 };
 
-                int line = (int)(Math.Round(c / maxE));
+                int line = (int)(c / maxE);
 
-                display.LocalPosition.X = xPos - (line * Size.X);
+                display.LocalPosition.X = (c % 2) * Size.X / 2;
                 display.LocalPosition.Y -= 45 + line * 45;
-                xPos += display.Size.X;
 
                 displays.Add(display);
                 AddLocalObject(display);

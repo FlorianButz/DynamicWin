@@ -144,7 +144,7 @@ namespace DynamicWin.UI.Widgets.Big
 
         void UpdateIcon(string weather)
         {
-            if (weather.ToLower().Contains("sun"))
+            if (weather.ToLower().Contains("sun") || weather.ToLower().Contains("clear"))
                 weatherTypeIcon.Image = Res.Sunny;
             else if (weather.ToLower().Contains("cloud") || weather.ToLower().Contains("overcast"))
                 weatherTypeIcon.Image = Res.Cloudy;

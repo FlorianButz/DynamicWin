@@ -81,7 +81,7 @@ namespace DynamicWin
                 return;
             }
 
-            //AddToStartup();
+            AddToStartup();
             //SetHighPriority();
 
             var devEnum = new MMDeviceEnumerator();

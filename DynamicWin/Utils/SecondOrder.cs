@@ -28,11 +28,11 @@ namespace DynamicWin.Utils
             k3 = (float)(r * z / (2 * Math.PI * f));
         }
 
-        public Vec2 Update(float T, Vec2 x, Vec2? xd = default)
+        public Vec2 Update(float T, Vec2 x, Vec2? xd = null)
         {
             if (!Settings.AllowAnimation) return x;
 
-            if (xd == default)
+            if (xd != null)
             {
                 xd = (x - xp) / new Vec2(T, T);
                 xp = x;

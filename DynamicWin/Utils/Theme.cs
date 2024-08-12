@@ -74,43 +74,48 @@ namespace DynamicWin.Utils
                 else
                     ApplyTheme(lightTheme);
             }
-            else
+
+            var customTheme = new ThemeHolder();
+
+            try
             {
-                try
+                string defaultTheme = "{\r\n  \"IslandColor\": \"#000000\",\r\n  \"TextMain\": \"#dd11dd\",\r\n  \"TextSecond\": \"#aa11aa\",\r\n  \"TextThird\": \"#661166\",\r\n  \"Primary\": \"#dd11dd\",\r\n  \"Secondary\": \"#111111\",\r\n  \"Success\": \"#991199\",\r\n  \"Error\": \"#3311933\",\r\n  \"IconColor\": \"#dd11dd\",\r\n  \"WidgetBackground\": \"#11ffffff\"\r\n}";
+
+                var directory = SaveManager.SavePath;
+                var fileName = "Theme.json";
+
+                if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
+
+                var fullPath = Path.Combine(directory, fileName);
+                if (!File.Exists(fullPath))
                 {
-                    string defaultTheme = "{\r\n  \"IslandColor\": \"#000000\",\r\n  \"TextMain\": \"#dd11dd\",\r\n  \"TextSecond\": \"#aa11aa\",\r\n  \"TextThird\": \"#661166\",\r\n  \"Primary\": \"#dd11dd\",\r\n  \"Secondary\": \"#111111\",\r\n  \"Success\": \"#991199\",\r\n  \"Error\": \"#3311933\",\r\n  \"IconColor\": \"#dd11dd\",\r\n  \"WidgetBackground\": \"#11ffffff\"\r\n}";
-
-                    var directory = SaveManager.SavePath;
-                    var fileName = "Theme.dwt";
-                    
-                    if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
-
-                    var fullPath = Path.Combine(directory, fileName);
-                    if (!File.Exists(fullPath))
-                    {
-                        File.Create(fullPath);
-                        File.WriteAllText(fullPath, defaultTheme);
-                    }
-
-                    var json = File.ReadAllText(fullPath);
-                    
-                    if(string.IsNullOrEmpty(json))
-                    {
-                        File.WriteAllText(fullPath, defaultTheme);
-                        json = defaultTheme;
-                    }
-                    
-                    System.Diagnostics.Debug.WriteLine("Loaded theme: " + json);
-
-                    var customTheme = new ThemeHolder();
-                    customTheme = JsonConvert.DeserializeObject<ThemeHolder>(json);
-                    ApplyTheme(customTheme);
+                    var fs = File.Create(fullPath);
+                    fs.Close();
+                    File.WriteAllText(fullPath, defaultTheme);
                 }
-                catch(Exception e)
+
+                var json = File.ReadAllText(fullPath);
+
+                if (string.IsNullOrEmpty(json))
                 {
-                    System.Diagnostics.Debug.WriteLine("Couldn't load custom theme.");
-                    ApplyTheme(darkTheme);
+                    File.WriteAllText(fullPath, defaultTheme);
+                    json = defaultTheme;
                 }
+
+                System.Diagnostics.Debug.WriteLine("Loaded theme: " + json);
+
+                customTheme = new ThemeHolder();
+                customTheme = JsonConvert.DeserializeObject<ThemeHolder>(json);
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine("Couldn't load custom theme.");
+                customTheme = darkTheme;
+            }
+
+            if(Settings.Theme == -1)
+            {
+                ApplyTheme(customTheme);
             }
 
             if (refreshRenderer)
