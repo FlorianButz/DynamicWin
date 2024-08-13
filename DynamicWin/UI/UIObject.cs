@@ -256,7 +256,7 @@ namespace DynamicWin.UI
         public float GetBlur()
         {
             if (!Settings.AllowBlur) return 0f;
-            return Math.Max(blurAmount, localBlurAmount);
+            return Math.Max(blurAmount, Math.Max(localBlurAmount, RendererMain.Instance.blurOverride));
         }
 
         bool canInteract = true;

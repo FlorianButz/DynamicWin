@@ -35,6 +35,8 @@ namespace DynamicWin.Main
         public static RendererMain Instance { get { return instance; } }
 
         public Vec2 renderOffset = Vec2.zero;
+        public Vec2 scaleOffset = Vec2.one;
+        public float blurOverride = 0f;
 
         public Action<float> onUpdate;
         public Action<SKCanvas> onDraw;
@@ -281,6 +283,8 @@ namespace DynamicWin.Main
                 {
                     Mask(canvas);
                 }
+
+                canvas.Scale(scaleOffset.X, scaleOffset.Y, islandObject.Position.X + islandObject.Size.X / 2, islandObject.Position.Y + islandObject.Size.Y / 2);
 
                 canvas.Translate(renderOffset.X, renderOffset.Y);
                 uiObject.DrawCall(canvas);
