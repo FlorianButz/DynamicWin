@@ -124,18 +124,22 @@ namespace DynamicWin.UI.UIElements.Custom
 
             var maxFilesInOneLine = (int)(Size.X / (fileW + spacing / 2f));
 
+            var fileMovementSmoothing = 5f;
+
             for (int i = 0; i < fileObjects.Count; i++)
             {
                 var fileObject = fileObjects[i];
                 int line = i / maxFilesInOneLine;
 
+                if (!fileObject.IsEnabled) continue;
+
                 fileObject.LocalPosition.X = Mathf.Lerp(fileObject.LocalPosition.X,
                     (fileW + spacing) * (i % maxFilesInOneLine) + xAdd,
-                    10f * deltaTime);
+                    fileMovementSmoothing * deltaTime);
 
                 fileObject.LocalPosition.Y = Mathf.Lerp(fileObject.LocalPosition.Y,
                     (fileH * line) + yOffset,
-                    10f * deltaTime);
+                    fileMovementSmoothing * deltaTime);
             }
 
             int lines = fileObjects.Count / (maxFilesInOneLine + 1);
@@ -317,24 +321,29 @@ namespace DynamicWin.UI.UIElements.Custom
 
         public static void AddFiles(string[] files)
         {
-            var dirPath = Path.Combine(SaveManager.SavePath, "TrayFiles");
-
-            if (!Directory.Exists(dirPath))
+            new Thread(() =>
             {
-                Directory.CreateDirectory(dirPath);
-            }
+                Thread.CurrentThread.IsBackground = true;
 
-            foreach (var item in files)
-            {
-                System.Diagnostics.Debug.WriteLine("Added file: " + item + " to Tray!");
+                var dirPath = Path.Combine(SaveManager.SavePath, "TrayFiles");
 
-                if (File.Exists(item) && !File.Exists(Path.Combine(dirPath, Path.GetFileName(item))))
+                if (!Directory.Exists(dirPath))
                 {
-                    File.Copy(item, Path.Combine(dirPath, Path.GetFileName(item)));
+                    Directory.CreateDirectory(dirPath);
                 }
-            }
 
-            cachedTrayFiles = GetFiles();
+                foreach (var item in files)
+                {
+                    System.Diagnostics.Debug.WriteLine("Added file: " + item + " to Tray!");
+
+                    if (File.Exists(item) && !File.Exists(Path.Combine(dirPath, Path.GetFileName(item))))
+                    {
+                        File.Copy(item, Path.Combine(dirPath, Path.GetFileName(item)));
+                    }
+                }
+
+                cachedTrayFiles = GetFiles();
+            }).Start();
         }
     }
 }

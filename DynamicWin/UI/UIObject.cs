@@ -423,6 +423,8 @@ namespace DynamicWin.UI
             toggleAnim.onAnimationEnd += () =>
             {
                 this.isEnabled = isEnabled;
+                localBlurAmount = 0f;
+                Alpha = 1f;
                 DestroyLocalObject(toggleAnim);
             };
 

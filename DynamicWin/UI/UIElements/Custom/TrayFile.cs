@@ -41,7 +41,7 @@ namespace DynamicWin.UI.UIElements.Custom
 
             this.tray = tray;
 
-            Color = Theme.Primary.Override(a: 0.45f);
+            Color = GetColor(Theme.Primary.Override(a: 0.45f));
             roundRadius = 7.5f;
 
             fileTitle = new DWText(this, DWText.Truncate(Path.GetFileNameWithoutExtension(file), 8) + Path.GetExtension(file), new Vec2(0, -10), UIAlignment.BottomCenter)
