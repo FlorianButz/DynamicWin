@@ -132,7 +132,7 @@ namespace DynamicWin.UI.Widgets.Big
             {
                 canvas.DrawRoundRect(rect, paint);
 
-                paint.Color = Theme.Primary.Override(a: 0.35f).Value();
+                paint.Color = GetColor(Theme.Primary.Override(a: 0.35f)).Value();
                 paint.IsStroke = true;
                 paint.StrokeWidth = 2f;
 

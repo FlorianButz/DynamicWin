@@ -40,6 +40,8 @@ namespace DynamicWin.UI.UIElements
             roundRadius = 5f;
             scaleSecondOrder = new SecondOrder(size, 4.5f, 0.45f, 0.15f);
             this.clickCallback = clickCallback;
+
+            Color = normalColor;
         }
 
         public override void Update(float deltaTime)
@@ -63,13 +65,13 @@ namespace DynamicWin.UI.UIElements
             Size = scaleSecondOrder.Update(deltaTime, currentSize);
 
             if (IsHovering && !IsMouseDown)
-                Color = Col.Lerp(Color, GetColor(hoverColor), colorSmoothingSpeed * deltaTime);
+                Color = GetColor(Col.Lerp(Color, hoverColor, colorSmoothingSpeed * deltaTime));
             else if (IsMouseDown)
-                Color = Col.Lerp(Color, GetColor(clickColor), colorSmoothingSpeed * deltaTime);
+                Color = GetColor(Col.Lerp(Color, clickColor, colorSmoothingSpeed * deltaTime));
             else if (!IsHovering && !IsMouseDown)
-                Color = Col.Lerp(Color, GetColor(normalColor), colorSmoothingSpeed * deltaTime);
+                Color = GetColor(Col.Lerp(Color, normalColor, colorSmoothingSpeed * deltaTime));
             else
-                Color = Col.Lerp(Color, GetColor(normalColor), colorSmoothingSpeed * deltaTime);
+                Color = GetColor(Col.Lerp(Color, normalColor, colorSmoothingSpeed * deltaTime));
         }
 
         public override void OnMouseUp()
