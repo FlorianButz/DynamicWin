@@ -17,6 +17,7 @@ namespace DynamicWin.UI
     public class UIObject
     {
         private UIObject? parent;
+        public UIObject? Parent { get { return parent; } set { parent = value; } }
 
         private Vec2 position = Vec2.zero;
         private Vec2 localPosition = Vec2.zero;

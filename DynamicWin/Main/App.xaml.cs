@@ -16,7 +16,6 @@ namespace DynamicWin
         public static MMDevice defaultDevice;
         public static MMDevice defaultMicrophone;
 
-
         [STAThread]
         public static void Main()
         {

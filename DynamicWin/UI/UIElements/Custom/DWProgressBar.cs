@@ -11,6 +11,7 @@ namespace DynamicWin.UI.UIElements.Custom
     public class DWProgressBar : UIObject
     {
         public float value = 1f;
+        public float vaueSmoothing = 15f;
 
         public Col contentColor;
 
@@ -30,7 +31,7 @@ namespace DynamicWin.UI.UIElements.Custom
         {
             base.Update(deltaTime);
 
-            displayValue = Mathf.Lerp(displayValue, value, 15f * deltaTime);
+            displayValue = Mathf.Lerp(displayValue, value, vaueSmoothing * deltaTime);
         }
 
         public override void Draw(SKCanvas canvas)
@@ -51,7 +52,7 @@ namespace DynamicWin.UI.UIElements.Custom
 
             canvas.DrawRoundRect(rBgRect, paint);
 
-            paint.Color = contentColor.Value();
+            paint.Color = GetColor(contentColor).Value();
             canvas.DrawRoundRect(rFillRect, paint);
         }
     }

@@ -1,6 +1,7 @@
 ﻿using DynamicWin.Main;
 using DynamicWin.Resources;
 using DynamicWin.UI.UIElements;
+using DynamicWin.UI.UIElements.Custom;
 using DynamicWin.UI.Widgets;
 using DynamicWin.UI.Widgets.Small;
 using DynamicWin.Utils;
@@ -9,7 +10,9 @@ using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -47,6 +50,11 @@ namespace DynamicWin.UI.Menu.Menus
                 MenuManager.OpenMenu(Res.HomeMenu);
             }
 
+            foreach (var item in customOptions)
+            {
+                item.SaveSettings();
+            }
+
             Settings.Save();
         }
 
@@ -57,6 +65,12 @@ namespace DynamicWin.UI.Menu.Menus
         public override List<UIObject> InitializeMenu(IslandObject island)
         {
             var objects = base.InitializeMenu(island);
+            LoadCustomOptions();
+
+            foreach(var item in customOptions)
+            {
+                item.LoadSettings();
+            }
 
             var generalTitle = new DWText(island, "General", new Vec2(25, 0), UIAlignment.TopLeft);
             generalTitle.Font = Res.InterBold;
@@ -154,13 +168,53 @@ namespace DynamicWin.UI.Menu.Menus
                 objects.Add(bigWidgetAdder);
             }
 
-
             objects.Add(new DWText(island, " ", new Vec2(25, 0), UIAlignment.TopLeft)
             {
                 Color = Theme.TextThird,
                 Anchor = new Vec2(0, 0.5f),
                 TextSize = 20
             });
+
+            var widgetOptionsTitle = new DWText(island, "Widget Settings", new Vec2(25, 0), UIAlignment.TopLeft);
+            widgetOptionsTitle.Font = Res.InterBold;
+            widgetOptionsTitle.Color = Theme.TextSecond;
+            widgetOptionsTitle.Anchor.X = 0;
+            objects.Add(widgetOptionsTitle);
+
+            {
+                foreach(var option in customOptions)
+                {
+                    var wTitle = new DWText(island, option.SettingTitle, new Vec2(25, 0), UIAlignment.TopLeft);
+                    wTitle.Font = Res.InterRegular;
+                    wTitle.Color = Theme.TextSecond;
+                    wTitle.TextSize = 15;
+                    wTitle.Anchor.X = 0;
+                    objects.Add(wTitle);
+
+                    foreach(var optionItem in option.SettingsObjects())
+                    {
+                        optionItem.Parent = island;
+
+                        if(optionItem.alignment == UIAlignment.TopLeft)
+                        {
+                            optionItem.Position = new Vec2(25, 0);
+                            optionItem.Anchor.X = 0;
+                        }
+
+                        if (optionItem is DWText)
+                        {
+                            ((DWText)optionItem).Color = Theme.TextThird;
+                            ((DWText)optionItem).Font = Res.InterRegular;
+                            ((DWText)optionItem).TextSize = 13;
+                        }else if(optionItem is Checkbox)
+                        {
+                            optionItem.Size = new Vec2(25, 25);
+                        }
+
+                        objects.Add(optionItem);
+                    }
+                }
+            }
 
             objects.Add(new DWText(island, "Software Version: " + DynamicWinMain.Version, new Vec2(25, 0), UIAlignment.TopLeft)
             {
@@ -223,6 +277,8 @@ namespace DynamicWin.UI.Menu.Menus
             for(int i = 0; i < UiObjects.Count - 2; i++)
             {
                 var uiObject = UiObjects[i];
+                if (!uiObject.IsEnabled) continue;
+
                 uiObject.LocalPosition.Y = yPos + ySmoothScroll;
                 yPos += uiObject.Size.Y + spacing;
 
@@ -248,6 +304,53 @@ namespace DynamicWin.UI.Menu.Menus
         public override Vec2 IslandSizeBig()
         {
             return IslandSize() + 5;
+        }
+
+        static List<IRegisterableSetting> customOptions;
+
+        void LoadCustomOptions()
+        {
+            customOptions = new List<IRegisterableSetting>();
+
+            var registerableSettings = AppDomain.CurrentDomain.GetAssemblies()
+            .SelectMany(s => s.GetTypes())
+            .Where(p => typeof(IRegisterableSetting).IsAssignableFrom(p) && p.IsClass);
+
+            foreach (var option in registerableSettings)
+            {
+                var optionInstance = (IRegisterableSetting)Activator.CreateInstance(option);
+                customOptions.Add(optionInstance);
+            }
+
+            // Loading in custom DLLs
+
+            var dirPath = Path.Combine(SaveManager.SavePath, "Extensions");
+
+            if (!Directory.Exists(dirPath))
+            {
+                Directory.CreateDirectory(dirPath);
+            }
+            else
+            {
+                foreach (var file in Directory.GetFiles(dirPath))
+                {
+                    if (Path.GetExtension(file).ToLower().Equals(".dll"))
+                    {
+                        System.Diagnostics.Debug.WriteLine(file);
+                        var DLL = new Assembly[] { Assembly.LoadFile(Path.Combine(dirPath, file)) };
+
+                        var dllRegisterableSettings = DLL
+                            .SelectMany(s => s.GetTypes())
+                            .Where(p => typeof(IRegisterableSetting).IsAssignableFrom(p) && p.IsClass);
+
+                        foreach (var option in dllRegisterableSettings)
+                        {
+                            var optionInstance = (IRegisterableSetting)Activator.CreateInstance(option);
+                            customOptions.Add(optionInstance);
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -756,7 +859,7 @@ namespace DynamicWin.UI.Menu.Menus
         }
     }
 
-    internal class Checkbox : DWImageButton
+    public class Checkbox : DWImageButton
     {
         bool isChecked = false;
         public bool IsChecked { get { return isChecked; } set => SetChecked(value); }
@@ -783,12 +886,12 @@ namespace DynamicWin.UI.Menu.Menus
 
         public override void OnMouseUp()
         {
-            base.OnMouseUp();
             IsChecked = !IsChecked;
+            base.OnMouseUp();
         }
     }
 
-    internal class MultiSelectionButton : UIObject
+    public class MultiSelectionButton : UIObject
     {
         string[] options;
         DWTextButton[] buttons;

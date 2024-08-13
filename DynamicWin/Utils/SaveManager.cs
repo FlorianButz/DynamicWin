@@ -17,6 +17,8 @@ namespace DynamicWin.Utils
         public static string SavePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "DynamicWin");
         static string fileName = "Settings.json";
 
+        static string cachedJsonSave = "";
+
         public static void LoadData()
         {
             System.Diagnostics.Debug.WriteLine(SavePath);
@@ -33,6 +35,8 @@ namespace DynamicWin.Utils
             }
 
             var json = File.ReadAllText(fullPath);
+            cachedJsonSave = json;
+
             data = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
         }
 
@@ -69,6 +73,14 @@ namespace DynamicWin.Utils
                 return data[key];
             else
                 return default;
+        }
+
+        public static T Get<T>(string key)
+        {
+            if (Contains(key))
+                return (T)JsonConvert.DeserializeObject<T>(cachedJsonSave);
+            else
+                return default(T);
         }
 
         public static bool Contains(string key)
