@@ -67,12 +67,30 @@ namespace DynamicWin.Utils
                 WidgetBackground = "#11000000"
             };
 
+            var candyTheme = GetTheme("{\r\n  \"IslandColor\": \"#f7cac9\",\r\n  \"TextMain\": \"#ff6f61\",\r\n  \"TextSecond\": \"#d66853\",\r\n  \"TextThird\": \"#b94a45\",\r\n  \"Primary\": \"#ff6f61\",\r\n  \"Secondary\": \"#f7cac9\",\r\n  \"Success\": \"#88b04b\",\r\n  \"Error\": \"#c0392b\",\r\n  \"IconColor\": \"#ff6f61\",\r\n  \"WidgetBackground\": \"#88ffebee\"\r\n}\r\n");
+            var forestDawnTheme = GetTheme("{\r\n  \"IslandColor\": \"#1c1c1c\",\r\n  \"TextMain\": \"#8e44ad\",\r\n  \"TextSecond\": \"#9b59b6\",\r\n  \"TextThird\": \"#6c3483\",\r\n  \"Primary\": \"#8e44ad\",\r\n  \"Secondary\": \"#34495e\",\r\n  \"Success\": \"#27ae60\",\r\n  \"Error\": \"#e74c3c\",\r\n  \"IconColor\": \"#8e44ad\",\r\n  \"WidgetBackground\": \"#2c3e50\"\r\n}\r\n");
+            var sunsetGlow = GetTheme("{\r\n  \"IslandColor\": \"#2c3e50\",\r\n  \"TextMain\": \"#f39c12\",\r\n  \"TextSecond\": \"#e67e22\",\r\n  \"TextThird\": \"#d35400\",\r\n  \"Primary\": \"#e74c3c\",\r\n  \"Secondary\": \"#c0392b\",\r\n  \"Success\": \"#27ae60\",\r\n  \"Error\": \"#c0392b\",\r\n  \"IconColor\": \"#f39c12\",\r\n  \"WidgetBackground\": \"#22ecf0f1\"\r\n}\r\n");
+
             if (Settings.Theme != -1)
             {
-                if (Settings.Theme == 0)
+                switch (Settings.Theme)
+                {
+                    case 0:
                     ApplyTheme(darkTheme);
-                else
-                    ApplyTheme(lightTheme);
+                        break;
+                    case 1:
+                        ApplyTheme(lightTheme);
+                        break;
+                    case 2:
+                        ApplyTheme(candyTheme);
+                        break;
+                    case 3:
+                        ApplyTheme(forestDawnTheme);
+                        break;
+                    case 4:
+                        ApplyTheme(sunsetGlow);
+                        break;
+                }
             }
 
             var customTheme = new ThemeHolder();
@@ -104,8 +122,7 @@ namespace DynamicWin.Utils
 
                 System.Diagnostics.Debug.WriteLine("Loaded theme: " + json);
 
-                customTheme = new ThemeHolder();
-                customTheme = JsonConvert.DeserializeObject<ThemeHolder>(json);
+                customTheme = GetTheme(json);
             }
             catch (Exception e)
             {
@@ -120,6 +137,13 @@ namespace DynamicWin.Utils
 
             if (refreshRenderer)
                 MainForm.Instance.AddRenderer();
+        }
+
+        ThemeHolder GetTheme(string json)
+        {
+            var customTheme = new ThemeHolder();
+            customTheme = JsonConvert.DeserializeObject<ThemeHolder>(json);
+            return customTheme;
         }
 
         public static Col TextMain { get; set; }

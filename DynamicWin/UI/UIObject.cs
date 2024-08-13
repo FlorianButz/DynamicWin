@@ -105,6 +105,7 @@ namespace DynamicWin.UI
             if (parent == null)
             {
                 Vec2 screenDim = RendererMain.ScreenDimensions;
+                if (Size == null) Size = Vec2.one;
                 switch (alignment)
                 {
                     case UIAlignment.TopLeft:

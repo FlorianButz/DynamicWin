@@ -44,11 +44,15 @@ namespace DynamicWin.Main
             instance = this;
 
             this.WindowStyle = WindowStyle.None;
+            this.WindowState = WindowState.Maximized;
+
             this.Topmost = true;
             this.AllowsTransparency = true;
-            this.WindowState = WindowState.Maximized;
             this.ShowInTaskbar = false;
             this.Title = "DynamicWin Overlay";
+
+            this.Width = SystemParameters.WorkArea.Width;
+            this.Height = SystemParameters.WorkArea.Height;
 
             AddRenderer();
 
