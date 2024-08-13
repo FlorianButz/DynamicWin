@@ -204,16 +204,20 @@ namespace DynamicWin.UI.UIElements.Custom
                 AddFileObjects();
             }
 
-            fileObjects.ForEach((f) =>
+            new List<TrayFile>(fileObjects).ForEach((f) =>
             {
-                f.UpdateCall(deltaTime);
+                if(f != null)
+                    f.UpdateCall(deltaTime);
             });
 
 
             new List<TrayFile>(removedFiles).ForEach((file) =>
             {
-                if (!file.IsEnabled) removedFiles.Remove(file);
-                else file.UpdateCall(deltaTime);
+                if (file != null)
+                {
+                    if (!file.IsEnabled) removedFiles.Remove(file);
+                    else file.UpdateCall(deltaTime);
+                }
             });
         }
 
@@ -251,14 +255,16 @@ namespace DynamicWin.UI.UIElements.Custom
 
             canvas.ClipRoundRect(rect, antialias: true);
 
-            fileObjects.ForEach((f) =>
+            new List<TrayFile>(fileObjects).ForEach((f) =>
             {
-                f.DrawCall(canvas);
+                if(f != null)
+                    f.DrawCall(canvas);
             });
 
-            removedFiles.ForEach((file) =>
+            new List<TrayFile>(removedFiles).ForEach((file) =>
             {
-                file.DrawCall(canvas);
+                if (file != null)
+                    file.DrawCall(canvas);
             });
         }
 
@@ -279,39 +285,47 @@ namespace DynamicWin.UI.UIElements.Custom
 
         void AddFileObjects()
         {
-            List<TrayFile> filesToRemove = new List<TrayFile>();
-            fileObjects.ForEach((f) => filesToRemove.Add(f));
-
-            if(cachedTrayFiles == null) cachedTrayFiles = new string[0];
-
-            foreach(var x in cachedTrayFiles)
+            new Thread(() =>
             {
-                bool hasFileAlready = false;
-                TrayFile fileAlreadyExists = null;
-                fileObjects.ForEach((y) => { if(y.FileName.Equals(x)) { hasFileAlready = true; fileAlreadyExists = y; } });
+                Thread.CurrentThread.IsBackground = true;
 
-                if (fileAlreadyExists != null)
-                    filesToRemove.Remove(fileAlreadyExists);
+                List<TrayFile> filesToRemove = new List<TrayFile>();
+                fileObjects.ForEach((f) => filesToRemove.Add(f));
 
-                if (hasFileAlready) continue;
+                if (cachedTrayFiles == null) cachedTrayFiles = new string[0];
 
-                var f = new TrayFile(this, x, Vec2.zero, this, UIAlignment.TopLeft)
+                foreach (var x in cachedTrayFiles)
                 {
-                    Anchor = new Vec2(0, 0)
-                };
+                    bool hasFileAlready = false;
+                    TrayFile fileAlreadyExists = null;
+                    fileObjects.ForEach((y) => { if (y.FileName.Equals(x)) { hasFileAlready = true; fileAlreadyExists = y; } });
 
-                fileObjects.Add(f);
-                //AddLocalObject(f);
-            }
+                    if (fileAlreadyExists != null)
+                        filesToRemove.Remove(fileAlreadyExists);
 
-            filesToRemove.ForEach((f) =>
-            {
-                if (f != null)
-                {
-                    //DestroyLocalObject(f);
-                    fileObjects.Remove(f);
+                    if (hasFileAlready) continue;
+
+                    var f = new TrayFile(this, x, Vec2.zero, this, UIAlignment.TopLeft)
+                    {
+                        Anchor = new Vec2(0, 0)
+                    };
+
+                    fileObjects.Add(f);
+                    //AddLocalObject(f);
+
+                    Thread.Sleep(20);
                 }
-            });
+
+                filesToRemove.ForEach((f) =>
+                {
+                    if (f != null)
+                    {
+                        //DestroyLocalObject(f);
+                        fileObjects.Remove(f);
+                    }
+                });
+
+            }).Start();
         }
 
         public static string[]? GetFiles()

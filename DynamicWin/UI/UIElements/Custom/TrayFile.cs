@@ -81,11 +81,13 @@ namespace DynamicWin.UI.UIElements.Custom
 
         public void RefreshIcon()
         {
-            Task.Run(() =>
+            new Thread(() =>
             {
+                Thread.CurrentThread.IsBackground = true;
+
                 try
                 {
-                    int THUMB_SIZE = 256;
+                    int THUMB_SIZE = 64;
                     thumbnail = WindowsThumbnailProvider.GetThumbnail(
                        file, THUMB_SIZE, THUMB_SIZE, ThumbnailOptions.None);
                 }
@@ -98,7 +100,8 @@ namespace DynamicWin.UI.UIElements.Custom
                         try
                         {
                             Thread.Sleep(1500);
-                        }catch(ThreadInterruptedException e)
+                        }
+                        catch (ThreadInterruptedException e)
                         {
                             return;
                         }
@@ -106,7 +109,8 @@ namespace DynamicWin.UI.UIElements.Custom
                         RefreshIcon();
                     }).Start();
 
-                }catch(FileNotFoundException fnfE)
+                }
+                catch (FileNotFoundException fnfE)
                 {
                     return;
                 }
@@ -118,12 +122,12 @@ namespace DynamicWin.UI.UIElements.Custom
 
                     fileIconImage.Image = bMap;
 
-                    if(thumbnail != null)
+                    if (thumbnail != null)
                         thumbnail.Dispose();
                 }
 
                 SetActive(true);
-            });
+            }).Start();
         }
 
         float cycle = 0f;
