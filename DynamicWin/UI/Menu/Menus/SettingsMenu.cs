@@ -169,6 +169,13 @@ namespace DynamicWin.UI.Menu.Menus
                 TextSize = 15
             });
 
+            objects.Add(new DWText(island, "Made by Florian Butz with ♡", new Vec2(25, 0), UIAlignment.TopLeft)
+            {
+                Color = Theme.TextThird,
+                Anchor = new Vec2(0, 0.5f),
+                TextSize = 15
+            });
+
             objects.Add(new DWText(island, "Licensed under the MIT license.", new Vec2(25, 0), UIAlignment.TopLeft)
             {
                 Color = Theme.TextThird,
