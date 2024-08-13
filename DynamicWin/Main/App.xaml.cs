@@ -14,6 +14,7 @@ namespace DynamicWin
     public partial class DynamicWinMain : Application
     {
         public static MMDevice defaultDevice;
+        public static MMDevice defaultMicrophone;
 
 
         [STAThread]
@@ -86,6 +87,7 @@ namespace DynamicWin
 
             var devEnum = new MMDeviceEnumerator();
             defaultDevice = devEnum.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
+            defaultMicrophone = devEnum.GetDefaultAudioEndpoint(DataFlow.Capture, Role.Multimedia);
 
             SaveManager.LoadData();
 

@@ -1,4 +1,6 @@
 ﻿using DynamicWin.Utils;
+using NAudio.CoreAudioApi;
+using NAudio.Wave;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
@@ -21,7 +23,15 @@ namespace DynamicWin.UI.Widgets.Small
 
     public class UsedDevicesWidget : SmallWidgetBase
     {
-        public UsedDevicesWidget(UIObject? parent, Vec2 position, UIAlignment alignment = UIAlignment.TopCenter) : base(parent, position, alignment) { }
+        public UsedDevicesWidget(UIObject? parent, Vec2 position, UIAlignment alignment = UIAlignment.TopCenter) : base(parent, position, alignment)
+        {
+
+        }
+
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+        }
 
         float camDotSize = 2.5f;
         float camDotSizeCurrent = 0f;
@@ -31,7 +41,7 @@ namespace DynamicWin.UI.Widgets.Small
         float micDotSizeCurrent = 0f;
         float micDotPositionX = 0f;
 
-        float seperation = 5;
+        float seperation = 6.5f;
 
         protected override float GetWidgetWidth()
         {
@@ -66,7 +76,11 @@ namespace DynamicWin.UI.Widgets.Small
                 camDotPositionX = Mathf.Lerp(camDotPositionX, 0, 5f * deltaTime);
                 micDotPositionX = Mathf.Lerp(micDotPositionX, 0, 5f * deltaTime);
             }
+
+            isMicrophoneIndicatorShowing = (DynamicWinMain.defaultMicrophone.AudioMeterInformation.MasterPeakValue * 100) > 5f;
         }
+
+        bool isMicrophoneIndicatorShowing = false;
 
         public override void DrawWidget(SKCanvas canvas)
         {
@@ -81,6 +95,15 @@ namespace DynamicWin.UI.Widgets.Small
 
             paint.Color = Col.Lerp(Theme.Success, Theme.Success * 0.6f, Mathf.Remap((float)Math.Sin(sinCycleMicrophone), -1, 1, 0, 1)).Value();
             canvas.DrawCircle(micPos.X, micPos.Y, micDotSizeCurrent, paint);
+
+            if (isMicrophoneIndicatorShowing)
+            {
+                paint.IsStroke = true;
+                paint.StrokeWidth = 1.25f;
+
+                var micIndicatorPos = GetScreenPosFromRawPosition(new Vec2(micDotPositionX, 0), new Vec2(0, micDotSizeCurrent / 2), UIAlignment.Center, this);
+                canvas.DrawCircle(micIndicatorPos.X, micIndicatorPos.Y, micDotSizeCurrent + 3f, paint);
+            }
         }
     }
 }
