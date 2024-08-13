@@ -1,4 +1,5 @@
 ﻿using DynamicWin.Resources;
+using DynamicWin.UI.Menu.Menus;
 using DynamicWin.UI.UIElements;
 using DynamicWin.Utils;
 using Newtonsoft.Json.Linq;
@@ -103,6 +104,13 @@ namespace DynamicWin.Main
         static void AfterSettingsLoaded()
         {
             DynamicWin.Utils.Theme.Instance.UpdateTheme();
+
+            var customOptions = SettingsMenu.LoadCustomOptions();
+
+            foreach (var item in customOptions)
+            {
+                item.LoadSettings();
+            }
         }
 
         public static void Save()

@@ -1,4 +1,6 @@
-﻿using DynamicWin.Resources;
+﻿using DynamicWin.Main;
+using DynamicWin.Resources;
+using DynamicWin.UI.Menu.Menus;
 using DynamicWin.UI.UIElements;
 using DynamicWin.Utils;
 using Newtonsoft.Json;
@@ -12,6 +14,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml;
+using static DynamicWin.UI.Widgets.Small.RegisterUsedDevicesOptions;
 
 namespace DynamicWin.UI.Widgets.Big
 {
@@ -26,6 +29,62 @@ namespace DynamicWin.UI.Widgets.Big
         }
     }
 
+    class RegisterWeatherWidgetSettings : IRegisterableSetting
+    {
+        public string SettingID => "weatherwidget";
+
+        public string SettingTitle => "Weather Widget";
+
+        public static WeatherWidgetSaveData saveData;
+
+        public struct WeatherWidgetSaveData
+        {
+            public bool hideLocation;
+            public bool useCelcius;
+        }
+
+        public void LoadSettings()
+        {
+            if (SaveManager.Contains(SettingID))
+                saveData = JsonConvert.DeserializeObject<WeatherWidgetSaveData>((string)SaveManager.Get(SettingID));
+            else
+            {
+                saveData = new WeatherWidgetSaveData() { useCelcius = true };
+            }
+        }
+
+        public void SaveSettings()
+        {
+            SaveManager.Add(SettingID, JsonConvert.SerializeObject(saveData));
+        }
+
+        public List<UIObject> SettingsObjects()
+        {
+            var objects = new List<UIObject>();
+
+            var hideLocationCheckbox = new Checkbox(null, "Hide Location", new Vec2(25, 0), new Vec2(25, 25), null, alignment: UIAlignment.TopLeft);
+            hideLocationCheckbox.IsChecked = saveData.hideLocation;
+
+            hideLocationCheckbox.clickCallback += () =>
+            {
+                saveData.hideLocation = hideLocationCheckbox.IsChecked;
+            };
+
+            objects.Add(hideLocationCheckbox);
+
+            var useCelciusCheckbox = new Checkbox(null, "Use Celcius", new Vec2(25, 0), new Vec2(25, 25), null, alignment: UIAlignment.TopLeft);
+            useCelciusCheckbox.IsChecked = saveData.useCelcius;
+
+            useCelciusCheckbox.clickCallback += () =>
+            {
+                saveData.useCelcius = useCelciusCheckbox.IsChecked;
+            };
+
+            objects.Add(useCelciusCheckbox);
+
+            return objects;
+        }
+    }
 
     public class WeatherWidget : WidgetBase
     {
@@ -38,8 +97,6 @@ namespace DynamicWin.UI.Widgets.Big
         static WeatherFetcher weatherFetcher;
 
         DWImage weatherTypeIcon;
-
-        bool hideLocation = false;
 
         public WeatherWidget(UIObject? parent, Vec2 position, UIAlignment alignment = UIAlignment.TopCenter) : base(parent, position, alignment)
         {
@@ -101,30 +158,23 @@ namespace DynamicWin.UI.Widgets.Big
             weatherFetcher.onWeatherDataReceived += OnWeatherDataReceived;
             weatherFetcher.Fetch();
 
-            LoadPersistentData();
-            locationTextReplacement.SilentSetActive(hideLocation);
-            locationText.SilentSetActive(!hideLocation);
-        }
-
-        void LoadPersistentData()
-        {
-            if (SaveManager.Contains("weather.hideLoc"))
-                hideLocation = (bool)SaveManager.Get("weather.hideLoc");
+            locationTextReplacement.SilentSetActive(RegisterWeatherWidgetSettings.saveData.hideLocation);
+            locationText.SilentSetActive(!RegisterWeatherWidgetSettings.saveData.hideLocation);
         }
 
         public override ContextMenu? GetContextMenu()
         {
             var ctx = new ContextMenu();
 
-            var hideLocationItem = new MenuItem() { Header = "Hide Location", IsCheckable = true, IsChecked = hideLocation };
+            var hideLocationItem = new MenuItem() { Header = "Hide Location", IsCheckable = true, IsChecked = RegisterWeatherWidgetSettings.saveData.hideLocation };
             hideLocationItem.Click += (x, y) =>
             {
-                hideLocation = hideLocationItem.IsChecked;
+                RegisterWeatherWidgetSettings.saveData.hideLocation = hideLocationItem.IsChecked;
 
-                locationTextReplacement.SetActive(hideLocation);
-                locationText.SetActive(!hideLocation);
+                locationTextReplacement.SetActive(RegisterWeatherWidgetSettings.saveData.hideLocation);
+                locationText.SetActive(!RegisterWeatherWidgetSettings.saveData.hideLocation);
 
-                SaveManager.Add("weather.hideLoc", hideLocation);
+                new RegisterWeatherWidgetSettings().SaveSettings();
                 SaveManager.SaveAll();
             };
 
@@ -133,13 +183,23 @@ namespace DynamicWin.UI.Widgets.Big
             return ctx;
         }
 
+        WeatherData lastWeatherData;
+
         void OnWeatherDataReceived(WeatherData weatherData)
         {
-            temperatureText.SetText(weatherData.temperatureCelcius);
+            lastWeatherData = weatherData;
+            
             weatherText.SetText(weatherData.weatherText);
             locationText.SetText(weatherData.city);
 
             UpdateIcon(weatherData.weatherText);
+        }
+
+        public override void Update(float deltaTime)
+        {
+            base.Update(deltaTime);
+
+            temperatureText.SetText(RegisterWeatherWidgetSettings.saveData.useCelcius ? lastWeatherData.temperatureCelcius : lastWeatherData.temperatureFahrenheit);
         }
 
         void UpdateIcon(string weather)

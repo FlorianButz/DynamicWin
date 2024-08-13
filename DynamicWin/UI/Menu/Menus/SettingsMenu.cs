@@ -65,9 +65,10 @@ namespace DynamicWin.UI.Menu.Menus
         public override List<UIObject> InitializeMenu(IslandObject island)
         {
             var objects = base.InitializeMenu(island);
-            LoadCustomOptions();
 
-            foreach(var item in customOptions)
+            SettingsMenu.LoadCustomOptions();
+
+            foreach (var item in customOptions)
             {
                 item.LoadSettings();
             }
@@ -76,7 +77,6 @@ namespace DynamicWin.UI.Menu.Menus
             generalTitle.Font = Res.InterBold;
             generalTitle.Anchor.X = 0;
             objects.Add(generalTitle);
-
 
             {
                 var islandModesTitle = new DWText(island, "Island Mode", new Vec2(25, 0), UIAlignment.TopLeft);
@@ -308,7 +308,7 @@ namespace DynamicWin.UI.Menu.Menus
 
         static List<IRegisterableSetting> customOptions;
 
-        void LoadCustomOptions()
+        public static List<IRegisterableSetting> LoadCustomOptions()
         {
             customOptions = new List<IRegisterableSetting>();
 
@@ -351,6 +351,8 @@ namespace DynamicWin.UI.Menu.Menus
                     }
                 }
             }
+
+            return customOptions;
         }
     }
 
