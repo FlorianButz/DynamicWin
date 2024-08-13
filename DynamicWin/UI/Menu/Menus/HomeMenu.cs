@@ -130,6 +130,9 @@ namespace DynamicWin.UI.Menu.Menus
                 isWidgetMode = true;
             },
             UIAlignment.MiddleLeft);
+            widgetButton.Text.alignment = UIAlignment.MiddleLeft;
+            widgetButton.Text.Anchor.X = 0;
+            widgetButton.Text.Position = new Vec2(28.5f, 0);
             widgetButton.normalColor = Col.Transparent;
             widgetButton.hoverColor = Col.Transparent;
             widgetButton.clickColor = Theme.Primary.Override(a: 0.35f);
@@ -137,11 +140,14 @@ namespace DynamicWin.UI.Menu.Menus
 
             bigMenuItems.Add(widgetButton);
 
-            trayButton = new DWTextImageButton(topContainer, Resources.Res.Tray, "Tray", new Vec2(110, 0), new Vec2(55, 20), () =>
+            trayButton = new DWTextImageButton(topContainer, Resources.Res.Tray, "Tray", new Vec2(112.5f, 0), new Vec2(57.5f, 20), () =>
             {
                 isWidgetMode = false;
             },
             UIAlignment.MiddleLeft);
+            trayButton.Text.alignment = UIAlignment.MiddleLeft;
+            trayButton.Text.Anchor.X = 0;
+            trayButton.Text.Position = new Vec2(27.5f, 0);
             trayButton.normalColor = Col.Transparent;
             trayButton.hoverColor = Col.Transparent;
             trayButton.clickColor = Theme.Primary.Override(a: 0.35f);
@@ -283,10 +289,18 @@ namespace DynamicWin.UI.Menu.Menus
         public bool isWidgetMode = true;
         bool wasWidgetMode = false;
 
+        int cycle = 0;
+
         public override void Update()
         {
             tray.SetActive(!isWidgetMode && RendererMain.Instance.MainIsland.IsHovering);
             tray.Size = new Vec2(IslandSizeBig().X - bCD, RendererMain.Instance.MainIsland.Size.Y - bCD - topSpacing - topContainer.Size.Y / 2);
+
+            if(cycle % 32 == 0)
+            {
+                var count = Tray.GetFiles().Length;
+                trayButton.Text.Text = "Tray      " + (count > 0 ? count : "");
+            }
 
             widgetButton.normalColor = Col.Lerp(widgetButton.normalColor, isWidgetMode ? Col.White.Override(a: 0.075f) : Col.Transparent, 15f * RendererMain.Instance.DeltaTime);
             trayButton.normalColor = Col.Lerp(trayButton.normalColor, (!isWidgetMode) ? Col.White.Override(a: 0.075f) : Col.Transparent, 15f * RendererMain.Instance.DeltaTime);
@@ -425,6 +439,8 @@ namespace DynamicWin.UI.Menu.Menus
 
                 wasHovering = true;
             }
+
+            cycle++;
         }
 
         public void CenterWidgets(List<WidgetBase> widgets, UIObject container)
