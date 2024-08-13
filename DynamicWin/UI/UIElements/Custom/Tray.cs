@@ -122,6 +122,9 @@ namespace DynamicWin.UI.UIElements.Custom
             var spacing = 50;
             var xAdd = 5;
 
+            float allY = 0;
+            float scrollLimY = 0;
+
             var maxFilesInOneLine = (int)(Size.X / (fileW + spacing / 2f));
 
             var fileMovementSmoothing = 5f;
@@ -140,11 +143,16 @@ namespace DynamicWin.UI.UIElements.Custom
                 fileObject.LocalPosition.Y = Mathf.Lerp(fileObject.LocalPosition.Y,
                     (fileH * line) + yOffset,
                     fileMovementSmoothing * deltaTime);
+
+                allY += fileH;
+
+                if((allY >= Size.Y) && (i % maxFilesInOneLine == 0))
+                    scrollLimY += fileH;
             }
 
-            int lines = fileObjects.Count / (maxFilesInOneLine + 1);
+            int lines = fileObjects.Count / (maxFilesInOneLine);
 
-            scrollFac = Mathf.Lerp(scrollFac, Mathf.Clamp(scrollFac, -((lines) * (fileH)), 0f), 25f * deltaTime);
+            scrollFac = Mathf.Lerp(scrollFac, Mathf.Clamp(scrollFac, -scrollLimY, 0f), 25f * deltaTime);
             yOffset = Mathf.Lerp(yOffset, scrollFac + mouseYLastSmooth, 50f * deltaTime);
 
             selectedFiles.Clear();
