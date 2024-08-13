@@ -58,7 +58,7 @@ namespace DynamicWin.UI
         private float pAlpha = 1f;
         private float oAlpha = 1f;
 
-        public float Alpha { get => (float) Math.Min(pAlpha, oAlpha); set => oAlpha = value; }
+        public float Alpha { get => (float) Math.Min(pAlpha, Math.Min(oAlpha, RendererMain.Instance.alphaOverride)); set => oAlpha = value; }
 
         protected void AddLocalObject(UIObject obj)
         {
@@ -256,7 +256,7 @@ namespace DynamicWin.UI
         public float GetBlur()
         {
             if (!Settings.AllowBlur) return 0f;
-            return Math.Max(blurAmount, Math.Max(localBlurAmount, RendererMain.Instance.blurOverride));
+            return Math.Max(blurAmount, Math.Max(localBlurAmount, Math.Max((parent == null) ? 0f : parent.GetBlur(), RendererMain.Instance.blurOverride)));
         }
 
         bool canInteract = true;
@@ -397,8 +397,12 @@ namespace DynamicWin.UI
             if(this.isEnabled == isEnabled) return;
             if (toggleAnim != null && toggleAnim.IsRunning) toggleAnim.Stop();
 
-            if(isEnabled)
+            if (isEnabled)
+            {
+                localBlurAmount = blurSizeOnDisable;
+                Alpha = 0f;
                 this.isEnabled = isEnabled;
+            }
 
             toggleAnim = new Animator(250, 1);
             toggleAnim.onAnimationUpdate += (t) =>

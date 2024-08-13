@@ -37,6 +37,7 @@ namespace DynamicWin.Main
         public Vec2 renderOffset = Vec2.zero;
         public Vec2 scaleOffset = Vec2.one;
         public float blurOverride = 0f;
+        public float alphaOverride = 1f;
 
         public Action<float> onUpdate;
         public Action<SKCanvas> onDraw;

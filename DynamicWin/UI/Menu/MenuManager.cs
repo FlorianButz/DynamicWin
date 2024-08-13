@@ -95,7 +95,7 @@ namespace DynamicWin.UI.Menu
             if (menuAnimatorOut != null && menuAnimatorOut.IsRunning) return;
             onMenuChange?.Invoke(activeMenu, newActiveMenu);
 
-            menuAnimatorOut = new Animator(250, 1);
+            menuAnimatorOut = new Animator(300, 1);
 
             RendererMain.Instance.blurOverride = 35f;
 
@@ -105,11 +105,14 @@ namespace DynamicWin.UI.Menu
             menuAnimatorOut.onAnimationUpdate += (t) =>
             {
                 float easedTime = Easings.EaseOutCubic(t);
+                float easedTime2 = Easings.EaseOutQuint(t);
                 float blurSize = Mathf.Lerp(35f, 0f, easedTime);
-                float alpha = Mathf.Lerp(0f, 1f, easedTime);
-                var canvasSize = Vec2.lerp(Vec2.one * 0.65f, Vec2.one, easedTime);
+                float alpha = Mathf.Lerp(0f, 1f, easedTime2);
+
+                var canvasSize = Vec2.lerp(Vec2.one * 0.7f, Vec2.one, easedTime2);
 
                 RendererMain.Instance.blurOverride = blurSize;
+                RendererMain.Instance.alphaOverride = alpha;
                 RendererMain.Instance.scaleOffset = canvasSize;
             };
 

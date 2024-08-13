@@ -285,8 +285,8 @@ namespace DynamicWin.UI.Menu.Menus
 
         public override void Update()
         {
+            tray.SetActive(!isWidgetMode && RendererMain.Instance.MainIsland.IsHovering);
             tray.Size = new Vec2(IslandSizeBig().X - bCD, RendererMain.Instance.MainIsland.Size.Y - bCD - topSpacing - topContainer.Size.Y / 2);
-            tray.SetActive(!(isWidgetMode || !RendererMain.Instance.MainIsland.IsHovering));
 
             widgetButton.normalColor = Col.Lerp(widgetButton.normalColor, isWidgetMode ? Col.White.Override(a: 0.075f) : Col.Transparent, 15f * RendererMain.Instance.DeltaTime);
             trayButton.normalColor = Col.Lerp(trayButton.normalColor, (!isWidgetMode) ? Col.White.Override(a: 0.075f) : Col.Transparent, 15f * RendererMain.Instance.DeltaTime);
