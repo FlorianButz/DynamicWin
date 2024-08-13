@@ -28,6 +28,8 @@ namespace DynamicWin.UI.UIElements
             text.Anchor.X = 0f;
             AddLocalObject(text);
 
+            scaleSecondOrder.SetValues(4f, 0.8f, 0.1f);
+
             this.image = new DWImage(this, image, new Vec2(15, 0), Vec2.one * size.Y * imageScale, UIAlignment.MiddleLeft);
             text.Anchor.X = 1f;
             AddLocalObject(this.image);
