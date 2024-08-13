@@ -360,7 +360,13 @@ namespace DynamicWin.UI.UIElements.Custom
 
                     if (File.Exists(item) && !File.Exists(Path.Combine(dirPath, Path.GetFileName(item))))
                     {
-                        File.Copy(item, Path.Combine(dirPath, Path.GetFileName(item)));
+                        try
+                        {
+                            File.Copy(item, Path.Combine(dirPath, Path.GetFileName(item)));
+                        }catch(Exception e)
+                        {
+                            MessageBox.Show("An error occured trying to copy the files in to the tray. You can ignore this message.");
+                        }
                     }
                 }
 

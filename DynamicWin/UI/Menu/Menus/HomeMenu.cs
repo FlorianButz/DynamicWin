@@ -121,8 +121,7 @@ namespace DynamicWin.UI.Menu.Menus
 
             topContainer = new UIObject(island, new Vec2(0, 30), new Vec2(island.currSize.X, 50))
             {
-                Color = Theme.IslandBackground.Inverted().Override(a: 0.035f),
-                roundRadius = 10f
+                Color = Col.Transparent
             };
             bigMenuItems.Add(topContainer);
 
@@ -269,7 +268,7 @@ namespace DynamicWin.UI.Menu.Menus
         DWImage next;
         DWImage previous;
 
-        public float topSpacing = 20;
+        public float topSpacing = 15;
         public float bigWidgetsSpacing = 15;
         int maxBigWidgetInOneRow = 2;
 
@@ -370,7 +369,7 @@ namespace DynamicWin.UI.Menu.Menus
             }
             else if (RendererMain.Instance.MainIsland.IsHovering)
             {
-                topContainer.Size = new Vec2(RendererMain.Instance.MainIsland.currSize.X - bCD, 30);
+                topContainer.Size = new Vec2(RendererMain.Instance.MainIsland.currSize.X - 30, 30);
 
                 var bigContainerSize = IslandSizeBig();
                 bigContainerSize -= bCD;
