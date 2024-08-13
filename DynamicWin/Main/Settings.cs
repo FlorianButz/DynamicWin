@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace DynamicWin.Main
 {
@@ -37,59 +38,66 @@ namespace DynamicWin.Main
 
         public static void InitializeSettings()
         {
-            if (SaveManager.Contains("settings"))
+            try
             {
-                IslandMode = ((Int64)SaveManager.Get("settings.islandmode") == 0) ? IslandObject.IslandMode.Island : IslandObject.IslandMode.Notch;
 
-                AllowBlur = (bool)SaveManager.Get("settings.allowblur");
-                AllowAnimation = (bool)SaveManager.Get("settings.allowanimtion");
-                AntiAliasing = (bool)SaveManager.Get("settings.antialiasing");
+                if (SaveManager.Contains("settings"))
+                {
+                    IslandMode = ((Int64)SaveManager.Get("settings.islandmode") == 0) ? IslandObject.IslandMode.Island : IslandObject.IslandMode.Notch;
 
-                Theme = (int)((Int64)SaveManager.Get("settings.theme"));
+                    AllowBlur = (bool)SaveManager.Get("settings.allowblur");
+                    AllowAnimation = (bool)SaveManager.Get("settings.allowanimtion");
+                    AntiAliasing = (bool)SaveManager.Get("settings.antialiasing");
 
-                Settings.smallWidgetsLeft = new List<string>();
-                Settings.smallWidgetsRight = new List<string>();
-                Settings.smallWidgetsMiddle = new List<string>();
-                Settings.bigWidgets = new List<string>();
+                    Theme = (int)((Int64)SaveManager.Get("settings.theme"));
 
-                var smallWidgetsLeft = (JArray)SaveManager.Get("settings.smallwidgetsleft");
-                var smallWidgetsRight = (JArray)SaveManager.Get("settings.smallwidgetsright");
-                var smallWidgetsMiddle = (JArray)SaveManager.Get("settings.smallwidgetsmiddle");
-                var bigWidgets = (JArray)SaveManager.Get("settings.bigwidgets");
+                    Settings.smallWidgetsLeft = new List<string>();
+                    Settings.smallWidgetsRight = new List<string>();
+                    Settings.smallWidgetsMiddle = new List<string>();
+                    Settings.bigWidgets = new List<string>();
 
-                foreach (var x in smallWidgetsLeft)
-                    Settings.smallWidgetsLeft.Add(x.ToString());
-                foreach (var x in smallWidgetsRight)
-                    Settings.smallWidgetsRight.Add(x.ToString());
-                foreach (var x in smallWidgetsMiddle)
-                    Settings.smallWidgetsMiddle.Add(x.ToString());
-                foreach (var x in bigWidgets)
-                    Settings.bigWidgets.Add(x.ToString());
-            }
-            else
+                    var smallWidgetsLeft = (JArray)SaveManager.Get("settings.smallwidgetsleft");
+                    var smallWidgetsRight = (JArray)SaveManager.Get("settings.smallwidgetsright");
+                    var smallWidgetsMiddle = (JArray)SaveManager.Get("settings.smallwidgetsmiddle");
+                    var bigWidgets = (JArray)SaveManager.Get("settings.bigwidgets");
+
+                    foreach (var x in smallWidgetsLeft)
+                        Settings.smallWidgetsLeft.Add(x.ToString());
+                    foreach (var x in smallWidgetsRight)
+                        Settings.smallWidgetsRight.Add(x.ToString());
+                    foreach (var x in smallWidgetsMiddle)
+                        Settings.smallWidgetsMiddle.Add(x.ToString());
+                    foreach (var x in bigWidgets)
+                        Settings.bigWidgets.Add(x.ToString());
+                }
+                else
+                {
+                    smallWidgetsLeft = new List<string>();
+                    smallWidgetsRight = new List<string>();
+                    smallWidgetsMiddle = new List<string>();
+                    bigWidgets = new List<string>();
+
+                    smallWidgetsRight.Add("DynamicWin.UI.Widgets.Small.RegisterUsedDevicesWidget");
+                    smallWidgetsLeft.Add("DynamicWin.UI.Widgets.Small.RegisterTimeWidget");
+                    bigWidgets.Add("DynamicWin.UI.Widgets.Big.RegisterMediaWidget");
+
+                    IslandMode = IslandObject.IslandMode.Island;
+                    AllowBlur = true;
+                    AllowAnimation = true;
+                    AntiAliasing = true;
+
+                    Settings.Theme = 0;
+
+                    SaveManager.SaveData.Add("settings", 1);
+                }
+
+
+                // This must be run after loading all settings
+                AfterSettingsLoaded();
+            }catch(Exception e)
             {
-                smallWidgetsLeft = new List<string>();
-                smallWidgetsRight = new List<string>();
-                smallWidgetsMiddle = new List<string>();
-                bigWidgets = new List<string>();
-
-                smallWidgetsRight.Add("DynamicWin.UI.Widgets.Small.RegisterUsedDevicesWidget");
-                smallWidgetsLeft.Add("DynamicWin.UI.Widgets.Small.RegisterTimeWidget");
-                bigWidgets.Add("DynamicWin.UI.Widgets.Big.RegisterMediaWidget");
-
-                IslandMode = IslandObject.IslandMode.Island;
-                AllowBlur = true;
-                AllowAnimation = true;
-                AntiAliasing = true;
-                
-                Settings.Theme = 0;
-
-                SaveManager.SaveData.Add("settings", 1);
+                MessageBox.Show("An error occured trying to load the settings. Please revert back to the default settings by deleting the \"Settings.json\" file located under \"%appdata%/DynamicWin/\".");
             }
-
-
-            // This must be run after loading all settings
-            AfterSettingsLoaded();
         }
 
         static void AfterSettingsLoaded()
