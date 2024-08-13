@@ -196,7 +196,7 @@ namespace DynamicWin.UI.Widgets.Big
             {
                 try
                 {
-                    int THUMB_SIZE = 256;
+                    int THUMB_SIZE = 24;
                     thumbnail = WindowsThumbnailProvider.GetThumbnail(
                        savedShortcut.path, THUMB_SIZE, THUMB_SIZE, ThumbnailOptions.None);
                 }

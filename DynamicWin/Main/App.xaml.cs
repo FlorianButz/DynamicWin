@@ -23,7 +23,7 @@ namespace DynamicWin
             m.Run();
         }
 
-        public static string Version { get => "1.0.2" + "r"; }
+        public static string Version { get => "1.0.3" + "r"; }
 
         private void AddToStartup()
         {
