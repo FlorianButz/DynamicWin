@@ -37,7 +37,7 @@ namespace DynamicWin.Main
             this.ShowInTaskbar = false;
             this.Title = "DynamicWin Overlay";
 
-            SetMonitor(0);
+            SetMonitor(Settings.ScreenIndex);
 
             AddRenderer();
 
@@ -47,7 +47,8 @@ namespace DynamicWin.Main
 
         public void SetMonitor(int monitorIndex)
         {
-            var screen = System.Windows.Forms.Screen.AllScreens[monitorIndex];
+            var screen = System.Windows.Forms.Screen.AllScreens[Math.Clamp(monitorIndex, 0, GetMonitorCount() - 1)];
+            Settings.ScreenIndex = Math.Clamp(monitorIndex, 0, GetMonitorCount() - 1);
 
             if (screen != null)
             {

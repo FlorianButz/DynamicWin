@@ -128,7 +128,7 @@ namespace DynamicWin.UI.Menu.Menus
                 }
 
                 var selectedMonitor = new MultiSelectionButton(island, selectedMonitors, new Vec2(25, 0), new Vec2(IslandSize().X - 50, 25), UIAlignment.TopLeft);
-                selectedMonitor.SelectedIndex = Settings.ScreenIndex;
+                selectedMonitor.SelectedIndex = Math.Clamp(Settings.ScreenIndex, 0, MainForm.GetMonitorCount() - 1);
                 selectedMonitor.Anchor.X = 0;
                 selectedMonitor.onClick += (index) =>
                 {
