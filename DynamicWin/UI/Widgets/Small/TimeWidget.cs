@@ -1,4 +1,5 @@
-﻿using DynamicWin.UI.UIElements;
+﻿using DynamicWin.Main;
+using DynamicWin.UI.UIElements;
 using DynamicWin.Utils;
 using System;
 using System.Collections.Generic;
@@ -38,9 +39,11 @@ namespace DynamicWin.UI.Widgets.Small
             timeText.Text = GetTime();
         }
 
+        protected override float GetWidgetWidth() { return Settings.MilitaryTime ? 35 : 50; }
+
         string GetTime()
         {
-            return DateTime.Now.ToString("HH:mm");
+            return Settings.MilitaryTime ? DateTime.Now.ToString("HH:mm") : DateTime.Now.ToString("hh:mm tt");
         }
     }
 }

@@ -28,6 +28,7 @@ namespace DynamicWin.Main
         public static bool AllowAnimation { get => allowAnimation; set => allowAnimation = value; }
         public static bool AntiAliasing { get => antiAliasing; set => antiAliasing = value; }
         public static bool RunOnStartup { get => runOnStartup; set => runOnStartup = value; }
+        public static bool MilitaryTime { get => runOnStartup; set => runOnStartup = value; }
         public static int Theme { get => theme; set => theme = value; }
         public static int ScreenIndex { get => activeScreenIndex; set => activeScreenIndex = value; }
 
@@ -49,6 +50,7 @@ namespace DynamicWin.Main
                     AllowAnimation = (bool)SaveManager.Get("settings.allowanimtion");
                     AntiAliasing = (bool)SaveManager.Get("settings.antialiasing");
                     RunOnStartup = (bool)SaveManager.Get("settings.runonstartup");
+                    MilitaryTime = (bool)SaveManager.Get("settings.militarytime");
 
                     Theme = (int)((Int64)SaveManager.Get("settings.theme"));
                     ScreenIndex = (int)((Int64)SaveManager.Get("settings.screenindex"));
@@ -129,6 +131,7 @@ namespace DynamicWin.Main
             SaveManager.Add("settings.allowanimtion", AllowAnimation);
             SaveManager.Add("settings.antialiasing", AntiAliasing);
             SaveManager.Add("settings.runonstartup", RunOnStartup);
+            SaveManager.Add("settings.militarytime", MilitaryTime);
 
             SaveManager.Add("settings.theme", Theme);
             SaveManager.Add("settings.screenindex", ScreenIndex);
