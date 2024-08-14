@@ -326,7 +326,7 @@ namespace DynamicWin.UI.Menu.Menus
 
         public override Vec2 IslandSize()
         {
-            var vec = new Vec2(525, 475);
+            var vec = new Vec2(525, 425);
 
             if(smallWidgetAdder != null)
             {
