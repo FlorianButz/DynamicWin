@@ -48,9 +48,12 @@ namespace DynamicWin.Utils
             fftValues = new float[length];
             barHeight = new float[length];
 
-            capture = new WasapiLoopbackCapture(DynamicWinMain.defaultDevice);
-            capture.DataAvailable += OnDataAvailable;
-            capture.StartRecording();
+            if (DynamicWinMain.defaultDevice != null)
+            {
+                capture = new WasapiLoopbackCapture(DynamicWinMain.defaultDevice);
+                capture.DataAvailable += OnDataAvailable;
+                capture.StartRecording();
+            }
         }
 
         public override void OnDestroy()
@@ -59,9 +62,12 @@ namespace DynamicWin.Utils
 
             try
             {
-                capture.DataAvailable -= OnDataAvailable;
-                capture.StopRecording();
-                capture.Dispose();
+                if (capture != null)
+                {
+                    capture.DataAvailable -= OnDataAvailable;
+                    capture.StopRecording();
+                    capture.Dispose();
+                }
             }catch(ThreadInterruptedException e)
             {
                 return;
@@ -73,6 +79,8 @@ namespace DynamicWin.Utils
         public override void Update(float deltaTime)
         {
             base.Update(deltaTime);
+
+            if (capture == null) return;
 
             updateTick += 1000 * deltaTime;
 
@@ -217,6 +225,8 @@ namespace DynamicWin.Utils
 
         public override void Draw(SKCanvas canvas)
         {
+            if (capture == null) return;
+
             lock (fftLock)
             {
                 if (fftValues == null || fftValues.Length == 0) return;

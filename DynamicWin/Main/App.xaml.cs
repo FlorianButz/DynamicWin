@@ -82,9 +82,16 @@ namespace DynamicWin
 
             //SetHighPriority();
 
-            var devEnum = new MMDeviceEnumerator();
-            defaultDevice = devEnum.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
-            defaultMicrophone = devEnum.GetDefaultAudioEndpoint(DataFlow.Capture, Role.Multimedia);
+            try
+            {
+                var devEnum = new MMDeviceEnumerator();
+                defaultDevice = devEnum.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
+                defaultMicrophone = devEnum.GetDefaultAudioEndpoint(DataFlow.Capture, Role.Multimedia);
+            }catch(Exception exception)
+            {
+                defaultDevice = null;
+                defaultMicrophone = null;
+            }
 
             SaveManager.LoadData();
 

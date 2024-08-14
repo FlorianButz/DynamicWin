@@ -117,7 +117,7 @@ namespace DynamicWin.UI.Widgets.Small
 
         public static float GetMicrophoneLoudness()
         {
-            return (float)Math.Sqrt(DynamicWinMain.defaultMicrophone.AudioMeterInformation.MasterPeakValue + 0.001);
+            return (float)Math.Sqrt(((DynamicWinMain.defaultMicrophone == null) ? 0f : DynamicWinMain.defaultMicrophone.AudioMeterInformation.MasterPeakValue) + 0.001);
         }
     }
 

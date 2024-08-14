@@ -22,14 +22,14 @@ namespace DynamicWin.UI.Menu.Menus
 
         double GetVolumePercent()
         {
-            var volume = DynamicWinMain.defaultDevice.AudioEndpointVolume;
+            var volume = (DynamicWinMain.defaultDevice == null) ? 1f : DynamicWinMain.defaultDevice.AudioEndpointVolume.MasterVolumeLevelScalar;
 
-            return volume.MasterVolumeLevelScalar * 100;
+            return volume * 100;
         }
 
         bool IsMuted()
         {
-            return DynamicWinMain.defaultDevice.AudioEndpointVolume.Mute;
+            return (DynamicWinMain.defaultDevice == null) ? true : DynamicWinMain.defaultDevice.AudioEndpointVolume.Mute;
         }
 
         DWImage volumeImage;

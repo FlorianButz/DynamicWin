@@ -21,8 +21,6 @@ namespace DynamicWin.Main
         private static bool antiAliasing;
         private static bool runOnStartup;
         private static int theme;
-        private static bool useCustomTheme;
-        private static ThemeHolder customTheme;
         private static int activeScreenIndex;
 
         public static IslandObject.IslandMode IslandMode { get => islandMode; set => islandMode = value; }
