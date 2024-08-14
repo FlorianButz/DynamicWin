@@ -230,7 +230,13 @@ namespace DynamicWin.UI.Widgets.Big
                 var x = Position.X + r.Width - w / 2 - inward;
                 var y = Position.Y - h / 2 + inward;
 
-                canvas.DrawBitmap((Resources.Res.Spotify == null) ? Resources.Res.SevereWeatherWarning : Resources.Res.Spotify, SKRect.Create(x, y, w, h), paint);
+                try
+                {
+                    canvas.DrawBitmap(Resources.Res.Spotify, SKRect.Create(x, y, w, h), paint);
+                }catch(ArgumentNullException e)
+                {
+                    // Do nothing and don't draw
+                }
 
                 paint.Color = GetColor(spotifyCol.Override(a: 0.25f * Color.a)).Value();
                 paint.StrokeWidth = 2f;

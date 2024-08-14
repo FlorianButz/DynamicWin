@@ -1,22 +1,8 @@
 ﻿using DynamicWin.Resources;
 using DynamicWin.UI.Menu;
 using DynamicWin.UI.Menu.Menus;
-using DynamicWin.Utils;
-using Microsoft.VisualBasic;
-using OpenTK.Input;
-using SkiaSharp;
-using SkiaSharp.Views.Desktop;
-using SkiaSharp.Views.WPF;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 
@@ -45,20 +31,37 @@ namespace DynamicWin.Main
 
             this.WindowStyle = WindowStyle.None;
             this.WindowState = WindowState.Maximized;
-
+            this.ResizeMode = ResizeMode.NoResize;
             this.Topmost = true;
             this.AllowsTransparency = true;
             this.ShowInTaskbar = false;
             this.Title = "DynamicWin Overlay";
 
+            this.Left = SystemParameters.WorkArea.Left;
+            this.Top = SystemParameters.WorkArea.Top;
             this.Width = SystemParameters.WorkArea.Width;
             this.Height = SystemParameters.WorkArea.Height;
+
+            this.SizeChanged += MainForm_SizeChanged;
+            this.LocationChanged += MainForm_LocationChanged;
 
             AddRenderer();
 
             Res.extensions.ForEach((x) => x.LoadExtension());
 
             MainForm.Instance.AllowDrop = true;
+        }
+
+        private void MainForm_LocationChanged(object? sender, EventArgs e)
+        {
+            this.Left = SystemParameters.WorkArea.Left;
+            this.Top = SystemParameters.WorkArea.Top;
+        }
+
+        private void MainForm_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            this.Width = SystemParameters.WorkArea.Width;
+            this.Height = SystemParameters.WorkArea.Height;
         }
 
         private void OnRendering(object? sender, EventArgs e)

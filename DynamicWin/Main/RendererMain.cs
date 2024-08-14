@@ -239,9 +239,6 @@ namespace DynamicWin.Main
 
             canvas.Clear(SKColors.Transparent);
 
-            //var mainScale = 2f;
-            //canvas.Scale(mainScale, mainScale, MainIsland.Position.X + MainIsland.currSize.X / 2, 0);
-
             canvasWithoutClip = canvas.Save();
 
             if(islandObject.maskInToIsland) Mask(canvas);
@@ -258,11 +255,7 @@ namespace DynamicWin.Main
                 if(uiObject.IsHovering && uiObject.GetContextMenu() != null)
                 {
                     hasContextMenu = true;
-
                     var contextMenu = uiObject.GetContextMenu();
-                    //contextMenu.BackColor = Theme.IslandBackground.ValueSystem();
-                    //contextMenu.ForeColor = Theme.TextMain.ValueSystem();
-
                     ContextMenu = contextMenu;
                 }
 
@@ -271,11 +264,7 @@ namespace DynamicWin.Main
                     if (obj.IsHovering && obj.GetContextMenu() != null)
                     {
                         hasContextMenu = true;
-
                         var contextMenu = obj.GetContextMenu();
-                        //contextMenu.BackColor = Theme.IslandBackground.ValueSystem();
-                        //contextMenu.ForeColor = Theme.TextMain.ValueSystem();
-
                         ContextMenu = contextMenu;
                     }
                 }
@@ -296,6 +285,12 @@ namespace DynamicWin.Main
             if (!hasContextMenu) ContextMenu = null;
 
             canvas.Flush();
+        }
+
+        void SetRenderScale(SKCanvas canvas, float scale, Vec2 point = null)
+        {
+            if (point == null) point = new Vec2(MainIsland.Position.X + MainIsland.currSize.X / 2, 0);
+            canvas.Scale(scale, scale, point.X, point.Y);
         }
 
         void Mask(SKCanvas canvas)
