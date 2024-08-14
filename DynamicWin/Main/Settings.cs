@@ -50,7 +50,7 @@ namespace DynamicWin.Main
                     AntiAliasing = (bool)SaveManager.Get("settings.antialiasing");
 
                     Theme = (int)((Int64)SaveManager.Get("settings.theme"));
-                    ScreenIndex = SaveManager.Get<int>("settings.screenindex");
+                    ScreenIndex = (int)((Int64)SaveManager.Get("settings.screenindex"));
 
                     Settings.smallWidgetsLeft = new List<string>();
                     Settings.smallWidgetsRight = new List<string>();
