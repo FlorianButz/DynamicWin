@@ -76,7 +76,7 @@ namespace DynamicWin.UI.UIElements
 
             mode = Settings.IslandMode;
 
-            topOffset = Mathf.Lerp(topOffset, (mode == IslandMode.Island) ? 15f : 5f, 15f * deltaTime);
+            topOffset = Mathf.Lerp(topOffset, (mode == IslandMode.Island) ? 15f : -2.5f, 15f * deltaTime);
 
             dropShadowStrength = Mathf.Lerp(dropShadowStrength, IsHovering ? 0.75f : 0.25f, 10f * deltaTime);
             dropShadowSize = Mathf.Lerp(dropShadowSize, IsHovering ? 35f : 7.5f, 10f * deltaTime);
@@ -102,9 +102,9 @@ namespace DynamicWin.UI.UIElements
             {
                 var path = new SKPath();
 
-                var awidth = (float)(Math.Max(Size.Magnitude / 16, 25));
+                var awidth = (float)(Math.Max(15f, Size.Y / 6));
                 var aheight = (float)(Math.Max(Size.Y / 4, 15)) + (LocalPosition.Y - topOffset);
-                var y = 5;
+                var y = 0;
 
                 { // Left notch curve
 
