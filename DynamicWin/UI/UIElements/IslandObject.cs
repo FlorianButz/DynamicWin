@@ -76,7 +76,7 @@ namespace DynamicWin.UI.UIElements
 
             mode = Settings.IslandMode;
 
-            topOffset = Mathf.Lerp(topOffset, (mode == IslandMode.Island) ? 15f : -2.5f, 15f * deltaTime);
+            topOffset = Mathf.Lerp(topOffset, (mode == IslandMode.Island) ? 7.5f : -2.5f, 15f * deltaTime);
 
             dropShadowStrength = Mathf.Lerp(dropShadowStrength, IsHovering ? 0.75f : 0.25f, 10f * deltaTime);
             dropShadowSize = Mathf.Lerp(dropShadowSize, IsHovering ? 35f : 7.5f, 10f * deltaTime);

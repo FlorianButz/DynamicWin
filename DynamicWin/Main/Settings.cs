@@ -22,20 +22,19 @@ namespace DynamicWin.Main
         private static int theme;
         private static bool useCustomTheme;
         private static ThemeHolder customTheme;
+        private static int activeScreenIndex;
 
         public static IslandObject.IslandMode IslandMode { get => islandMode; set => islandMode = value; }
         public static bool AllowBlur { get => allowBlur; set => allowBlur = value; }
         public static bool AllowAnimation { get => allowAnimation; set => allowAnimation = value; }
         public static bool AntiAliasing { get => antiAliasing; set => antiAliasing = value; }
-
         public static int Theme { get => theme; set => theme = value; }
+        public static int ScreenIndex { get => activeScreenIndex; set => activeScreenIndex = value; }
 
         public static List<string> smallWidgetsLeft;
         public static List<string> smallWidgetsRight;
         public static List<string> smallWidgetsMiddle;
         public static List<string> bigWidgets;
-
-        //public static ThemeHolder CustomTheme { get => customTheme; set => customTheme = value; }
 
         public static void InitializeSettings()
         {
@@ -51,6 +50,7 @@ namespace DynamicWin.Main
                     AntiAliasing = (bool)SaveManager.Get("settings.antialiasing");
 
                     Theme = (int)((Int64)SaveManager.Get("settings.theme"));
+                    ScreenIndex = SaveManager.Get<int>("settings.screenindex");
 
                     Settings.smallWidgetsLeft = new List<string>();
                     Settings.smallWidgetsRight = new List<string>();
@@ -98,6 +98,13 @@ namespace DynamicWin.Main
             }catch(Exception e)
             {
                 MessageBox.Show("An error occured trying to load the settings. Please revert back to the default settings by deleting the \"Settings.json\" file located under \"%appdata%/DynamicWin/\".");
+
+                smallWidgetsLeft = new List<string>();
+                smallWidgetsRight = new List<string>();
+                smallWidgetsMiddle = new List<string>();
+                bigWidgets = new List<string>();
+
+                AfterSettingsLoaded();
             }
         }
 
@@ -122,6 +129,7 @@ namespace DynamicWin.Main
             SaveManager.Add("settings.antialiasing", AntiAliasing);
 
             SaveManager.Add("settings.theme", Theme);
+            SaveManager.Add("settings.screenindex", ScreenIndex);
 
             SaveManager.Add("settings.smallwidgetsleft", smallWidgetsLeft);
             SaveManager.Add("settings.smallwidgetsright", smallWidgetsRight);

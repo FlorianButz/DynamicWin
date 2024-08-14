@@ -113,6 +113,32 @@ namespace DynamicWin.UI.Menu.Menus
             objects.Add(antiAliasing);
 
             {
+                var selectedMonitorTitle = new DWText(island, "Selected Monitor", new Vec2(25, 0), UIAlignment.TopLeft);
+                selectedMonitorTitle.Font = Res.InterRegular;
+                selectedMonitorTitle.Color = Theme.TextSecond;
+                selectedMonitorTitle.TextSize = 15;
+                selectedMonitorTitle.Anchor.X = 0;
+                objects.Add(selectedMonitorTitle);
+
+                var selectedMonitors = new string[MainForm.GetMonitorCount()];
+                for(int i = 0; i < selectedMonitors.Length; i++)
+                {
+                    if (i == 0) selectedMonitors[i] = "Primary";
+                    else selectedMonitors[i] = "Monitor " + i;
+                }
+
+                var selectedMonitor = new MultiSelectionButton(island, selectedMonitors, new Vec2(25, 0), new Vec2(IslandSize().X - 50, 25), UIAlignment.TopLeft);
+                selectedMonitor.SelectedIndex = Settings.ScreenIndex;
+                selectedMonitor.Anchor.X = 0;
+                selectedMonitor.onClick += (index) =>
+                {
+                    Settings.ScreenIndex = index;
+                    MainForm.Instance.SetMonitor(Settings.ScreenIndex);
+                };
+                objects.Add(selectedMonitor);
+            }
+
+            {
                 var themeTitle = new DWText(island, "Themes", new Vec2(25, 0), UIAlignment.TopLeft);
                 themeTitle.Font = Res.InterRegular;
                 themeTitle.TextSize = 15;

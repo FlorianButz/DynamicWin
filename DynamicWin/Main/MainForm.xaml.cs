@@ -37,31 +37,40 @@ namespace DynamicWin.Main
             this.ShowInTaskbar = false;
             this.Title = "DynamicWin Overlay";
 
-            this.Left = SystemParameters.WorkArea.Left;
-            this.Top = SystemParameters.WorkArea.Top;
-            this.Width = SystemParameters.WorkArea.Width;
-            this.Height = SystemParameters.WorkArea.Height;
-
-            this.SizeChanged += MainForm_SizeChanged;
-            this.LocationChanged += MainForm_LocationChanged;
+            SetMonitor(0);
 
             AddRenderer();
 
             Res.extensions.ForEach((x) => x.LoadExtension());
-
             MainForm.Instance.AllowDrop = true;
         }
 
-        private void MainForm_LocationChanged(object? sender, EventArgs e)
+        public void SetMonitor(int monitorIndex)
         {
-            this.Left = SystemParameters.WorkArea.Left;
-            this.Top = SystemParameters.WorkArea.Top;
+            var screen = System.Windows.Forms.Screen.AllScreens[monitorIndex];
+
+            if (screen != null)
+            {
+                if (!this.IsLoaded)
+                    this.WindowStartupLocation = WindowStartupLocation.Manual;
+
+                this.WindowState = WindowState.Normal;
+                this.ResizeMode = ResizeMode.CanResize;
+
+                var workingArea = screen.WorkingArea;
+
+                this.Left = workingArea.Left;
+                this.Top = workingArea.Top;
+                this.Width = workingArea.Width;
+                this.Height = workingArea.Height;
+
+                this.ResizeMode = ResizeMode.NoResize;
+            }
         }
 
-        private void MainForm_SizeChanged(object sender, SizeChangedEventArgs e)
+        public static int GetMonitorCount()
         {
-            this.Width = SystemParameters.WorkArea.Width;
-            this.Height = SystemParameters.WorkArea.Height;
+            return System.Windows.Forms.Screen.AllScreens.Length;
         }
 
         private void OnRendering(object? sender, EventArgs e)
