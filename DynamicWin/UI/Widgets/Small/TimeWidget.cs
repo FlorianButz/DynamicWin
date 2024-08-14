@@ -1,11 +1,15 @@
 ﻿using DynamicWin.Main;
+using DynamicWin.UI.Menu.Menus;
 using DynamicWin.UI.UIElements;
 using DynamicWin.Utils;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using static DynamicWin.UI.Widgets.Small.RegisterUsedDevicesOptions;
 
 namespace DynamicWin.UI.Widgets.Small
 {
@@ -18,6 +22,56 @@ namespace DynamicWin.UI.Widgets.Small
         public WidgetBase CreateWidgetInstance(UIObject? parent, Vec2 position, UIAlignment alignment = UIAlignment.TopCenter)
         {
             return new TimeWidget(parent, position, alignment);
+        }
+    }
+
+    class RegisterTimeWidgetSettings : IRegisterableSetting
+    {
+        public string SettingID => "timewidget";
+
+        public string SettingTitle => "Time Widget";
+
+
+        public static TimeWidgetSave saveData;
+
+        public struct TimeWidgetSave
+        {
+            public bool militaryTime;
+        }
+
+        public void LoadSettings()
+        {
+            if (SaveManager.Contains(SettingID))
+            {
+                saveData = JsonConvert.DeserializeObject<TimeWidgetSave>((string)SaveManager.Get(SettingID));
+            }
+            else
+            {
+                saveData = new TimeWidgetSave() { militaryTime = false };
+            }
+        }
+
+        public void SaveSettings()
+        {
+            SaveManager.Add(SettingID, JsonConvert.SerializeObject(saveData));
+        }
+
+        public List<UIObject> SettingsObjects()
+        {
+            var objects = new List<UIObject>();
+
+            var militaryTime = new Checkbox(null, "24 Hour Clock", new Vec2(25, 0), new Vec2(25, 25), null, UIAlignment.TopLeft);
+
+            militaryTime.clickCallback += () =>
+            {
+                saveData.militaryTime = militaryTime.IsChecked;
+            };
+
+            militaryTime.IsChecked = saveData.militaryTime;
+            militaryTime.Anchor.X = 0;
+            objects.Add(militaryTime);
+
+            return objects;
         }
     }
 
@@ -39,11 +93,11 @@ namespace DynamicWin.UI.Widgets.Small
             timeText.Text = GetTime();
         }
 
-        protected override float GetWidgetWidth() { return Settings.MilitaryTime ? 35 : 50; }
+        protected override float GetWidgetWidth() { return RegisterTimeWidgetSettings.saveData.militaryTime ? 35 : 55; }
 
         string GetTime()
         {
-            return Settings.MilitaryTime ? DateTime.Now.ToString("HH:mm") : DateTime.Now.ToString("hh:mm tt");
+            return RegisterTimeWidgetSettings.saveData.militaryTime ? DateTime.Now.ToString("HH:mm") : DateTime.Now.ToString("hh:mm tt", new System.Globalization.CultureInfo("en-US"));
         }
     }
 }
