@@ -11,8 +11,8 @@ namespace DynamicWin.UI.UIElements
 
         public SecondOrder scaleSecondOrder;
 
-        public Vec2 secondOrderValuesExpand = new Vec2(3f, 0.55f);
-        public Vec2 secondOrderValuesContract = new Vec2(3f, 0.9f);
+        public float[] secondOrderValuesExpand = [2.5f, 0.6f, 0.1f];
+        public float[] secondOrderValuesContract = [3f, 0.9f, 0.1f];
 
         public bool hidden = false;
         
@@ -34,7 +34,7 @@ namespace DynamicWin.UI.UIElements
 
             LocalPosition = new Vec2(0, topOffset);
 
-            scaleSecondOrder = new SecondOrder(Size, secondOrderValuesExpand.X, secondOrderValuesExpand.Y, 0.1f);
+            scaleSecondOrder = new SecondOrder(Size, secondOrderValuesExpand[0], secondOrderValuesExpand[1], secondOrderValuesExpand[2]);
             expandInteractionRect = 20;
 
             maskInToIsland = false;
@@ -48,12 +48,12 @@ namespace DynamicWin.UI.UIElements
             {
                 if (IsHovering)
                 {
-                    scaleSecondOrder.SetValues(secondOrderValuesExpand.X, secondOrderValuesExpand.Y, 0.1f);
+                    scaleSecondOrder.SetValues(secondOrderValuesExpand[0], secondOrderValuesExpand[1], secondOrderValuesExpand[2]);
                     currSize = MenuManager.Instance.ActiveMenu.IslandSizeBig();
                 }
                 else
                 {
-                    scaleSecondOrder.SetValues(secondOrderValuesContract.X, secondOrderValuesContract.Y, 0.1f);
+                    scaleSecondOrder.SetValues(secondOrderValuesContract[0], secondOrderValuesContract[1], secondOrderValuesContract[2]);
                     currSize = MenuManager.Instance.ActiveMenu.IslandSize();
                 }
 
@@ -64,7 +64,7 @@ namespace DynamicWin.UI.UIElements
             }
             else
             {
-                scaleSecondOrder.SetValues(secondOrderValuesContract.X, secondOrderValuesContract.Y, 0.1f);
+                scaleSecondOrder.SetValues(secondOrderValuesContract[0], secondOrderValuesContract[1], secondOrderValuesContract[2]);
 
                 Size = scaleSecondOrder.Update(deltaTime, new Vec2(500, 15));
                 //Size = Vec2.lerp(Size, new Vec2(500, 10), deltaTime * 15f);
@@ -102,7 +102,7 @@ namespace DynamicWin.UI.UIElements
             {
                 var path = new SKPath();
 
-                var awidth = (float)(Math.Max(15f, Size.Y / 6));
+                var awidth = (float)(Math.Max(15f, Size.Y / 9));
                 var aheight = (float)(Math.Max(Size.Y / 4, 15)) + (LocalPosition.Y - topOffset);
                 var y = 0;
 

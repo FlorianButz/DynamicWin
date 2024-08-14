@@ -281,13 +281,10 @@ namespace DynamicWin.UI.Menu.Menus
         public float smallWidgetsSpacing = 10;
         public float middleWidgetsSpacing = 35;
 
-        bool wasHovering = false;
-
         float sCD = 35;
         float bCD = 50;
 
         public bool isWidgetMode = true;
-        bool wasWidgetMode = false;
 
         int cycle = 0;
 
@@ -301,6 +298,17 @@ namespace DynamicWin.UI.Menu.Menus
                 var count = Tray.GetFiles().Length;
                 trayButton.Text.Text = "Tray      " + (count > 0 ? count : "");
             }
+
+            // Enable / Disable small widgets
+
+            smallLeftWidgets.ForEach(x => x.SetActive(!RendererMain.Instance.MainIsland.IsHovering));
+            smallCenterWidgets.ForEach(x => x.SetActive(!RendererMain.Instance.MainIsland.IsHovering));
+            smallRightWidgets.ForEach(x => x.SetActive(!RendererMain.Instance.MainIsland.IsHovering));
+
+            // Enable / Disable big widgets
+
+            bigWidgets.ForEach(x => x.SetActive(RendererMain.Instance.MainIsland.IsHovering && isWidgetMode));
+            bigMenuItems.ForEach(x => x.SetActive(RendererMain.Instance.MainIsland.IsHovering));
 
             widgetButton.normalColor = Col.Lerp(widgetButton.normalColor, isWidgetMode ? Col.White.Override(a: 0.075f) : Col.Transparent, 15f * RendererMain.Instance.DeltaTime);
             trayButton.normalColor = Col.Lerp(trayButton.normalColor, (!isWidgetMode) ? Col.White.Override(a: 0.075f) : Col.Transparent, 15f * RendererMain.Instance.DeltaTime);
@@ -368,18 +376,6 @@ namespace DynamicWin.UI.Menu.Menus
                         smallCenter.LocalPosition.X -= centerStackPos / 2 + smallWidgetsSpacing;
                     }
                 }
-
-                smallLeftWidgets.ForEach(x => x.SetActive(true));
-                smallRightWidgets.ForEach(x => x.SetActive(true));
-                smallCenterWidgets.ForEach(x => x.SetActive(true));
-
-                if (wasHovering)
-                {
-                    bigWidgets.ForEach(x => x.SetActive(false));
-                    bigMenuItems.ForEach(x => x.SetActive(false));
-                }
-                
-                wasHovering = false;
             }
             else if (RendererMain.Instance.MainIsland.IsHovering)
             {
@@ -415,29 +411,6 @@ namespace DynamicWin.UI.Menu.Menus
                         }
                     }
                 }
-
-                if (!wasHovering)
-                {
-                    smallLeftWidgets.ForEach(x => x.SetActive(false));
-                    smallCenterWidgets.ForEach(x => x.SetActive(false));
-                    smallRightWidgets.ForEach(x => x.SetActive(false));
-
-                    bigWidgets.ForEach(x => x.SetActive(isWidgetMode));
-                    bigMenuItems.ForEach(x => x.SetActive(true));
-                }
-
-                if (isWidgetMode && !wasWidgetMode)
-                {
-                    wasWidgetMode = true;
-                    bigWidgets.ForEach(x => x.SetActive(true));
-                }
-                else if (!isWidgetMode && wasWidgetMode)
-                {
-                    wasWidgetMode = false;
-                    bigWidgets.ForEach(x => x.SetActive(false));
-                }
-
-                wasHovering = true;
             }
 
             cycle++;

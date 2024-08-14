@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "DynamicWin"
-#define MyAppVersion "1.0"
+#define MyAppVersion "1.0.3R"
 #define MyAppPublisher "Florian Butz"
 #define MyAppURL "https://github.com/FlorianButz/DynamicWin/"
 #define MyAppExeName "DynamicWin.exe"

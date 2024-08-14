@@ -17,15 +17,9 @@ namespace DynamicWin.UI.UIElements.Custom
         float yOffset = 0f;
         float mouseSensitivity = 0.225f;
 
-        DWImage noFilesImage;
-
         public Tray(UIObject? parent, Vec2 position, Vec2 size, UIAlignment alignment = UIAlignment.TopCenter) : base(parent, position, size, alignment)
         {
             MainForm.onScrollEvent += OnScroll;
-
-            noFilesImage = new DWImage(this, Resources.Res.PlaceItem, Vec2.zero, new Vec2(100, 100), UIAlignment.Center);
-
-            AddLocalObject(noFilesImage);
         }
 
         public override ContextMenu? GetContextMenu()
@@ -107,8 +101,6 @@ namespace DynamicWin.UI.UIElements.Custom
         public override void Update(float deltaTime)
         {
             base.Update(deltaTime);
-
-            noFilesImage.SetActive(fileObjects.Count <= 0);
 
             if (timer % 64 == 0) { cachedTrayFiles = GetFiles(); AddFileObjects(); }
             timer++;
@@ -241,16 +233,16 @@ namespace DynamicWin.UI.UIElements.Custom
                 paint.StrokeJoin = SKStrokeJoin.Round;
                 paint.StrokeWidth = 2f;
 
-                paint.Color = GetColor(Theme.Primary).Value();
+                paint.Color = GetColor(Theme.IslandBackground.Inverted().Override(a: 0.1f)).Value();
 
                 canvas.DrawRoundRect(placeRect, paint);
 
-                paint.Color = GetColor(Theme.Secondary).Value();
+                /*paint.Color = GetColor(Theme.Secondary).Value();
                 paint.IsStroke = false;
 
                 placeRect.Deflate(10, 10);
 
-                canvas.DrawRoundRect(placeRect, paint);
+                canvas.DrawRoundRect(placeRect, paint);*/
             }
 
             canvas.ClipRoundRect(rect, antialias: true);

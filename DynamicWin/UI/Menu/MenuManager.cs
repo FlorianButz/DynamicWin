@@ -142,6 +142,10 @@ namespace DynamicWin.UI.Menu
                 menuLoadQueue.Remove(queueObj);
             }
 
+            RendererMain.Instance.blurOverride = 0f;
+            RendererMain.Instance.alphaOverride = 1f;
+            RendererMain.Instance.scaleOffset = Vec2.one;
+
             menuAnimatorOut = null;
         }
 
