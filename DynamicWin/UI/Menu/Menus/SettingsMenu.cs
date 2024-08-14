@@ -42,6 +42,7 @@ namespace DynamicWin.UI.Menu.Menus
             Settings.AllowAnimation = allowAnimation.IsChecked;
             Settings.AntiAliasing = antiAliasing.IsChecked;
             Settings.RunOnStartup = runOnStartup.IsChecked;
+            Settings.MilitaryTime = militaryTime.IsChecked;
 
             DynamicWinMain.UpdateStartup();
 
@@ -65,6 +66,7 @@ namespace DynamicWin.UI.Menu.Menus
         Checkbox allowAnimation;
         Checkbox antiAliasing;
         Checkbox runOnStartup;
+        Checkbox militaryTime;
 
         public override List<UIObject> InitializeMenu(IslandObject island)
         {
@@ -120,6 +122,11 @@ namespace DynamicWin.UI.Menu.Menus
             runOnStartup.IsChecked = Settings.RunOnStartup;
             runOnStartup.Anchor.X = 0;
             objects.Add(runOnStartup);
+
+            militaryTime = new Checkbox(island, "24 Hour Clock", new Vec2(25, 0), new Vec2(25, 25), () => { }, UIAlignment.TopLeft);
+            militaryTime.IsChecked = Settings.MilitaryTime;
+            militaryTime.Anchor.X = 0;
+            objects.Add(militaryTime);
 
             {
                 var selectedMonitorTitle = new DWText(island, "Selected Monitor", new Vec2(25, 0), UIAlignment.TopLeft);
