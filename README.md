@@ -29,6 +29,10 @@ WPF is a powerful UI framework, however to archive the look and feel of this app
 I wanted to give you a peak at what went into this project and why/how I made it.
 
 <br>
+If you want to support the development of this project you can create pull requests and contribute to it or make extensions / themes and upload them on the discord :) <br>
+Feel free to open up a new issue if you encounter any bugs / flaws.
+
+<br>
 Quick disclaimer: The code is terribly structured and almost un-maintainable as it was only meant to be a small side project so please don't expect too much from me :)
 
 # Features
