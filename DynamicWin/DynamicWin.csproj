@@ -123,6 +123,9 @@
     <None Update="Resources\icons\test.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Resources\icons\TrayIcon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Resources\icons\weather\Cloudy.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

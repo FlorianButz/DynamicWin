@@ -1,10 +1,13 @@
 ﻿using DynamicWin.Resources;
 using DynamicWin.UI.Menu;
 using DynamicWin.UI.Menu.Menus;
+using DynamicWin.Utils;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media;
+using Forms = System.Windows.Forms;
 
 namespace DynamicWin.Main
 {
@@ -15,6 +18,7 @@ namespace DynamicWin.Main
 
         public static Action<System.Windows.Input.MouseWheelEventArgs> onScrollEvent;
 
+        private readonly Forms.NotifyIcon _trayIcon;
 
         private DateTime _lastRenderTime;
         private readonly TimeSpan _targetElapsedTime = TimeSpan.FromMilliseconds(16); // ~60 FPS
@@ -24,6 +28,8 @@ namespace DynamicWin.Main
         public MainForm()
         {
             InitializeComponent();
+
+            _trayIcon = new Forms.NotifyIcon();
 
             CompositionTarget.Rendering += OnRendering;
 
@@ -43,6 +49,34 @@ namespace DynamicWin.Main
 
             Res.extensions.ForEach((x) => x.LoadExtension());
             MainForm.Instance.AllowDrop = true;
+
+            // Tray icon
+
+            _trayIcon.Icon = new System.Drawing.Icon("Resources/icons/TrayIcon.ico");
+            _trayIcon.Text = "DynamicWin";
+
+            _trayIcon.ContextMenuStrip = new Forms.ContextMenuStrip();
+
+            _trayIcon.ContextMenuStrip.Items.Add("Restart Control", null, (x, y) =>
+            {
+                if (RendererMain.Instance != null) RendererMain.Instance.Destroy();
+                this.Content = new Grid();
+
+                AddRenderer();
+            });
+
+            _trayIcon.ContextMenuStrip.Items.Add("Settings", null, (x, y) =>
+            {
+                MenuManager.OpenMenu(new SettingsMenu());
+            });
+
+            _trayIcon.ContextMenuStrip.Items.Add("Exit", null, (x, y) =>
+            {
+                SaveManager.SaveAll();
+                Process.GetCurrentProcess().Kill();
+            });
+
+            _trayIcon.Visible = true;
         }
 
         public void SetMonitor(int monitorIndex)
@@ -206,6 +240,11 @@ namespace DynamicWin.Main
                 MenuManager.Instance.QueueOpenMenu(Res.HomeMenu);
                 Res.HomeMenu.isWidgetMode = false;
             }
+        }
+
+        internal void DisposeTrayIcon()
+        {
+            _trayIcon.Dispose();
         }
     }
 }

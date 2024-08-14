@@ -16,6 +16,8 @@ namespace DynamicWin
         public static MMDevice defaultDevice;
         public static MMDevice defaultMicrophone;
 
+        public static string Version => "1.0.3" + "r";
+
         [STAThread]
         public static void Main()
         {
@@ -23,9 +25,7 @@ namespace DynamicWin
             m.Run();
         }
 
-        public static string Version { get => "1.0.3" + "r"; }
-
-        private void AddToStartup()
+        public static void UpdateStartup()
         {
             try
             {
@@ -34,29 +34,28 @@ namespace DynamicWin
                 string appPath = Process.GetCurrentProcess().MainModule.FileName;
 
                 RegistryKey key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
-                if (key.GetValue(appName) == null)
+
+                if (Settings.RunOnStartup)
                 {
-                    key.SetValue(appName, appPath);
+                    if (key.GetValue(appName) == null)
+                    {
+                        // Add value to registry key
+                        key.SetValue(appName, appPath);
+                    }
+                }
+                else
+                {
+                    if (key.GetValue(appName) != null)
+                    {
+                        // Remove the value from the registry key
+                        key.DeleteValue(appName);
+                    }
                 }
             }
             catch (Exception ex)
             {
                 // Handle exceptions here
                 MessageBox.Show($"Failed to add application to startup: {ex.Message}");
-            }
-        }
-
-        private void SetHighPriority()
-        {
-            try
-            {
-                Process currentProcess = Process.GetCurrentProcess();
-                currentProcess.PriorityClass = ProcessPriorityClass.RealTime;
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions here
-                MessageBox.Show($"Failed to set process priority: {ex.Message}");
             }
         }
 
@@ -81,7 +80,6 @@ namespace DynamicWin
                 return;
             }
 
-            AddToStartup();
             //SetHighPriority();
 
             var devEnum = new MMDeviceEnumerator();
@@ -97,6 +95,7 @@ namespace DynamicWin
             new HardwareMonitor();
 
             Settings.InitializeSettings();
+            UpdateStartup();
 
             MainForm mainForm = new MainForm();
             mainForm.Show();
@@ -108,6 +107,8 @@ namespace DynamicWin
 
             SaveManager.SaveAll();
             HardwareMonitor.Stop();
+
+            MainForm.Instance.DisposeTrayIcon();
 
             KeyHandler.Stop();
             GC.KeepAlive(mutex); // Important

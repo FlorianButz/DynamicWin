@@ -41,6 +41,9 @@ namespace DynamicWin.UI.Menu.Menus
             Settings.AllowBlur = allowBlur.IsChecked;
             Settings.AllowAnimation = allowAnimation.IsChecked;
             Settings.AntiAliasing = antiAliasing.IsChecked;
+            Settings.RunOnStartup = runOnStartup.IsChecked;
+
+            DynamicWinMain.UpdateStartup();
 
             if (changedTheme)
                 Theme.Instance.UpdateTheme(true);
@@ -61,6 +64,7 @@ namespace DynamicWin.UI.Menu.Menus
         Checkbox allowBlur;
         Checkbox allowAnimation;
         Checkbox antiAliasing;
+        Checkbox runOnStartup;
 
         public override List<UIObject> InitializeMenu(IslandObject island)
         {
@@ -111,6 +115,11 @@ namespace DynamicWin.UI.Menu.Menus
             antiAliasing.IsChecked = Settings.AntiAliasing;
             antiAliasing.Anchor.X = 0;
             objects.Add(antiAliasing);
+
+            runOnStartup = new Checkbox(island, "Run App on System Startup", new Vec2(25, 0), new Vec2(25, 25), () => { }, UIAlignment.TopLeft);
+            runOnStartup.IsChecked = Settings.RunOnStartup;
+            runOnStartup.Anchor.X = 0;
+            objects.Add(runOnStartup);
 
             {
                 var selectedMonitorTitle = new DWText(island, "Selected Monitor", new Vec2(25, 0), UIAlignment.TopLeft);
