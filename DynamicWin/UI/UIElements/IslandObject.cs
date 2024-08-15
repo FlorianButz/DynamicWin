@@ -69,10 +69,10 @@ namespace DynamicWin.UI.UIElements
                 Size = scaleSecondOrder.Update(deltaTime, new Vec2(500, 15));
                 //Size = Vec2.lerp(Size, new Vec2(500, 10), deltaTime * 15f);
 
-                LocalPosition.Y = Mathf.Lerp(LocalPosition.Y, -Size.Y + 15f, 15f * deltaTime);
+                LocalPosition.Y = Mathf.Lerp(LocalPosition.Y, -Size.Y / 1.5f, 25f * deltaTime);
             }
 
-            MainForm.Instance.Opacity = hidden ? 0.75f : 1f;
+            MainForm.Instance.Opacity = hidden ? 0.85f : 1f;
 
             mode = Settings.IslandMode;
 
