@@ -168,7 +168,7 @@ namespace DynamicWin.UI.Menu.Menus
 
             bigMenuItems.Add(settingsButton);
 
-            tray = new Tray(island, new Vec2(0, -bCD / 2), Vec2.zero, UIAlignment.BottomCenter);
+            tray = new Tray(island, new Vec2(0, -topSpacing * 1.5f), Vec2.zero, UIAlignment.BottomCenter);
             tray.Anchor.Y = 1f;
             tray.SilentSetActive(false);
 
@@ -290,8 +290,7 @@ namespace DynamicWin.UI.Menu.Menus
 
         public override void Update()
         {
-            tray.SetActive(!isWidgetMode && RendererMain.Instance.MainIsland.IsHovering);
-            tray.Size = new Vec2(IslandSizeBig().X - bCD, RendererMain.Instance.MainIsland.Size.Y - bCD - topSpacing - topContainer.Size.Y / 2);
+            tray.Size = new Vec2(topContainer.Size.X, IslandSizeBig().Y - bCD - topSpacing - topContainer.Size.Y / 2);
 
             if(cycle % 32 == 0)
             {
@@ -305,8 +304,9 @@ namespace DynamicWin.UI.Menu.Menus
             smallCenterWidgets.ForEach(x => x.SetActive(!RendererMain.Instance.MainIsland.IsHovering));
             smallRightWidgets.ForEach(x => x.SetActive(!RendererMain.Instance.MainIsland.IsHovering));
 
-            // Enable / Disable big widgets
+            // Enable / Disable big widgets / Tray
 
+            tray.SetActive(RendererMain.Instance.MainIsland.IsHovering && !isWidgetMode);
             bigWidgets.ForEach(x => x.SetActive(RendererMain.Instance.MainIsland.IsHovering && isWidgetMode));
             bigMenuItems.ForEach(x => x.SetActive(RendererMain.Instance.MainIsland.IsHovering));
 

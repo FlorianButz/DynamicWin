@@ -112,12 +112,12 @@ namespace DynamicWin.UI.UIElements.Custom
             var fileW = 60;
             var fileH = 100;
             var spacing = 50;
-            var xAdd = 5;
+            var xAdd = 17.5f;
 
             float allY = 0;
             float scrollLimY = 0;
 
-            var maxFilesInOneLine = (int)(Size.X / (fileW + spacing / 2f));
+            var maxFilesInOneLine = (int)((Size.X - 50) / (fileW + spacing / 2f));
 
             var fileMovementSmoothing = 5f;
 
@@ -214,7 +214,7 @@ namespace DynamicWin.UI.UIElements.Custom
         }
 
         public override void Draw(SKCanvas canvas)
-        {
+        {            
             var rect = GetRect();
             rect.Inflate(25, 0);
 

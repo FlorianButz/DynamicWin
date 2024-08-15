@@ -391,11 +391,14 @@ namespace DynamicWin.UI
         }
 
         Animator toggleAnim;
+        bool lastSetActiveCall = true;
 
         public void SetActive(bool isEnabled)
         {
-            if(this.isEnabled == isEnabled) return;
+            if(this.isEnabled == isEnabled && lastSetActiveCall == isEnabled) return;
             if (toggleAnim != null && toggleAnim.IsRunning) toggleAnim.Stop();
+
+            lastSetActiveCall = isEnabled;
 
             if (isEnabled)
             {
