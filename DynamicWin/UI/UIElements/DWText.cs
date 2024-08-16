@@ -93,7 +93,7 @@ namespace DynamicWin.UI.UIElements
                 {
                     float t = Easings.EaseInQuint(x * 2);
 
-                    textSize = Mathf.Lerp(ogTextSize, ogTextSize * 1.5f, t);
+                    textSize = Mathf.Lerp(ogTextSize, ogTextSize / 1.5f, t);
                     localBlurAmount = Mathf.Lerp(0, 10, t);
                     Alpha = Mathf.Lerp(1, 0, x);
                 }
