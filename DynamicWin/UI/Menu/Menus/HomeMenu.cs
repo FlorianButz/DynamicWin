@@ -168,10 +168,11 @@ namespace DynamicWin.UI.Menu.Menus
 
             bigMenuItems.Add(settingsButton);
 
-            tray = new Tray(island, new Vec2(0, -topSpacing * 1.5f), Vec2.zero, UIAlignment.BottomCenter);
-            tray.Anchor.Y = 1f;
+            tray = new Tray(island, new Vec2(0, -topSpacing * 1.5f), Vec2.zero, UIAlignment.BottomCenter)
+            {
+                Anchor = new Vec2(0.5f, 1f)
+            };
             tray.SilentSetActive(false);
-
             bigMenuItems.Add(tray);
 
             // Get all widgets
@@ -308,7 +309,13 @@ namespace DynamicWin.UI.Menu.Menus
 
             tray.SetActive(RendererMain.Instance.MainIsland.IsHovering && !isWidgetMode);
             bigWidgets.ForEach(x => x.SetActive(RendererMain.Instance.MainIsland.IsHovering && isWidgetMode));
-            bigMenuItems.ForEach(x => x.SetActive(RendererMain.Instance.MainIsland.IsHovering));
+            bigMenuItems.ForEach(x =>
+            {
+                if(!(x is Tray))
+                {
+                    x.SetActive(RendererMain.Instance.MainIsland.IsHovering);
+                }
+            });
 
             widgetButton.normalColor = Col.Lerp(widgetButton.normalColor, isWidgetMode ? Col.White.Override(a: 0.075f) : Col.Transparent, 15f * RendererMain.Instance.DeltaTime);
             trayButton.normalColor = Col.Lerp(trayButton.normalColor, (!isWidgetMode) ? Col.White.Override(a: 0.075f) : Col.Transparent, 15f * RendererMain.Instance.DeltaTime);
