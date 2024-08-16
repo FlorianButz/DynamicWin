@@ -29,27 +29,13 @@ namespace DynamicWin
         {
             try
             {
-                // Set the registry key
-                string appName = "DynamicWin";
-                string appPath = Process.GetCurrentProcess().MainModule.FileName;
-
-                RegistryKey key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
-
                 if (Settings.RunOnStartup)
                 {
-                    if (key.GetValue(appName) == null)
-                    {
-                        // Add value to registry key
-                        key.SetValue(appName, appPath);
-                    }
+                    StartupShortcutManager.CreateShortcut();
                 }
                 else
                 {
-                    if (key.GetValue(appName) != null)
-                    {
-                        // Remove the value from the registry key
-                        key.DeleteValue(appName);
-                    }
+                    StartupShortcutManager.RemoveShortcut();
                 }
             }
             catch (Exception ex)
