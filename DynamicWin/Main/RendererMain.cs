@@ -239,6 +239,10 @@ namespace DynamicWin.Main
 
             canvas.Clear(SKColors.Transparent);
 
+            // Fix screen scale
+            double dpiFactor = System.Windows.PresentationSource.FromVisual(this).CompositionTarget.TransformToDevice.M11;
+            canvas.Scale((float)dpiFactor, (float)dpiFactor, 0, 0);
+
             canvasWithoutClip = canvas.Save();
 
             if(islandObject.maskInToIsland) Mask(canvas);
