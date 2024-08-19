@@ -47,5 +47,10 @@ namespace DynamicWin.UI.Menu.Menus
 
             return objects;
         }
+
+        public override Col IslandBorderColor()
+        {
+            return Theme.Primary;
+        }
     }
 }

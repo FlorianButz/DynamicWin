@@ -24,6 +24,8 @@ namespace DynamicWin.UI.UIElements
         float dropShadowStrength = 0f;
         float dropShadowSize = 0f;
 
+        Col borderCol = Col.Transparent;
+
         public IslandObject() : base(null, Vec2.zero, new Vec2(250, 50), UIAlignment.TopCenter)
         {
             currSize = Size;
@@ -80,6 +82,8 @@ namespace DynamicWin.UI.UIElements
 
             dropShadowStrength = Mathf.Lerp(dropShadowStrength, IsHovering ? 0.75f : 0.25f, 10f * deltaTime);
             dropShadowSize = Mathf.Lerp(dropShadowSize, IsHovering ? 35f : 7.5f, 10f * deltaTime);
+
+            borderCol = Col.Lerp(borderCol, MenuManager.Instance.ActiveMenu.IslandBorderColor(), 10f  * deltaTime);
         }
 
         public override void Draw(SKCanvas canvas)
@@ -94,7 +98,15 @@ namespace DynamicWin.UI.UIElements
                 paint.ImageFilter = SKImageFilter.CreateDropShadow(1, 1, dropShadowSize, dropShadowSize, new Col(0, 0, 0).Override(a: dropShadowStrength).Value());
             }
 
-            canvas.DrawRoundRect(GetRect(), paint);
+            // Border
+            var rect = GetRect();
+            var paint2 = GetPaint();
+            rect.Inflate(2.5f / 2, 2.5f / 2);
+            paint2.Color = borderCol.Override(a: borderCol.a * 0.35f).Value();
+            paint2.IsStroke = true;
+            paint2.StrokeWidth = 2.5f;
+
+            canvas.DrawRoundRect(rect, paint2);
 
             paint.ImageFilter = null;
 
@@ -137,6 +149,8 @@ namespace DynamicWin.UI.UIElements
 
                 canvas.DrawPath(path, paint);
             }
+
+            canvas.DrawRoundRect(GetRect(), paint);
         }
 
         public override SKRoundRect GetInteractionRect()

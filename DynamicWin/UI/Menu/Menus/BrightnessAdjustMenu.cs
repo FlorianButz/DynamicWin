@@ -87,6 +87,11 @@ namespace DynamicWin.UI.Menu.Menus
         {
             return WindowsSettingsBrightnessController.Get();
         }
+
+        public override Col IslandBorderColor()
+        {
+            return new Col(0.5f, 0.5f, 0.5f);
+        }
     }
 
     static class WindowsSettingsBrightnessController

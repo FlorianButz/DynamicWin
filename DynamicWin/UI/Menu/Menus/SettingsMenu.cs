@@ -390,6 +390,11 @@ namespace DynamicWin.UI.Menu.Menus
 
             return customOptions;
         }
+
+        public override Col IslandBorderColor()
+        {
+            return new Col(0.5f, 0.5f, 0.5f);
+        }
     }
 
     internal class BigWidgetAdder : UIObject

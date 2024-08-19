@@ -23,6 +23,8 @@ namespace DynamicWin.UI.Menu
         public virtual Vec2 IslandSize() { return new Vec2(200, 45); }
         public virtual Vec2 IslandSizeBig() { return IslandSize(); }
 
+        public virtual Col IslandBorderColor() { return Col.Transparent; }
+
         public virtual List<UIObject> InitializeMenu(IslandObject island) { return new List<UIObject>(); }
 
         public virtual void Update() { }

@@ -171,5 +171,10 @@ namespace DynamicWin.UI.Menu.Menus
         {
             return base.IslandSizeBig() * 1.05f;
         }
+
+        public override Col IslandBorderColor()
+        {
+            return IsMuted() ? new Col(0.85f, 0.1f, 0.15f) : new Col(0.5f, 0.5f, 0.5f);
+        }
     }
 }
