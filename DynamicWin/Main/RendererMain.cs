@@ -112,7 +112,7 @@ namespace DynamicWin.Main
                 islandObject.hidden = !islandObject.hidden;
             }
 
-            if (key == Keys.VolumeDown || key == Keys.VolumeMute || key == Keys.VolumeUp)
+            if ((key == Keys.VolumeDown || key == Keys.VolumeMute || key == Keys.VolumeUp) && PopupOptions.saveData.volumePopup)
             {
                 if (MenuManager.Instance.ActiveMenu is HomeMenu)
                 {
@@ -158,7 +158,7 @@ namespace DynamicWin.Main
 
             onUpdate?.Invoke(DeltaTime);
 
-            if(BrightnessAdjustMenu.GetBrightness() != initialScreenBrightness)
+            if(BrightnessAdjustMenu.GetBrightness() != initialScreenBrightness && PopupOptions.saveData.brightnessPopup)
             {
                 initialScreenBrightness = BrightnessAdjustMenu.GetBrightness();
                 if (MenuManager.Instance.ActiveMenu is HomeMenu)
