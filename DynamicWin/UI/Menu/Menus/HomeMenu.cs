@@ -295,7 +295,7 @@ namespace DynamicWin.UI.Menu.Menus
 
             if(cycle % 32 == 0)
             {
-                var count = Tray.GetFiles().Length;
+                var count = Tray.FileCount;
                 trayButton.Text.Text = "Tray      " + (count > 0 ? count : "");
             }
 

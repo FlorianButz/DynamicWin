@@ -17,6 +17,8 @@ namespace DynamicWin.UI.UIElements.Custom
         float yOffset = 0f;
         float mouseSensitivity = 0.225f;
 
+        public static int FileCount => (GetFiles() is { } files ? files.Length : 0);
+
         public Tray(UIObject? parent, Vec2 position, Vec2 size, UIAlignment alignment = UIAlignment.TopCenter) : base(parent, position, size, alignment)
         {
             MainForm.onScrollEvent += OnScroll;
