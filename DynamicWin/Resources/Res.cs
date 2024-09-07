@@ -78,52 +78,52 @@ namespace DynamicWin.Resources
 
         public static void Load()
         {
-            editIcon = LoadImg("Resources\\icons\\edit.png");
-            searchIcon = LoadImg("Resources\\icons\\search.png");
+            editIcon = LoadImg("edit.png");
+            searchIcon = LoadImg("search.png");
 
-            Battery = LoadImg("Resources\\icons\\battery\\Battery.png");
-            BatteryCharging = LoadImg("Resources\\icons\\battery\\BatteryCharging.png");
-            BatteryLevel_10P = LoadImg("Resources\\icons\\battery\\BatteryLevel_10P.png");
-            BatteryLevel_25P = LoadImg("Resources\\icons\\battery\\BatteryLevel_25P.png");
-            BatteryLevel_50P = LoadImg("Resources\\icons\\battery\\BatteryLevel_50P.png");
-            BatteryLevel_75P = LoadImg("Resources\\icons\\battery\\BatteryLevel_75P.png");
-            BatteryLevel_Full = LoadImg("Resources\\icons\\battery\\BatteryLevel_Full.png");
-            NoBattery = LoadImg("Resources\\icons\\battery\\NoBattery.png");
+            Battery = LoadImg("battery\\Battery.png");
+            BatteryCharging = LoadImg("battery\\BatteryCharging.png");
+            BatteryLevel_10P = LoadImg("battery\\BatteryLevel_10P.png");
+            BatteryLevel_25P = LoadImg("battery\\BatteryLevel_25P.png");
+            BatteryLevel_50P = LoadImg("battery\\BatteryLevel_50P.png");
+            BatteryLevel_75P = LoadImg("battery\\BatteryLevel_75P.png");
+            BatteryLevel_Full = LoadImg("battery\\BatteryLevel_Full.png");
+            NoBattery = LoadImg("battery\\NoBattery.png");
 
-            Next = LoadImg("Resources\\icons\\playback\\Next.png");
-            Previous = LoadImg("Resources\\icons\\playback\\Previous.png");
-            PlayPause = LoadImg("Resources\\icons\\playback\\PlayPause.png");
-            Play = LoadImg("Resources\\icons\\playback\\Play.png");
-            Stop = LoadImg("Resources\\icons\\playback\\Stop.png");
+            Next = LoadImg("playback\\Next.png");
+            Previous = LoadImg("playback\\Previous.png");
+            PlayPause = LoadImg("playback\\PlayPause.png");
+            Play = LoadImg("playback\\Play.png");
+            Stop = LoadImg("playback\\Stop.png");
 
-            Settings = LoadImg("Resources\\icons\\home\\Settings.png");
-            Tray = LoadImg("Resources\\icons\\home\\Tray.png");
-            Widgets = LoadImg("Resources\\icons\\home\\Widgets.png");
-            FileIcon = LoadImg("Resources\\icons\\home\\File.png");
-            PlaceItem = LoadImg("Resources\\icons\\home\\PlaceItem.png");
-            Spotify = LoadImg("Resources\\icons\\home\\Spotify.png");
+            Settings = LoadImg("home\\Settings.png");
+            Tray = LoadImg("home\\Tray.png");
+            Widgets = LoadImg("home\\Widgets.png");
+            FileIcon = LoadImg("home\\File.png");
+            PlaceItem = LoadImg("home\\PlaceItem.png");
+            Spotify = LoadImg("home\\Spotify.png");
 
-            ArrowUp = LoadImg("Resources\\icons\\home\\ArrowUp.png");
-            ArrowDown = LoadImg("Resources\\icons\\home\\ArrowDown.png");
-            Check = LoadImg("Resources\\icons\\home\\Check.png");
-            Add = LoadImg("Resources\\icons\\home\\Add.png");
+            ArrowUp = LoadImg("home\\ArrowUp.png");
+            ArrowDown = LoadImg("home\\ArrowDown.png");
+            Check = LoadImg("home\\Check.png");
+            Add = LoadImg("home\\Add.png");
 
-            AddWidget = LoadImg("Resources\\icons\\settings\\AddWidget.png");
+            AddWidget = LoadImg("settings\\AddWidget.png");
 
-            VolumeOn = LoadImg("Resources\\icons\\home\\VolumeOn.png");
-            VolumeOff = LoadImg("Resources\\icons\\home\\VolumeOff.png");
-            Brightness = LoadImg("Resources\\icons\\home\\Brightness.png");
+            VolumeOn = LoadImg("home\\VolumeOn.png");
+            VolumeOff = LoadImg("home\\VolumeOff.png");
+            Brightness = LoadImg("home\\Brightness.png");
 
-            Location = LoadImg("Resources\\icons\\home\\Location.png");
-            Weather = LoadImg("Resources\\icons\\home\\Weather.png");
-            Cloudy = LoadImg("Resources\\icons\\weather\\Cloudy.png");
-            Sunny = LoadImg("Resources\\icons\\weather\\Sunny.png");
-            Rainy = LoadImg("Resources\\icons\\weather\\Rainy.png");
-            Windy = LoadImg("Resources\\icons\\weather\\Windy.png");
-            Thunderstorm = LoadImg("Resources\\weather\\home\\Thunderstorm.png");
-            Foggy = LoadImg("Resources\\icons\\weather\\Foggy.png");
-            Snowy = LoadImg("Resources\\icons\\weather\\Snowy.png");
-            SevereWeatherWarning = LoadImg("Resources\\icons\\weather\\SevereWeatherWarning.png");
+            Location = LoadImg("home\\Location.png");
+            Weather = LoadImg("home\\Weather.png");
+            Cloudy = LoadImg("weather\\Cloudy.png");
+            Sunny = LoadImg("weather\\Sunny.png");
+            Rainy = LoadImg("weather\\Rainy.png");
+            Windy = LoadImg("weather\\Windy.png");
+            Thunderstorm = LoadImg("weather\\home\\Thunderstorm.png");
+            Foggy = LoadImg("weather\\Foggy.png");
+            Snowy = LoadImg("weather\\Snowy.png");
+            SevereWeatherWarning = LoadImg("weather\\SevereWeatherWarning.png");
 
             RegisterWidgets();
 
@@ -200,7 +200,7 @@ namespace DynamicWin.Resources
         {
             try
             {
-                using (var stream = File.OpenRead(path))
+                using (var stream = File.OpenRead("Resources\\icons\\" + path))
                 {
                     var image = SKImage.FromEncodedData(stream);
                     return SKBitmap.FromImage(image);
