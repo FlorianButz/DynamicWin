@@ -1,7 +1,6 @@
 ﻿using DynamicWin.Resources;
 using DynamicWin.Utils;
 using SkiaSharp;
-using SkiaSharp.Views.Desktop;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
