@@ -3,6 +3,8 @@ using DynamicWin.UI.Menu;
 using DynamicWin.UI.Menu.Menus;
 using DynamicWin.Utils;
 using System.Diagnostics;
+using System.Reflection.Metadata;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
@@ -25,6 +27,17 @@ namespace DynamicWin.Main
 
         public Action onMainFormRender;
 
+        [DllImport("user32.dll")]
+        public static extern int SetWindowLong(IntPtr window, int idx, int val);
+
+        [DllImport("user32.dll")]
+        public static extern int GetWindowLong(IntPtr window, int idx);
+
+        // Define integer values
+        const int GWL_EXSTYLE = -20;
+        const int WS_EX_TOOLWINDOW = 0x00000080;
+        const int WS_EX_APPWINDOW = 0x00040000;
+
         public MainForm()
         {
             InitializeComponent();
@@ -42,6 +55,18 @@ namespace DynamicWin.Main
             this.AllowsTransparency = true;
             this.ShowInTaskbar = false;
             this.Title = "DynamicWin Overlay";
+
+            // Loaded event to ensure that this does not show the application on the Alt+Tab switcher
+
+            this.Loaded += (s, e) =>
+            {
+                IntPtr handle = new WindowInteropHelper(this).Handle; // Define Handle
+                int winStyle = GetWindowLong(handle, GWL_EXSTYLE); // Fetch defined GWL_EXSTYLE
+
+                // Apply WS_EX_TOOLWINDOW and remove WS_EX_APPWINDOW if it exists
+                winStyle = (winStyle | WS_EX_TOOLWINDOW) & ~WS_EX_APPWINDOW;
+                SetWindowLong(handle, GWL_EXSTYLE, winStyle);
+            };
 
             SetMonitor(Settings.ScreenIndex);
 
@@ -78,6 +103,7 @@ namespace DynamicWin.Main
 
             _trayIcon.Visible = true;
         }
+
 
         public void SetMonitor(int monitorIndex)
         {

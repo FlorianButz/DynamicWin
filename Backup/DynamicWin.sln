@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34607.119
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicWin", "DynamicWin\DynamicWin.csproj", "{9102D609-0350-46E8-B6E7-DA7BF5318151}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9102D609-0350-46E8-B6E7-DA7BF5318151}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9102D609-0350-46E8-B6E7-DA7BF5318151}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9102D609-0350-46E8-B6E7-DA7BF5318151}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9102D609-0350-46E8-B6E7-DA7BF5318151}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6ACDD1CD-E05F-437B-A9F4-DDE314108958}
+	EndGlobalSection
+EndGlobal
