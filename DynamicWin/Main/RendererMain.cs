@@ -177,10 +177,12 @@ namespace DynamicWin.Main
             MenuManager.Instance.Update(DeltaTime);
 
             if (MenuManager.Instance.ActiveMenu != null)
+            {
                 MenuManager.Instance.ActiveMenu.Update();
 
-            if (MenuManager.Instance.ActiveMenu is DropFileMenu && !MainForm.Instance.isDragging)
-                MenuManager.OpenMenu(Res.HomeMenu);
+                if (MenuManager.Instance.ActiveMenu is DropFileMenu && !MainForm.Instance.isDragging)
+                    MenuManager.OpenMenu(Res.HomeMenu);
+            }
 
             // Update logic here
 

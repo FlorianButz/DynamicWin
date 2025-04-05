@@ -69,12 +69,15 @@ namespace DynamicWin.UI.Menu
                 }
                 catch(ThreadInterruptedException e)
                 {
-                    QueueOpenMenu(lastMenu);
+                    if (lastMenu != null)
+                        QueueOpenMenu(lastMenu);
                     return;
                 }
 
-                if (lastMenu == null) throw new NullReferenceException();
-                QueueOpenMenu(lastMenu);
+                if (lastMenu != null)
+                    QueueOpenMenu(lastMenu);
+                else
+                    System.Diagnostics.Debug.WriteLine("Warning: lastMenu is null in OpenOverlay method");
 
             });
             overlayThread.Start();
