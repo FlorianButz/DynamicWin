@@ -125,6 +125,23 @@ namespace DynamicWin.UI.Menu.Menus
             };
             bigMenuItems.Add(topContainer);
 
+            // Initialize next and previous images
+            next = new DWImage(island, Resources.Res.Next, new Vec2(50, 0), new Vec2(30, 30), UIAlignment.Center)
+            {
+                imageScale = 0.65f
+            };
+            next.SilentSetActive(false);
+            
+            previous = new DWImage(island, Resources.Res.Previous, new Vec2(-50, 0), new Vec2(30, 30), UIAlignment.Center)
+            {
+                imageScale = 0.65f
+            };
+            previous.SilentSetActive(false);
+            
+            // Add them to objects list
+            objects.Add(next);
+            objects.Add(previous);
+
             widgetButton = new DWTextImageButton(topContainer, Resources.Res.Widgets, "Widgets", new Vec2(75 / 2 + 5, 0), new Vec2(75, 20), () =>
             {
                 isWidgetMode = true;
@@ -253,18 +270,17 @@ namespace DynamicWin.UI.Menu.Menus
                 x.SilentSetActive(false);
                 });
 
-            next = new DWImage(island, Res.Next, new Vec2(-7.5f, 0), new Vec2(15, 15), UIAlignment.MiddleRight)
+            // Initialize next and previous images
+            next = new DWImage(island, Resources.Res.Next, new Vec2(50, 0), new Vec2(30, 30), UIAlignment.Center)
             {
-                Anchor = new Vec2(1, 0.5f),
-                blurSizeOnDisable = 3f
+                imageScale = 0.65f
             };
             next.SilentSetActive(false);
             objects.Add(next);
-
-            previous = new DWImage(island, Res.Previous, new Vec2(7.5f, 0), new Vec2(15, 15), UIAlignment.MiddleLeft)
+            
+            previous = new DWImage(island, Resources.Res.Previous, new Vec2(-50, 0), new Vec2(30, 30), UIAlignment.Center)
             {
-                Anchor = new Vec2(0, 0.5f),
-                blurSizeOnDisable = 3f
+                imageScale = 0.65f
             };
             previous.SilentSetActive(false);
             objects.Add(previous);
@@ -329,15 +345,21 @@ namespace DynamicWin.UI.Menu.Menus
 
             if(Math.Abs(songLocalPosXAddition) < 5f)
             {
-                if(next.IsEnabled)
+                if(next != null && next.IsEnabled)
                     next.SetActive(false);
-                if (previous.IsEnabled)
+                if (previous != null && previous.IsEnabled)
                     previous.SetActive(false);
             }
             else if (songLocalPosXAddition > 15f)
-                next.SetActive(true);
+            {
+                if(next != null)
+                    next.SetActive(true);
+            }
             else if (songLocalPosXAddition < -15f)
-                previous.SetActive(true);
+            {
+                if(previous != null)
+                    previous.SetActive(true);
+            }
 
             if (!RendererMain.Instance.MainIsland.IsHovering)
             {
