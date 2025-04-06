@@ -128,13 +128,11 @@ namespace DynamicWin.UI.Menu.Menus
             // Initialize next and previous images
             next = new DWImage(island, Resources.Res.Next, new Vec2(50, 0), new Vec2(30, 30), UIAlignment.Center)
             {
-                imageScale = 0.65f
             };
             next.SilentSetActive(false);
             
             previous = new DWImage(island, Resources.Res.Previous, new Vec2(-50, 0), new Vec2(30, 30), UIAlignment.Center)
             {
-                imageScale = 0.65f
             };
             previous.SilentSetActive(false);
             
@@ -273,14 +271,12 @@ namespace DynamicWin.UI.Menu.Menus
             // Initialize next and previous images
             next = new DWImage(island, Resources.Res.Next, new Vec2(50, 0), new Vec2(30, 30), UIAlignment.Center)
             {
-                imageScale = 0.65f
             };
             next.SilentSetActive(false);
             objects.Add(next);
             
             previous = new DWImage(island, Resources.Res.Previous, new Vec2(-50, 0), new Vec2(30, 30), UIAlignment.Center)
             {
-                imageScale = 0.65f
             };
             previous.SilentSetActive(false);
             objects.Add(previous);

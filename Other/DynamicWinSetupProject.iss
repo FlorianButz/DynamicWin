@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "DynamicWin"
-#define MyAppVersion "1.0.4R"
+#define MyAppVersion "1.0.7R"
 #define MyAppPublisher "Florian Butz"
 #define MyAppURL "https://github.com/FlorianButz/DynamicWin/"
 #define MyAppExeName "DynamicWin.exe"
@@ -51,14 +51,14 @@ Source: "C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\bin\Release\n
 Source: "C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\bin\Release\net8.0-windows\NAudio.WinForms.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\bin\Release\net8.0-windows\NAudio.WinMM.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\bin\Release\net8.0-windows\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\bin\Release\net8.0-windows\OpenTK.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\bin\Release\net8.0-windows\OpenTK.GLControl.dll"; DestDir: "{app}"; Flags: ignoreversion
+
+
 Source: "C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\bin\Release\net8.0-windows\SkiaSharp.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\bin\Release\net8.0-windows\SkiaSharp.Views.Desktop.Common.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\bin\Release\net8.0-windows\SkiaSharp.Views.Desktop.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\bin\Release\net8.0-windows\SkiaSharp.Views.Gtk.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\bin\Release\net8.0-windows\SkiaSharp.Views.WindowsForms.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\bin\Release\net8.0-windows\SkiaSharp.Views.WPF.dll"; DestDir: "{app}"; Flags: ignoreversion
+
+
+
+
+
 Source: "C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\bin\Release\net8.0-windows\System.CodeDom.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\bin\Release\net8.0-windows\System.IO.Ports.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\fb859\Documents\GitHub\DynamicWindows\DynamicWin\bin\Release\net8.0-windows\System.Management.dll"; DestDir: "{app}"; Flags: ignoreversion
