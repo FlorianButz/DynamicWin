@@ -114,8 +114,8 @@ namespace DynamicWin.UI.UIElements
             {
                 var path = new SKPath();
 
-                var awidth = (float)(Math.Max(15f, Size.Y / 9));
-                var aheight = (float)(Math.Max(Size.Y / 4, 15)) + (LocalPosition.Y - topOffset);
+                var awidth = (float)(Math.Max(0f, Size.Y / 45));
+                var aheight = (float)(Math.Max(Size.Y / 45, 15)) + (LocalPosition.Y - topOffset);
                 var y = 0;
 
                 { // Left notch curve
