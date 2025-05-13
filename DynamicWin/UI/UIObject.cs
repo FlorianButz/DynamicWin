@@ -29,7 +29,9 @@ namespace DynamicWin.UI
         public Vec2 Position { get => GetPosition() + localPosition; set => position = value; }
         public Vec2 LocalPosition { get => localPosition; set => localPosition = value; }
         public Vec2 Anchor { get => anchor; set => anchor = value; }
-        public Vec2 Size { get => size; set => size = value; }
+
+        // TODO: look further into this null pointer issue
+        public Vec2 Size { get => size ?? Vec2.one; set => size = value; } // Temporary fix for null size especially with BottomLeft getter
         public Col Color { get => new Col(color.r, color.g, color.b, color.a * Alpha); set => color = value; }
 
         private bool isHovering = false;
