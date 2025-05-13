@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Threading;
+using System.Windows.Media;
 using DynamicWin.Resources;
 using DynamicWin.UI;
 using DynamicWin.UI.Menu;
@@ -18,18 +19,15 @@ namespace DynamicWin.Main
 {
     public class RendererMain : SKElement
     {
-        //private DispatcherTimer timer;
-
         private IslandObject islandObject;
-        public IslandObject MainIsland { get => islandObject; }
+        public IslandObject MainIsland => islandObject;
+        private List<UIObject> objects => MenuManager.Instance.ActiveMenu.UiObjects;
 
-        private List<UIObject> objects { get => MenuManager.Instance.ActiveMenu.UiObjects; }
-
-        public static Vec2 ScreenDimensions { get => new Vec2(MainForm.Instance.Width, MainForm.Instance.Height); }
-        public static Vec2 CursorPosition { get => new Vec2(Mouse.GetPosition(MainForm.Instance).X, Mouse.GetPosition(MainForm.Instance).Y); }
+        public static Vec2 ScreenDimensions => new Vec2(MainForm.Instance.Width, MainForm.Instance.Height);
+        public static Vec2 CursorPosition => new Vec2(Mouse.GetPosition(MainForm.Instance).X, Mouse.GetPosition(MainForm.Instance).Y);
 
         private static RendererMain instance;
-        public static RendererMain Instance { get { return instance; } }
+        public static RendererMain Instance => instance;
 
         public Vec2 renderOffset = Vec2.zero;
         public Vec2 scaleOffset = Vec2.one;
@@ -39,70 +37,59 @@ namespace DynamicWin.Main
         public Action<float> onUpdate;
         public Action<SKCanvas> onDraw;
 
+        private Stopwatch? updateStopwatch;
+        private int initialScreenBrightness = 0;
+        private float deltaTime = 0f;
+        public float DeltaTime => deltaTime;
+
+        private bool isInitialized = false;
+        public int canvasWithoutClip;
+        private GRContext Context;
+
         public RendererMain()
         {
             MenuManager m = new MenuManager();
-
-            // Init control
-
             instance = this;
-
             islandObject = new IslandObject();
             m.Init();
 
-            // Set up the timer
-            /*            timer = new System.Windows.Forms.Timer
-                        {
-                            Interval = 14
-                        };
-                        timer.Tick += (sender, args) => Update();
-                        timer.Tick += (sender, args) => Render();
-                        timer.Start();*/
-
-            /*timer = new DispatcherTimer();
-            timer.Tick += (sender, args) => Update();
-            timer.Tick += (sender, args) => Render();
-            timer.Interval = TimeSpan.FromMilliseconds(8);
-            timer.Start();*/
-
-            MainForm.Instance.onMainFormRender += Update;
-            MainForm.Instance.onMainFormRender += Render;
-
             initialScreenBrightness = BrightnessAdjustMenu.GetBrightness();
-
             KeyHandler.onKeyDown += OnKeyRegistered;
 
-            {
-                MainForm.Instance.DragEnter += MainForm.Instance.MainForm_DragEnter;
-                MainForm.Instance.DragLeave += MainForm.Instance.MainForm_DragLeave;
-                MainForm.Instance.Drop += MainForm.Instance.OnDrop;
+            MainForm.Instance.DragEnter += MainForm.Instance.MainForm_DragEnter;
+            MainForm.Instance.DragLeave += MainForm.Instance.MainForm_DragLeave;
+            MainForm.Instance.Drop += MainForm.Instance.OnDrop;
+            MainForm.Instance.MouseWheel += MainForm.Instance.OnScroll;
 
-                MainForm.Instance.MouseWheel += MainForm.Instance.OnScroll;
-            }
+            // Get refresh rate
+            int refreshRate = GetRefreshRate();
+            Debug.WriteLine($"Monitor Refresh Rate: {refreshRate} Hz");
+
+            CompositionTarget.Rendering += OnRendering;
 
             isInitialized = true;
         }
 
         public void Destroy()
         {
-            //timer.Stop();
-
-            MainForm.Instance.onMainFormRender -= Update;
-            MainForm.Instance.onMainFormRender -= Render;
+            CompositionTarget.Rendering -= OnRendering;
+            // if (fallbackTimer != null) fallbackTimer.Stop();
 
             KeyHandler.onKeyDown -= OnKeyRegistered;
-
-            {
-                MainForm.Instance.DragEnter -= MainForm.Instance.MainForm_DragEnter;
-                MainForm.Instance.DragLeave -= MainForm.Instance.MainForm_DragLeave;
-
-                MainForm.Instance.MouseWheel -= MainForm.Instance.OnScroll;
-            }
+            MainForm.Instance.DragEnter -= MainForm.Instance.MainForm_DragEnter;
+            MainForm.Instance.DragLeave -= MainForm.Instance.MainForm_DragLeave;
+            MainForm.Instance.MouseWheel -= MainForm.Instance.OnScroll;
 
             instance = null;
         }
 
-        void OnKeyRegistered(Keys key, KeyModifier modifier)
+        private void OnRendering(object sender, EventArgs e)
+        {
+            Update();
+            Render();
+        }
+
+        private void OnKeyRegistered(Keys key, KeyModifier modifier)
         {
             if (key == Keys.LWin && modifier.isCtrlDown)
             {
@@ -115,32 +102,23 @@ namespace DynamicWin.Main
                 {
                     MenuManager.OpenOverlayMenu(new VolumeAdjustMenu(), 100f);
                 }
-                else
+                else if (VolumeAdjustMenu.timerUntilClose != null)
                 {
-                    if (VolumeAdjustMenu.timerUntilClose != null)
-                        VolumeAdjustMenu.timerUntilClose = 0f;
+                    VolumeAdjustMenu.timerUntilClose = 0f;
                 }
             }
 
-            if(key == Keys.MediaNextTrack || key == Keys.MediaPreviousTrack)
+            if (key == Keys.MediaNextTrack || key == Keys.MediaPreviousTrack)
             {
                 if (MenuManager.Instance.ActiveMenu is HomeMenu)
                 {
-                    if (key == Keys.MediaNextTrack) Res.HomeMenu.NextSong(); else Res.HomeMenu.PrevSong();
+                    if (key == Keys.MediaNextTrack) Res.HomeMenu.NextSong();
+                    else Res.HomeMenu.PrevSong();
                 }
             }
         }
 
-        float deltaTime = 0f;
-        public float DeltaTime { get { return deltaTime; } private set => deltaTime = value; }
-
-        Stopwatch? updateStopwatch;
-
-        int initialScreenBrightness = 0;
-
-        // Called once every frame to update values
-
-        private new void Update()
+        private void Update()
         {
             if (updateStopwatch != null)
             {
@@ -148,31 +126,27 @@ namespace DynamicWin.Main
                 deltaTime = updateStopwatch.ElapsedMilliseconds / 1000f;
             }
             else
+            {
                 deltaTime = 1f / 1000f;
+            }
 
-            updateStopwatch = new Stopwatch();
-            updateStopwatch.Start();
+            updateStopwatch = Stopwatch.StartNew();
 
             onUpdate?.Invoke(DeltaTime);
 
-            if(BrightnessAdjustMenu.GetBrightness() != initialScreenBrightness && PopupOptions.saveData.brightnessPopup)
+            if (BrightnessAdjustMenu.GetBrightness() != initialScreenBrightness && PopupOptions.saveData.brightnessPopup)
             {
                 initialScreenBrightness = BrightnessAdjustMenu.GetBrightness();
                 if (MenuManager.Instance.ActiveMenu is HomeMenu)
                 {
                     MenuManager.OpenOverlayMenu(new BrightnessAdjustMenu(), 100f);
                 }
-                else
+                else if (BrightnessAdjustMenu.timerUntilClose != null)
                 {
-                    if (BrightnessAdjustMenu.timerUntilClose != null)
-                    {
-                        BrightnessAdjustMenu.PressBK();
-                        BrightnessAdjustMenu.timerUntilClose = 0f;
-                    }
+                    BrightnessAdjustMenu.PressBK();
+                    BrightnessAdjustMenu.timerUntilClose = 0f;
                 }
             }
-
-            // Update Menu
 
             MenuManager.Instance.Update(DeltaTime);
 
@@ -184,8 +158,6 @@ namespace DynamicWin.Main
                     MenuManager.OpenMenu(Res.HomeMenu);
             }
 
-            // Update logic here
-
             islandObject.UpdateCall(DeltaTime);
 
             if (MainIsland.hidden) return;
@@ -196,32 +168,10 @@ namespace DynamicWin.Main
             }
         }
 
-        // Called once every frame to render frame, called after Update
-
         private void Render()
         {
-            Dispatcher.Invoke((Action)(() =>
-            {
-                this.InvalidateVisual();
-            }));
+            Dispatcher.Invoke(() => InvalidateVisual());
         }
-
-        public int canvasWithoutClip;
-        bool isInitialized = false;
-
-        GRContext Context;
-
-/*        public SKSurface GetOpenGlSurface(int width, int height)
-        {
-            if (Context == null)
-            {
-                GLControl control = new GLControl(new GraphicsMode(32, 24, 8, 4));
-                control.MakeCurrent();
-                Context = GRContext.CreateGl();
-            }
-            var gpuSurface = SKSurface.Create(Context, true, new SKImageInfo(width, height));
-            return gpuSurface;
-        }*/
 
         protected override void OnPaintSurface(SKPaintSurfaceEventArgs e)
         {
@@ -229,22 +179,17 @@ namespace DynamicWin.Main
 
             if (!isInitialized) return;
 
-            // Render
-
-            // Get the canvas and information about the surface
             SKSurface surface = e.Surface;
             SKCanvas canvas = surface.Canvas;
-            SKImageInfo info = e.Info;
 
             canvas.Clear(SKColors.Transparent);
 
-            // Fix screen scale
             double dpiFactor = System.Windows.PresentationSource.FromVisual(this).CompositionTarget.TransformToDevice.M11;
-            canvas.Scale((float)dpiFactor, (float)dpiFactor, 0, 0);
+            canvas.Scale((float)dpiFactor, (float)dpiFactor);
 
             canvasWithoutClip = canvas.Save();
 
-            if(islandObject.maskInToIsland) Mask(canvas);
+            if (islandObject.maskInToIsland) Mask(canvas);
             islandObject.DrawCall(canvas);
 
             if (MainIsland.hidden) return;
@@ -255,20 +200,18 @@ namespace DynamicWin.Main
                 canvas.RestoreToCount(canvasWithoutClip);
                 canvasWithoutClip = canvas.Save();
 
-                if(uiObject.IsHovering && uiObject.GetContextMenu() != null)
+                if (uiObject.IsHovering && uiObject.GetContextMenu() != null)
                 {
                     hasContextMenu = true;
-                    var contextMenu = uiObject.GetContextMenu();
-                    ContextMenu = contextMenu;
+                    ContextMenu = uiObject.GetContextMenu();
                 }
 
-                foreach(UIObject obj in uiObject.LocalObjects)
+                foreach (UIObject obj in uiObject.LocalObjects)
                 {
                     if (obj.IsHovering && obj.GetContextMenu() != null)
                     {
                         hasContextMenu = true;
-                        var contextMenu = obj.GetContextMenu();
-                        ContextMenu = contextMenu;
+                        ContextMenu = obj.GetContextMenu();
                     }
                 }
 
@@ -278,8 +221,8 @@ namespace DynamicWin.Main
                 }
 
                 canvas.Scale(scaleOffset.X, scaleOffset.Y, islandObject.Position.X + islandObject.Size.X / 2, islandObject.Position.Y + islandObject.Size.Y / 2);
-
                 canvas.Translate(renderOffset.X, renderOffset.Y);
+
                 uiObject.DrawCall(canvas);
             }
 
@@ -290,13 +233,7 @@ namespace DynamicWin.Main
             canvas.Flush();
         }
 
-        void SetRenderScale(SKCanvas canvas, float scale, Vec2 point = null)
-        {
-            if (point == null) point = new Vec2(MainIsland.Position.X + MainIsland.currSize.X / 2, 0);
-            canvas.Scale(scale, scale, point.X, point.Y);
-        }
-
-        void Mask(SKCanvas canvas)
+        private void Mask(SKCanvas canvas)
         {
             var islandMask = GetMask();
             canvas.ClipRoundRect(islandMask);
@@ -308,6 +245,50 @@ namespace DynamicWin.Main
             islandMask.Deflate(new SKSize(1, 1));
             return islandMask;
         }
-    }
 
+        // Native PInvoke to get monitor refresh rate
+        private const int ENUM_CURRENT_SETTINGS = -1;
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+        private struct DEVMODE
+        {
+            private const int CCHDEVICENAME = 32;
+            private const int CCHFORMNAME = 32;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = CCHDEVICENAME)]
+            public string dmDeviceName;
+            public ushort dmSpecVersion;
+            public ushort dmDriverVersion;
+            public ushort dmSize;
+            public ushort dmDriverExtra;
+            public uint dmFields;
+            public int dmPositionX;
+            public int dmPositionY;
+            public uint dmDisplayOrientation;
+            public uint dmDisplayFixedOutput;
+            public short dmColor;
+            public short dmDuplex;
+            public short dmYResolution;
+            public short dmTTOption;
+            public short dmCollate;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = CCHFORMNAME)]
+            public string dmFormName;
+            public ushort dmLogPixels;
+            public uint dmBitsPerPel;
+            public uint dmPelsWidth;
+            public uint dmPelsHeight;
+            public uint dmDisplayFlags;
+            public uint dmDisplayFrequency;
+        }
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        private static extern bool EnumDisplaySettings(string deviceName, int modeNum, ref DEVMODE devMode);
+
+        private int GetRefreshRate()
+        {
+            DEVMODE devMode = new DEVMODE();
+            devMode.dmSize = (ushort)Marshal.SizeOf(typeof(DEVMODE));
+            if (EnumDisplaySettings(null, ENUM_CURRENT_SETTINGS, ref devMode))
+                return (int)devMode.dmDisplayFrequency;
+            return 60;
+        }
+    }
 }
