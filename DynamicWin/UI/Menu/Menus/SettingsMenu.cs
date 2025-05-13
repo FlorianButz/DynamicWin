@@ -175,7 +175,7 @@ namespace DynamicWin.UI.Menu.Menus
             objects.Add(widgetsTitle);
 
             {
-                var wTitle = new DWText(island, "Small Widgets (Right click to add / edit)", new Vec2(25, 0), UIAlignment.TopLeft);
+                var wTitle = new DWText(island, "Small Widgets (right click to add/edit)", new Vec2(25, 0), UIAlignment.TopLeft);
                 wTitle.Font = Res.InterRegular;
                 wTitle.Color = Theme.TextSecond;
                 wTitle.TextSize = 15;
@@ -194,7 +194,7 @@ namespace DynamicWin.UI.Menu.Menus
             });
 
             {
-                var wTitle = new DWText(island, "Big Widgets (Right click to add / edit)", new Vec2(25, 15), UIAlignment.TopLeft);
+                var wTitle = new DWText(island, "Big Widgets (right click to add/edit)", new Vec2(25, 15), UIAlignment.TopLeft);
                 wTitle.Font = Res.InterRegular;
                 wTitle.Color = Theme.TextSecond;
                 wTitle.TextSize = 15;
@@ -267,10 +267,17 @@ namespace DynamicWin.UI.Menu.Menus
                 TextSize = 15
             });
 
-            objects.Add(new DWText(island, "Licensed under the MIT license.", new Vec2(25, 0), UIAlignment.TopLeft)
+            objects.Add(new DWText(island, "Maintained and developed by Megan Park! (59xa)", new Vec2(25, -20), UIAlignment.TopLeft)
             {
                 Color = Theme.TextThird,
-                Anchor = new Vec2(0, 0.5f),
+                Anchor = new Vec2(0, 0f),
+                TextSize = 12
+            });
+
+            objects.Add(new DWText(island, "Licensed under the CC BY-SA 4.0 licence.", new Vec2(25, -15), UIAlignment.TopLeft)
+            {
+                Color = Theme.TextThird,
+                Anchor = new Vec2(0, 0f),
                 TextSize = 15
             });
 
