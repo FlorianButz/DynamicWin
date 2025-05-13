@@ -19,6 +19,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Navigation;
 using System.Xml.Linq;
+using static DynamicWin.UI.UIElements.IslandObject;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace DynamicWin.UI.Menu.Menus
@@ -391,9 +392,12 @@ namespace DynamicWin.UI.Menu.Menus
             return customOptions;
         }
 
+        // Border should only be rendered if on island mode instead of notch
         public override Col IslandBorderColor()
         {
-            return new Col(0.5f, 0.5f, 0.5f);
+            IslandMode mode = Settings.IslandMode; // Reads either Island or Notch as value
+            if (mode == IslandMode.Island) return new Col(0.5f, 0.5f, 0.5f);
+            else return new Col(0, 0, 0, 0); // Render transparent if island mode is Notch
         }
     }
 
