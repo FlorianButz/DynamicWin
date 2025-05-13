@@ -141,7 +141,7 @@ namespace DynamicWin.Main
             {
                 _lastRenderTime = currentTime;
 
-                onMainFormRender.Invoke();
+                onMainFormRender?.Invoke();
             }
         }
 
