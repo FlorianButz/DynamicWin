@@ -10,6 +10,13 @@ using DynamicWin.Resources;
 using Newtonsoft.Json;
 using System.Net.Http;
 
+/*
+ 
+    Overview:
+        - Implement new Weather API that allows the user to change their location and display its weather.
+
+*/
+
 namespace DynamicWin.UI.Widgets.Big
 {
     class RegisterNewWeatherWidget : IRegisterableWidget
