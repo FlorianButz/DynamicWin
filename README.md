@@ -32,6 +32,7 @@ git pull https://github.com/59xa/DynamicWin.git
 If you want to support the development of this project you can create pull requests and contribute to it.<br>
 Feel free to open up a new issue if you encounter any bugs/flaws.
 <br>
+
 **Quick disclaimer**: The codebase is currently structured terribly and almost un-maintainable. A possible re-write of the entire codebase may happen some time in the future.
 
 # Features
