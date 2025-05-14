@@ -27,7 +27,7 @@ namespace DynamicWin.UI.Widgets.Small
 
     class RegisterUsedDevicesOptions : IRegisterableSetting
     {
-        public string SettingTitle => "Used Devices Widget";
+        public string SettingTitle => "Used Devices";
 
         public string SettingID => "useddevicewidget";
 
