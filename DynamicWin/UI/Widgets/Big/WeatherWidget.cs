@@ -62,7 +62,7 @@ namespace DynamicWin.UI.Widgets.Big
         {
             var objects = new List<UIObject>();
 
-            var hideLocationCheckbox = new Checkbox(null, "Hide Location", new Vec2(25, 0), new Vec2(25, 25), null, alignment: UIAlignment.TopLeft);
+            var hideLocationCheckbox = new Checkbox(null, "Hide current location", new Vec2(25, 0), new Vec2(25, 25), null, alignment: UIAlignment.TopLeft);
             hideLocationCheckbox.IsChecked = saveData.hideLocation;
 
             hideLocationCheckbox.clickCallback += () =>
@@ -72,7 +72,7 @@ namespace DynamicWin.UI.Widgets.Big
 
             objects.Add(hideLocationCheckbox);
 
-            var useCelciusCheckbox = new Checkbox(null, "Use Celcius", new Vec2(25, 0), new Vec2(25, 25), null, alignment: UIAlignment.TopLeft);
+            var useCelciusCheckbox = new Checkbox(null, "Use Celsius as temperature measurement", new Vec2(25, 0), new Vec2(25, 25), null, alignment: UIAlignment.TopLeft);
             useCelciusCheckbox.IsChecked = saveData.useCelcius;
 
             useCelciusCheckbox.clickCallback += () =>

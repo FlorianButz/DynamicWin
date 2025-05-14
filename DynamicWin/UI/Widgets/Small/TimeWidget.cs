@@ -60,7 +60,7 @@ namespace DynamicWin.UI.Widgets.Small
         {
             var objects = new List<UIObject>();
 
-            var militaryTime = new Checkbox(null, "24 Hour Clock", new Vec2(25, 0), new Vec2(25, 25), null, UIAlignment.TopLeft);
+            var militaryTime = new Checkbox(null, "24-Hour Time", new Vec2(25, 0), new Vec2(25, 25), null, UIAlignment.TopLeft);
 
             militaryTime.clickCallback += () =>
             {
