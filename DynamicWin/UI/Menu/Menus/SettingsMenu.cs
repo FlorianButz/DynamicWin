@@ -102,22 +102,22 @@ namespace DynamicWin.UI.Menu.Menus
                 objects.Add(islandMode);
             }
 
-            allowBlur = new Checkbox(island, "Allow Blur", new Vec2(25, 0), new Vec2(25, 25), () => { }, UIAlignment.TopLeft);
+            allowBlur = new Checkbox(island, "Toggle blur", new Vec2(25, 0), new Vec2(25, 25), () => { }, UIAlignment.TopLeft);
             allowBlur.IsChecked = Settings.AllowBlur;
             allowBlur.Anchor.X = 0;
             objects.Add(allowBlur);
 
-            allowAnimation = new Checkbox(island, "Allow SO Animation", new Vec2(25, 0), new Vec2(25, 25), () => { }, UIAlignment.TopLeft);
+            allowAnimation = new Checkbox(island, "Toggle animations", new Vec2(25, 0), new Vec2(25, 25), () => { }, UIAlignment.TopLeft);
             allowAnimation.IsChecked = Settings.AllowAnimation;
             allowAnimation.Anchor.X = 0;
             objects.Add(allowAnimation);
 
-            antiAliasing = new Checkbox(island, "Anti Aliasing", new Vec2(25, 0), new Vec2(25, 25), () => { }, UIAlignment.TopLeft);
+            antiAliasing = new Checkbox(island, "Toggle anti-aliasing", new Vec2(25, 0), new Vec2(25, 25), () => { }, UIAlignment.TopLeft);
             antiAliasing.IsChecked = Settings.AntiAliasing;
             antiAliasing.Anchor.X = 0;
             objects.Add(antiAliasing);
 
-            runOnStartup = new Checkbox(island, "Run App on System Startup", new Vec2(25, 0), new Vec2(25, 25), () => { }, UIAlignment.TopLeft);
+            runOnStartup = new Checkbox(island, "Start application on login", new Vec2(25, 0), new Vec2(25, 25), () => { }, UIAlignment.TopLeft);
             runOnStartup.IsChecked = Settings.RunOnStartup;
             runOnStartup.Anchor.X = 0;
             objects.Add(runOnStartup);
@@ -126,7 +126,6 @@ namespace DynamicWin.UI.Menu.Menus
             {
                 var selectedMonitorTitle = new DWText(island, "Selected Monitor", new Vec2(25, 0), UIAlignment.TopLeft);
                 selectedMonitorTitle.Font = Res.InterRegular;
-                selectedMonitorTitle.Color = Theme.TextSecond;
                 selectedMonitorTitle.TextSize = 15;
                 selectedMonitorTitle.Anchor.X = 0;
                 objects.Add(selectedMonitorTitle);
@@ -175,7 +174,7 @@ namespace DynamicWin.UI.Menu.Menus
             objects.Add(widgetsTitle);
 
             {
-                var wTitle = new DWText(island, "Small Widgets (right click to add/edit)", new Vec2(25, 0), UIAlignment.TopLeft);
+                var wTitle = new DWText(island, "Small widgets (right click to add/edit)", new Vec2(25, 0), UIAlignment.TopLeft);
                 wTitle.Font = Res.InterRegular;
                 wTitle.Color = Theme.TextSecond;
                 wTitle.TextSize = 15;
@@ -194,7 +193,7 @@ namespace DynamicWin.UI.Menu.Menus
             });
 
             {
-                var wTitle = new DWText(island, "Big Widgets (right click to add/edit)", new Vec2(25, 15), UIAlignment.TopLeft);
+                var wTitle = new DWText(island, "Big widgets (right click to add/edit)", new Vec2(25, 15), UIAlignment.TopLeft);
                 wTitle.Font = Res.InterRegular;
                 wTitle.Color = Theme.TextSecond;
                 wTitle.TextSize = 15;
@@ -223,7 +222,6 @@ namespace DynamicWin.UI.Menu.Menus
                 {
                     var wTitle = new DWText(island, option.SettingTitle, new Vec2(25, 0), UIAlignment.TopLeft);
                     wTitle.Font = Res.InterRegular;
-                    wTitle.Color = Theme.TextSecond;
                     wTitle.TextSize = 15;
                     wTitle.Anchor.X = 0;
                     objects.Add(wTitle);
@@ -253,7 +251,7 @@ namespace DynamicWin.UI.Menu.Menus
                 }
             }
 
-            objects.Add(new DWText(island, "Software Version: " + DynamicWinMain.Version, new Vec2(25, 0), UIAlignment.TopLeft)
+            objects.Add(new DWText(island, "Software version: " + DynamicWinMain.Version, new Vec2(25, 0), UIAlignment.TopLeft)
             {
                 Color = Theme.TextThird,
                 Anchor = new Vec2(0, 0.5f),
@@ -267,29 +265,31 @@ namespace DynamicWin.UI.Menu.Menus
                 TextSize = 15
             });
 
-            objects.Add(new DWText(island, "Maintained and developed by Megan Park! (59xa)", new Vec2(25, -20), UIAlignment.TopLeft)
+            objects.Add(new DWText(island, "Maintained and developed by 59xa", new Vec2(25, 0), UIAlignment.TopLeft)
             {
                 Color = Theme.TextThird,
-                Anchor = new Vec2(0, 0f),
-                TextSize = 12
+                Anchor = new Vec2(0, 0.5f),
+                TextSize = 12,
+                Font = Resources.Res.InterBold
             });
 
-            objects.Add(new DWText(island, "Licensed under the CC BY-SA 4.0 licence.", new Vec2(25, -15), UIAlignment.TopLeft)
+            objects.Add(new DWText(island, "Licenced under the CC BY-SA 4.0 licence.", new Vec2(25, 0), UIAlignment.TopLeft)
             {
                 Color = Theme.TextThird,
-                Anchor = new Vec2(0, 0f),
+                Anchor = new Vec2(0, 0.5f),
                 TextSize = 15
             });
 
-            var backBtn = new DWTextButton(island, "Apply and Back", new Vec2(0, -45), new Vec2(350, 40), () => { SaveAndBack(); }, UIAlignment.BottomCenter)
+            var backBtn = new DWTextButton(island, "Save changes", new Vec2(0, -45), new Vec2(250, 40), () => { SaveAndBack(); }, UIAlignment.BottomCenter)
             {
                 roundRadius = 25
             };
             backBtn.Text.Font = Resources.Res.InterBold;
 
-            bottomMask = new UIObject(island, Vec2.zero, new Vec2(IslandSizeBig().X + 100, 200), UIAlignment.BottomCenter)
+            bottomMask = new UIObject(island, Vec2.zero, new Vec2(IslandSizeBig().X - 225, 175), UIAlignment.BottomCenter)
             {
-                Color = Theme.IslandBackground
+                Color = Theme.IslandBackground,
+                roundRadius = 50
             };
 
             objects.Add(bottomMask);
@@ -531,7 +531,7 @@ namespace DynamicWin.UI.Menu.Menus
                 var ctx2 = new ContextMenu();
                 ctx2.Items.Add(new MenuItem()
                 {
-                    Header = "No Widgets Available.",
+                    Header = "No widgets available.",
                     IsEnabled = false
                 });
                 return ctx2;
