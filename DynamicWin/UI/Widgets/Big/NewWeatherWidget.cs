@@ -9,12 +9,12 @@ using DynamicWin.UI.UIElements;
 using DynamicWin.Resources;
 using Newtonsoft.Json;
 using System.Net.Http;
+using System.Diagnostics;
+using DynamicWin.UI.Menu;
 
 /*
- 
-    Overview:
-        - Implement new Weather API that allows the user to change their location and display its weather.
-
+*   Overview:
+*    - Implement new Weather API that allows the user to change their location and display its weather.
 */
 
 namespace DynamicWin.UI.Widgets.Big
@@ -61,16 +61,23 @@ namespace DynamicWin.UI.Widgets.Big
 
             hideLocationCheckbox.clickCallback += () => saveData.hideLocation = hideLocationCheckbox.IsChecked;
 
-            objects.Add(hideLocationCheckbox);
-
             var useCelsiusCheckbox = new Checkbox(null, "Use Celsius as temperature measurement", new Vec2(25, 0), new Vec2(25, 25), null, alignment: UIAlignment.TopLeft);
             useCelsiusCheckbox.IsChecked = saveData.useCelsius;
 
             useCelsiusCheckbox.clickCallback += () => saveData.useCelsius = useCelsiusCheckbox.IsChecked;
 
-            objects.Add(useCelsiusCheckbox);
+            var selectLocationText = new DWText(null, "Change weather location", new Vec2(0, 0), UIAlignment.TopLeft);
 
-            //var selectLocationDropdown = new 
+            var selectLocationButton = new DWTextButton(null, "Default", new Vec2(50, 25), new Vec2(150, 30), null, alignment: UIAlignment.TopLeft);
+            selectLocationButton.clickCallback += () =>
+            {
+                MenuManager.OpenMenu(new WeatherMenu());
+            };
+
+            objects.Add(hideLocationCheckbox);
+            objects.Add(useCelsiusCheckbox);
+            objects.Add(selectLocationText);
+            objects.Add(selectLocationButton);
 
             return objects;
         }
