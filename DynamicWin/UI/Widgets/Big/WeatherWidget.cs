@@ -62,7 +62,7 @@ namespace DynamicWin.UI.Widgets.Big
         {
             var objects = new List<UIObject>();
 
-            var hideLocationCheckbox = new Checkbox(null, "Hide your location", new Vec2(25, 0), new Vec2(25, 25), null, alignment: UIAlignment.TopLeft);
+            var hideLocationCheckbox = new Checkbox(null, "Hide current location", new Vec2(25, 0), new Vec2(25, 25), null, alignment: UIAlignment.TopLeft);
             hideLocationCheckbox.IsChecked = saveData.hideLocation;
 
             hideLocationCheckbox.clickCallback += () =>
