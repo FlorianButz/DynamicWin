@@ -3,7 +3,6 @@
 <p align="center">
   <img src="https://img.shields.io/badge/c%23-%23239120.svg?style=for-the-badge&logo=csharp&logoColor=white">
   <a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="https://img.shields.io/static/v1?label=License&message=CC+BY-SA+4.0&color=%23c49b04&style=for-the-badge"></a>
-  <a href="https://www.youtube.com/@flofdev"><img src="https://img.shields.io/badge/YouTube-%23FF0000.svg?style=for-the-badge&logo=YouTube&logoColor=white"></a>
   <a href="https://discord.gg/UHFuqB9NqR"><img src="https://dcbadge.limes.pink/api/server/https://discord.gg/UHFuqB9NqR)](https://discord.gg/UHFuqB9NqR"></a>
 </p>
 
@@ -14,53 +13,44 @@
 <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://github.com/FlorianButz/DynamicWin">DynamicWin</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://github.com/FlorianButz">Florian Butz</a> is licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-SA 4.0<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1" alt=""><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1" alt=""><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1" alt=""></a></p>
 
 > [!NOTE]
-> I currently do not plan on updating this project any further. Feel free to fork the project, but there won't be any new features from my side.
+> This is a fork of DynamicWin from FlorianButz, while the main repository is discontinued for the time being, expect updates and features within this repository instead.
 
 ### What is it?
 A [Dynamic Island](https://support.apple.com/de-de/guide/iphone/iph28f50d10d/ios) inspired Windows App that brings in a bunch of features like widgets or a file tray that works like a clipboard.
+Similar to dynamic notches that you can find on macOS like [NotchNook](https://lo.cafe/notchnook), this application brings the concept on Windows devices to life.
 
+### Implementation and build
+This application is developed using C# for the logic, and [SkiaSharp](https://github.com/mono/SkiaSharp) to display the graphical interface.
+To build this project, ensure that you have the latest version of **.NET 8.0** installed on your environment.
+
+To get started:
+```bash
+git pull https://github.com/59xa/DynamicWin.git
+```
+
+### Future plans
+If you want to support the development of this project you can create pull requests and contribute to it.<br>
+Feel free to open up a new issue if you encounter any bugs/flaws.
 <br>
-Please note that I messed up the versioning. It is still in early development and no where near finished. v1.0.1R should be v0.0.1B and so on.
 
-### Why did I make this?
-The idea for this application originally came to me when I saw the dynamic island on iPhone for the first time. After seeing that there are no (good) solutions to a Dynamic Island type application on Windows, I got the idea to make my own.
-I only got the motivation to start on it though, after seeing something similar has been done on macOS already [(NotchNook)](https://lo.cafe/notchnook).
-<br><br>
-I love programming and I had the idea stuck in my mind for quite some time now. <br>
-I originally made the project in [Java](https://www.java.com/de/) (luckily, that changed) but didn't get any progress since Java is less connected to the Operating system than a language like C#. <br>
-I re-made the project in [WinForms](https://de.wikipedia.org/wiki/Windows_Forms) getting way better results and being more motivated and then had to migrate it to  [WPF](https://de.wikipedia.org/wiki/Windows_Presentation_Foundation) because of my stupid mistake of not trying if things would actually work before doing it. (:D)
-
-### How did I make this?
-WPF is a powerful UI framework, however to archive the look and feel of this app I decided on creating every UI element from scratch using [SkiaSharp](https://github.com/mono/SkiaSharp) for the rendering. This allowed me to create an app that looks like something you would find on macOS which was perfect for this project.
-
-### Why am I writing all of this instead of talking about the features?
-I wanted to give you a peak at what went into this project and why/how I made it.
-
-<br>
-If you want to support the development of this project you can create pull requests and contribute to it or make extensions / themes and upload them on the discord :) <br>
-Feel free to open up a new issue if you encounter any bugs / flaws.
-
-<br>
-Quick disclaimer: The code is terribly structured and almost un-maintainable as it was only meant to be a small side project so please don't expect too much from me :)
+**Quick disclaimer**: The codebase is currently structured terribly and almost un-maintainable. A possible re-write of the entire codebase may happen some time in the future.
 
 # Features
 > [!NOTE]
-> Only the checked features are currently available. The unchecked ones are not guaranteed to come, but are on my mind.
+> Only the checked features are currently available. Unimplemented features will be introduced as time passes.
 
 DynamicWin has a variety of features, currently including: <br>
 
 ## Shortcuts
 - [x] `Ctrl + Win` Will hide the island (or show it again).
-- [ ] `Shift + Win` Will open a quick search menu.
+- [ ] ~~`Shift + Win` Will open a quick search menu.~~ <sub>(Please consider using an alternative such as [Powertoys Run](https://learn.microsoft.com/en-us/windows/powertoys/run))</sub>
 
 ## Big Widgets
 - [x] Media Playback Widget
 - [x] Timer Widget
 - [x] Weather Widget
-- [ ] Voicemeeter integration Widget
 - [x] Shortcuts Widget <sub>(Can be configured to open a file, e.g. Shortcut, .EXE or any other filetype.)</sub>
 - [ ] Calendar Widget
-- [ ] Tuya Smart integration <sub>(Will probably be turned in to one widget with the shortcuts)</sub>
 
 ## Small Widgets
 - [x] Time Display
@@ -103,7 +93,7 @@ Mods can contain malicious code that can mess up your system, so always check a 
 </p>
 
 > [!NOTE]
-> The above shown themes were generated by ChatGPT. If you want one of them, join the discord and let me know.
+> Custom themes are not the main priority for this repository, but will remain supported for use. Visit Florian's Discord server to get access to more themes like the ones shown from above.
 
 You can use the built-in dark / light theme. You can also create custom themes that fit your liking by going to the `%appdata%/DynamicWin/Theme.json` file. After editing the colors you need to select the `Custom` theme option in the settings. If you already did that, you will need to go back to the settings and click on it again. Otherwise you would have to restart the app.
 <br>
@@ -113,16 +103,16 @@ This is an example of a color:
 The hex code is structured this way: `#rrggbb`. If you want to change the alpha of the color, it is **always** at the start of the code. `#aarrggbb`.
 
 # Known Issues
-The performance might not be the best. I will try my best to add performance options to the settings menu but cannot guarantee a smooth experience for everyone. <br><br>
+The performance might not be the best, as said by Florian. More optimisations in the codebase will happen as time passes. <br><br>
 
 The app might suddenly disappear and upon trying to reopen it a message box will tell you that only one instance of the app can run at the same time. To fix this, open task manager and find the process "DynamicWin". Kill it and start the app again. <br><br>
 
 Too fast interactions might confuse the animation system and will result in an empty menu. To fix this, usually moving the mouse away from the island and then over it again will fix it.
 
 # Creating an Extension
-To create an extension you need an IDE like [Visual Studio](https://visualstudio.microsoft.com/de/vs/community/).
-- Create a new C# Project of the type "Class Library". The target framework has to be `.NET 8`.
-- You will need to add at least `DynamicWin.dll` and the SkiaSharp DLLs as assembly dependencies to your project. [How to add references to a VS project](https://learn.microsoft.com/en-us/visualstudio/ide/how-to-add-or-remove-references-by-using-the-reference-manager?view=vs-2022)
+To create an extension you need an IDE like [Visual Studio 2022](https://visualstudio.microsoft.com/de/vs/community/).
+- Create a new C# project of the type "Class Library". Ensure that the target framework is `.NET 8.0`.
+- You are required to add `DynamicWin.dll` and SkiaSharp DLLs as assembly dependencies to your project. [More information regarding this through here.](https://learn.microsoft.com/en-us/visualstudio/ide/how-to-add-or-remove-references-by-using-the-reference-manager?view=vs-2022)
 - Create a new C# class file, if it's not already there. Rename the class to something like "MyExtension".
 - All extensions must have a class that implements the `IDynamicWinExtension` interface.<br>
 

@@ -14,7 +14,7 @@ namespace DynamicWin.Utils
     {
         public string SettingID => "popup_options";
 
-        public string SettingTitle => "Popup Options";
+        public string SettingTitle => "Pop-up Options";
 
         public static PopupOptionsSave saveData;
 
@@ -45,7 +45,7 @@ namespace DynamicWin.Utils
         {
             var objects = new List<UIObject>();
 
-            var volume = new Checkbox(null, "Show Volume Popup", new Vec2(25, 0), new Vec2(25, 25), null, UIAlignment.TopLeft);
+            var volume = new Checkbox(null, "Display volume pop-up", new Vec2(25, 0), new Vec2(25, 25), null, UIAlignment.TopLeft);
 
             volume.clickCallback += () =>
             {
@@ -56,7 +56,7 @@ namespace DynamicWin.Utils
             volume.Anchor.X = 0;
             objects.Add(volume);
 
-            var brightness = new Checkbox(null, "Show Brightness Popup", new Vec2(25, 0), new Vec2(25, 25), null, UIAlignment.TopLeft);
+            var brightness = new Checkbox(null, "Display brightness pop-up", new Vec2(25, 0), new Vec2(25, 25), null, UIAlignment.TopLeft);
 
             brightness.clickCallback += () =>
             {

@@ -10,7 +10,7 @@ namespace DynamicWin.UI.Widgets.Small
     class RegisterSmallVisualizerWidget : IRegisterableWidget
     {
         public bool IsSmallWidget => true;
-        public string WidgetName => "Audio Visualizer";
+        public string WidgetName => "Audio Visualiser";
 
         public WidgetBase CreateWidgetInstance(UIObject? parent, Vec2 position, UIAlignment alignment = UIAlignment.TopCenter)
         {
