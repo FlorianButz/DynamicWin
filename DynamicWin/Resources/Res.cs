@@ -66,6 +66,9 @@ namespace DynamicWin.Resources
         private static HomeMenu homeMenu;
         public static HomeMenu HomeMenu { get => homeMenu; set => homeMenu = value; }
 
+        private static SettingsMenu settingsMenu;
+        public static SettingsMenu SettingsMenu { get => settingsMenu; set => settingsMenu = value; }
+
         public static List<IRegisterableWidget> availableBigWidgets;
         public static List<IRegisterableWidget> availableSmallWidgets;
 
@@ -74,6 +77,7 @@ namespace DynamicWin.Resources
         public static void CreateStaticMenus()
         {
             homeMenu = new HomeMenu();
+            settingsMenu = new SettingsMenu();
         }
 
         public static void Load()
