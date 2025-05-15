@@ -62,6 +62,7 @@ namespace DynamicWin.Resources
         public static SKBitmap SevereWeatherWarning;
 
         public static string TimerOverSound = "Resources\\sounds\\TimerOver.wav";
+        public static string WeatherLocations = "Resources\\data\\worldcities.csv";
 
         private static HomeMenu homeMenu;
         public static HomeMenu HomeMenu { get => homeMenu; set => homeMenu = value; }
