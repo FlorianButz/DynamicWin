@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -75,7 +76,14 @@ namespace DynamicWin.UI.UIElements
         {
             SelectedIndex = index;
 
-            onClick.Invoke(index);
+            try
+            {
+                onClick?.Invoke(index);
+            }
+            catch (NullReferenceException e)
+            {
+                Debug.WriteLine("DWMultiSelectionButton ERROR: logic not yet implemented.");
+            }
         }
     }
 }
