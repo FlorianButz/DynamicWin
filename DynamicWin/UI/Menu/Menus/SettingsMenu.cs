@@ -273,7 +273,7 @@ namespace DynamicWin.UI.Menu.Menus
                 Font = Resources.Res.InterBold
             });
 
-            objects.Add(new DWText(island, "Licenced under the CC BY-SA 4.0 licence.", new Vec2(25, 0), UIAlignment.TopLeft)
+            objects.Add(new DWText(island, "Licenced under CC BY-SA 4.0", new Vec2(25, 0), UIAlignment.TopLeft)
             {
                 Color = Theme.TextThird,
                 Anchor = new Vec2(0, 0.5f),
