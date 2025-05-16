@@ -176,16 +176,15 @@ namespace DynamicWin.Main
         protected override void OnPaintSurface(SKPaintSurfaceEventArgs e)
         {
             base.OnPaintSurface(e);
+
             if (!isInitialized) return;
 
             SKSurface surface = e.Surface;
             SKCanvas canvas = surface.Canvas;
+
             canvas.Clear(SKColors.Transparent);
 
-            double dpiFactor = PresentationSource
-                .FromVisual(this)
-                .CompositionTarget
-                .TransformToDevice.M11;
+            double dpiFactor = System.Windows.PresentationSource.FromVisual(this).CompositionTarget.TransformToDevice.M11;
             canvas.Scale((float)dpiFactor, (float)dpiFactor);
 
             canvasWithoutClip = canvas.Save();
@@ -193,8 +192,10 @@ namespace DynamicWin.Main
             if (islandObject.maskInToIsland) Mask(canvas);
             islandObject.DrawCall(canvas);
 
+            if (MainIsland.hidden) return;
+
             bool hasContextMenu = false;
-            foreach (UIObject uiObject in MenuManager.Instance.ActiveMenu.UiObjects)
+            foreach (UIObject uiObject in objects)
             {
                 canvas.RestoreToCount(canvasWithoutClip);
                 canvasWithoutClip = canvas.Save();
@@ -205,36 +206,32 @@ namespace DynamicWin.Main
                     ContextMenu = uiObject.GetContextMenu();
                 }
 
+                foreach (UIObject obj in uiObject.LocalObjects)
+                {
+                    if (obj.IsHovering && obj.GetContextMenu() != null)
+                    {
+                        hasContextMenu = true;
+                        ContextMenu = obj.GetContextMenu();
+                    }
+                }
+
                 if (uiObject.maskInToIsland)
+                {
                     Mask(canvas);
+                }
 
-                canvas.Scale(
-                    scaleOffset.X,
-                    scaleOffset.Y,
-                    islandObject.Position.X + islandObject.Size.X / 2,
-                    islandObject.Position.Y + islandObject.Size.Y / 2);
+                canvas.Scale(scaleOffset.X, scaleOffset.Y, islandObject.Position.X + islandObject.Size.X / 2, islandObject.Position.Y + islandObject.Size.Y / 2);
                 canvas.Translate(renderOffset.X, renderOffset.Y);
-
-                // Ensure SkiaSharp only displays things visible to the user
-                SKRect localRect = uiObject.GetRect().Rect;
-                SKMatrix total = canvas.TotalMatrix;
-                SKRect deviceRect = total.MapRect(localRect);
-                SKRectI clipI = canvas.DeviceClipBounds;
-                SKRect clip = new SKRect(clipI.Left, clipI.Top, clipI.Right, clipI.Bottom);
-                if (!deviceRect.IntersectsWith(clip))
-                    continue;
 
                 uiObject.DrawCall(canvas);
             }
 
             onDraw?.Invoke(canvas);
 
-            if (!hasContextMenu)
-                ContextMenu = null;
+            if (!hasContextMenu) ContextMenu = null;
 
             canvas.Flush();
         }
-
 
         private void Mask(SKCanvas canvas)
         {
