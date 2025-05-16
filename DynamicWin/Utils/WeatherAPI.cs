@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Xml;
 using CsvHelper;
 using DynamicWin.Resources;
@@ -16,7 +17,7 @@ using Newtonsoft.Json;
 *   Author:                 Megan Park
 *   GitHub:                 https://github.com/59xa
 *   Implementation Date:    16 May 2024
-*   Last Modified:          16 May 2024 15:46 KST (UTC+9)
+*   Last Modified:          17 May 2024 05:54 KST (UTC+9)
 */
 
 namespace DynamicWin.Utils
@@ -36,8 +37,8 @@ namespace DynamicWin.Utils
         /// <param name="idx">The index that the function should use.</param>
         /// <param name="type">Optional parameter that defines whether index value is "default" or "city"</param>
         /// <returns>void</returns>
-        public void Fetch(int idx, string? type)
-        {
+        public async Task Fetch(int idx, string? type, CancellationToken token = default)
+        {   
             // Load required values
             // MAINTAINER: "i feel like this could be implemented in a better way without compromising optimisation"
             string[] _c = LoadCountryNames();
@@ -46,7 +47,7 @@ namespace DynamicWin.Utils
             // Asynchronous task to handle HTTP protocol calls
 
             // TODO: Refactor this to use a single instance of HttpClient
-            Task.Run(async () =>
+            while (!token.IsCancellationRequested && RegisterWeatherWidgetSettings.saveData.isSettingsMenuOpen == false)
             {
                 using var httpClient = new HttpClient();
                 string response = string.Empty;
@@ -108,18 +109,22 @@ namespace DynamicWin.Utils
                 string _fahr = _t.Replace("°", "");
                 double _celc = (Double.Parse(_fahr) - 32.0) * (double)5 / 9;
                 string _celcText = _celc.ToString("#.#");
-                
+
                 Debug.WriteLine(String.Format("{0}, {1}F({2}°C), {3}", location.city, _t, _celcText, _w));
 
                 _WeatherData = new WeatherData() { city = location.city, region = location.region, celsius = _celcText + "°C", fahrenheit = _fahr + "F", weatherText = _w };
                 _OnWeatherDataReceived?.Invoke(_WeatherData);
 
-                Thread.Sleep(120000); // Delay for two minutes before making another call
+                await Task.Delay(120000, token); // Wait for 2 minutes before re-fetching data
 
-                // Recursion
                 Debug.WriteLine("WeatherAPI: IDX = {0}, TYPE = {1}", idx, type);
-                Fetch(idx, type);
-            });
+            }
+
+            if (token.IsCancellationRequested || RegisterWeatherWidgetSettings.saveData.isSettingsMenuOpen)
+            {
+                Debug.WriteLine("WeatherAPI: TASK DISPOSAL RECEIVED");
+                throw new OperationCanceledException(token);
+            }
         }
 
         // Initialise Country constructor
