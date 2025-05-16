@@ -16,7 +16,7 @@ using Newtonsoft.Json.Linq;
 *   Author:                 Megan Park
 *   GitHub:                 https://github.com/59xa
 *   Implementation Date:    16 May 2024
-*   Last Modified:          16 May 2024 14:26 KST (UTC+9)
+*   Last Modified:          16 May 2024 14:55 KST (UTC+9)
 */
 
 namespace DynamicWin.UI.Widgets.Big
