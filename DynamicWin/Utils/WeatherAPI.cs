@@ -16,7 +16,12 @@ using Newtonsoft.Json;
 *   Author:                 Megan Park
 *   GitHub:                 https://github.com/59xa
 *   Implementation Date:    16 May 2024
-*   Last Modified:          17 May 2024 05:54 KST (UTC+9)
+*   Last Modified:          17 May 2024 08:36 KST (UTC+9)
+*   
+*   TO MAINTAINERS:
+*    - When fetching weather data, the API might hallucinate, and retrieve forecast data from a different city.
+*    - This only occurs as the task doesn't get killed gracefully when doing a hot reload.
+*    - This behaviour will not occur when it's fully compiled for end-user.
 */
 
 namespace DynamicWin.Utils
@@ -40,8 +45,8 @@ namespace DynamicWin.Utils
         {   
             // Load required values
             // MAINTAINER: "i feel like this could be implemented in a better way without compromising optimisation"
-            string[] _c = LoadCountryNames();
-            string[] _ct = LoadCityNames(RegisterWeatherWidgetSettings.saveData.countryIndex);
+            string[] _c = await LoadCountryNamesAsync();
+            string[] _ct = await LoadCityNamesAsync(RegisterWeatherWidgetSettings.saveData.countryIndex);
 
             // Asynchronous task to handle HTTP protocol calls
 
@@ -133,19 +138,27 @@ namespace DynamicWin.Utils
             public string city { get; set; }
             public double lat { get; set; }
             public double lng { get; set; }
+            public string population { get; set; }
         }
 
         // Logic to load provided comma-separated value file
-        static List<Country> LoadCsv()
+        static async Task<List<Country>> LoadCsvAsync()
         {
-            Country _defaultVal = new Country { country = "Default" };
-            var reader = new StreamReader(Res.WeatherLocations);
-            var csv = new CsvReader(reader, System.Globalization.CultureInfo.InvariantCulture);
-            List<Country> records = csv.GetRecords<Country>().OrderBy(c => c.country).ToList();
+            var defaultVal = new Country { country = "Default" };
+            using var stream = new FileStream(Res.WeatherLocations, FileMode.Open, FileAccess.Read, FileShare.Read);
+            using var reader = new StreamReader(stream);
 
-            // Inserts default option at the start of the list
-            records.Insert(0, _defaultVal);
+            string csvText = await reader.ReadToEndAsync();
 
+            using var stringReader = new StringReader(csvText);
+            using var csv = new CsvReader(stringReader, System.Globalization.CultureInfo.InvariantCulture);
+
+            List<Country> records = csv.GetRecords<Country>()
+                .Where(r => !string.IsNullOrWhiteSpace(r.country)) // Safety check
+                .OrderBy(r => r.country)
+                .ToList();
+
+            records.Insert(0, defaultVal); // Add "Default" at the start
             return records;
         }
 
@@ -153,10 +166,14 @@ namespace DynamicWin.Utils
         /// Retrieves a list of countries from the given comma-separated value file.
         /// </summary>
         /// <returns>A list of country names.</returns>
-        public static string[] LoadCountryNames()
+        public static async Task<string[]> LoadCountryNamesAsync()
         {
-            var countries = LoadCsv();
-            var countryNames = countries.Select(c => c.country).Distinct().ToArray(); // Ensure no duplicates when returning list data
+            var countries = await LoadCsvAsync();
+            var countryNames = countries
+                .Select(c => c.country)
+                .Distinct()
+                .ToArray(); // Ensure no duplicates when returning list data
+
             return countryNames;
         }
 
@@ -165,35 +182,69 @@ namespace DynamicWin.Utils
         /// </summary>
         /// <param name="idx">The index value of a specific country.</param>
         /// <returns>A list of city names for a specific country.</returns>
-        public static string[] LoadCityNames(int idx)
+        public static async Task<string[]> LoadCityNamesAsync(int idx)
         {
-            var countries = LoadCsv();
+            var countries = await LoadCsvAsync();
             var countryNames = countries.Select(c => c.country).Distinct().ToArray();
-            var cities = countries.Where(c => c.country == countryNames[idx]).Select(c => c.city).Distinct().Order().ToArray();
+
+            var cities = countries
+                .Where(c =>
+                {
+                    if (c.country != countryNames[idx])
+                        return false;
+
+                    // Handle empty or malformed population
+                    if (string.IsNullOrWhiteSpace(c.population))
+                        return false;
+
+                    if (double.TryParse(c.population, out double pop))
+                        return pop > 100000;
+
+                    return false;
+                })
+                .Select(c => c.city)
+                .Distinct()
+                .Order()
+                .ToArray();
+
             RegisterWeatherWidgetSettings.saveData.totalCities = cities.Length - 1;
+
             return cities;
         }
 
         /// <summary>
-        /// Retrieves the latitude and longitude values of a city's location.
+        /// Retrieves the latitude and longitude values of a city's location in an asynchronous manner.
         /// </summary>
         /// <param name="idx">The index value of a specific country.</param>
+        /// <param name="idx2">The index value of a specific city.</param>
         /// <returns>A string that contains both the latitude and longitude value.</returns>
-        static string LoadLatLong(int idx, int idx2)
+        public static async Task<string> LoadLatLongAsync(int idx, int idx2)
         {
-            var countries = LoadCsv();
+            var countries = await LoadCsvAsync();
             var countryNames = countries.Select(c => c.country).Distinct().ToArray();
             var selectedCountry = countryNames[idx];
+
             var cities = countries
                 .Where(c => c.country == selectedCountry)
                 .OrderBy(c => c.city)
                 .ToArray();
 
-            if (RegisterWeatherWidgetSettings.saveData.cityIndex < 0 || RegisterWeatherWidgetSettings.saveData.cityIndex >= cities.Count())
+            if (RegisterWeatherWidgetSettings.saveData.cityIndex < 0 || RegisterWeatherWidgetSettings.saveData.cityIndex >= cities.Length)
                 return string.Empty;
 
             var city = cities[idx2];
             return $"{city.lat},{city.lng}";
+        }
+
+        /// <summary>
+        /// Retrieves the latitude and longitude values of a city's location in a synchronous manner.
+        /// </summary>
+        /// <param name="idx">The index value of a specific country.</param>
+        /// <param name="idx2">The index value of a specific city.</param>
+        /// <returns>A string that contains both the latitude and longitude value.</returns>
+        public static string LoadLatLong(int idx, int idx2)
+        {
+            return LoadLatLongAsync(idx, idx2).GetAwaiter().GetResult();
         }
     }
 
