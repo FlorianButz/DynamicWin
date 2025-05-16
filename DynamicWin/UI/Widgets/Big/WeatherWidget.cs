@@ -16,7 +16,7 @@ using Newtonsoft.Json.Linq;
 *   Author:                 Megan Park
 *   GitHub:                 https://github.com/59xa
 *   Implementation Date:    16 May 2024
-*   Last Modified:          16 May 2024 05:58 KST (UTC+9)
+*   Last Modified:          17 May 2024 08:38 KST (UTC+9)
 */
 
 namespace DynamicWin.UI.Widgets.Big
@@ -99,12 +99,11 @@ namespace DynamicWin.UI.Widgets.Big
             // Logic for changing weather location
             var selectLocationText = new DWText(null, "Change weather location", new Vec2(0, 0), UIAlignment.TopLeft);
 
-            var _countries = WeatherAPI.LoadCountryNames();
-
             // Opens context menus for user to change the weather location
             var selectLocationButton = new DWTextButton(null, saveData.selectedLocation, new Vec2(50, 25), new Vec2(150, 30), null, alignment: UIAlignment.TopLeft);
-            selectLocationButton.clickCallback += () =>
+            selectLocationButton.clickCallback += async () =>
             {
+                string[] _countries = await WeatherAPI.LoadCountryNamesAsync();
                 var contextMenu = new System.Windows.Controls.ContextMenu();
 
                 var countryTitle = new System.Windows.Controls.MenuItem
@@ -116,12 +115,12 @@ namespace DynamicWin.UI.Widgets.Big
                 contextMenu.Items.Add(countryTitle);
 
                 // Display a list of countries
-                for (int countryIdx = 0; countryIdx < _countries.Length; countryIdx++)
+                for (int c = 0; c < _countries.Length; c++)
                 {
-                    var country = _countries[countryIdx];
+                    var country = _countries[c];
                     var menuItem = new System.Windows.Controls.MenuItem { Header = country };
-                    int capturedCountryIdx = countryIdx;
-                    menuItem.Click += (s, e) =>
+                    int capturedCountryIdx = c;
+                    menuItem.Click += async (s, e) =>
                     {
                         if (capturedCountryIdx == 0) // If country index == 0, set default configurations
                         {
@@ -131,7 +130,7 @@ namespace DynamicWin.UI.Widgets.Big
                             return; // Breaks loop, does not prompt the second context menu
                         }
 
-                        var cities = WeatherAPI.LoadCityNames(capturedCountryIdx);
+                        var cities = await WeatherAPI.LoadCityNamesAsync(capturedCountryIdx);
                         var cityContextMenu = new System.Windows.Controls.ContextMenu();
 
                         var cityTitle = new System.Windows.Controls.MenuItem
@@ -266,24 +265,28 @@ namespace DynamicWin.UI.Widgets.Big
 
             // Updates weather information display
             _WeatherAPI._OnWeatherDataReceived += OnWeatherDataReceived;
-            var _countries = WeatherAPI.LoadCountryNames();
+            string[] _countries = null;
 
-            // If country index is set to 0, display location based on user's IP address
-            if (_countries[RegisterWeatherWidgetSettings.saveData.countryIndex] == "Default")
+            _ = Task.Run(async () =>
             {
-                Debug.WriteLine("WeatherWidget: FETCHED GEO-LOCATION FORECAST");
-                _ = _WeatherAPI.Fetch(RegisterWeatherWidgetSettings.saveData.countryIndex, "default");
-            }
+                _countries = await WeatherAPI.LoadCountryNamesAsync();
+                // If country index is set to 0, display location based on user's IP address
+                if (_countries[RegisterWeatherWidgetSettings.saveData.countryIndex] == "Default")
+                {
+                    Debug.WriteLine("WeatherWidget: FETCHED GEO-LOCATION FORECAST");
+                    _ = _WeatherAPI.Fetch(RegisterWeatherWidgetSettings.saveData.countryIndex, "default");
+                }
 
-            else
-            {
-                Debug.WriteLine("WeatherWidget: FETCHED USER-DEFINED FORECAST");
-                _ = _WeatherAPI.Fetch(RegisterWeatherWidgetSettings.saveData.cityIndex, "city"); // Trigger if user configures weather values apart from Default
-            }
-
-            // Handles logic if user configures widget to hide weather location
-            _LocationTextReplacement.SilentSetActive(RegisterWeatherWidgetSettings.saveData.hideLocation);
-            _LocationText.SilentSetActive(!RegisterWeatherWidgetSettings.saveData.hideLocation);
+                else
+                {
+                    Debug.WriteLine("WeatherWidget: FETCHED USER-DEFINED FORECAST");
+                    _ = _WeatherAPI.Fetch(RegisterWeatherWidgetSettings.saveData.cityIndex, "city"); // Trigger if user configures weather values apart from Default
+                }
+                
+                // Handles logic if user configures widget to hide weather location
+                _LocationTextReplacement.SilentSetActive(RegisterWeatherWidgetSettings.saveData.hideLocation);
+                _LocationText.SilentSetActive(!RegisterWeatherWidgetSettings.saveData.hideLocation);
+            });
         }
 
 
