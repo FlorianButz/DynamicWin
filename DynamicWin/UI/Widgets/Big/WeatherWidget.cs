@@ -276,9 +276,9 @@ namespace DynamicWin.UI.Widgets.Big
         }
 
 
-        NewWeatherData lastWeatherData;
+        WeatherData lastWeatherData;
         // Logic to handle weather display updates
-        void OnWeatherDataReceived(NewWeatherData weatherData)
+        void OnWeatherDataReceived(WeatherData weatherData)
         {
             lastWeatherData = weatherData;
 
