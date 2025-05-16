@@ -55,11 +55,14 @@ namespace DynamicWin.UI.Widgets.Big
                     Debug.WriteLine("WeatherWidget contains old configuration from legacy widget, migrating.");
                     _o["useCelsius"] = _o["useCelcius"];
                     _o.Remove("useCelcius");
+
+                    _o["selectedLocation"] = "Default";
+                    _o["countryIndex"] = 0;
                 }
 
                 saveData = JsonConvert.DeserializeObject<WeatherWidgetSaveData>(_o.ToString());
             }
-            else saveData = new WeatherWidgetSaveData() { useCelsius = true, countryIndex = 0, cityIndex = 0 };
+            else saveData = new WeatherWidgetSaveData() { useCelsius = true, countryIndex = 0, selectedLocation = "Default" };
         }
 
         public void SaveSettings() { SaveManager.Add(SettingID, JsonConvert.SerializeObject(saveData)); }
