@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 *   Author:                 Megan Park
 *   GitHub:                 https://github.com/59xa
 *   Implementation Date:    16 May 2024
-*   Last Modified:          16 May 2024 15:00 KST (UTC+9)
+*   Last Modified:          16 May 2024 15:46 KST (UTC+9)
 */
 
 namespace DynamicWin.Utils
@@ -42,8 +42,10 @@ namespace DynamicWin.Utils
             // MAINTAINER: "i feel like this could be implemented in a better way without compromising optimisation"
             string[] _c = LoadCountryNames();
             string[] _ct = LoadCityNames(RegisterWeatherWidgetSettings.saveData.countryIndex);
-            
+
             // Asynchronous task to handle HTTP protocol calls
+
+            // TODO: Refactor this to use a single instance of HttpClient
             Task.Run(async () =>
             {
                 using var httpClient = new HttpClient();
@@ -54,6 +56,7 @@ namespace DynamicWin.Utils
                 // If index is Default, fetch geo-location forecast instead
                 if (_c[idx] == "Default" && type == "default")
                 {
+                    Debug.WriteLine("WeatherAPI: DEFAULT", idx, type);
                     response = await httpClient.GetStringAsync("https://ipinfo.io/geo");
                     location = JsonConvert.DeserializeObject<Location>(response);
 
@@ -62,7 +65,8 @@ namespace DynamicWin.Utils
                 }
                 else // Read preference set by user, then return requested values
                 {
-                    var loc = LoadLatLong(RegisterWeatherWidgetSettings.saveData.countryIndex);
+                    Debug.WriteLine("WeatherAPI: USER-DEFINED", idx, type);
+                    var loc = LoadLatLong(RegisterWeatherWidgetSettings.saveData.countryIndex, RegisterWeatherWidgetSettings.saveData.cityIndex);
                     lat = loc.Split(',')[0];
                     lon = loc.Split(',')[1];
 
@@ -113,6 +117,7 @@ namespace DynamicWin.Utils
                 Thread.Sleep(120000); // Delay for two minutes before making another call
 
                 // Recursion
+                Debug.WriteLine("WeatherAPI: IDX = {0}, TYPE = {1}", idx, type);
                 Fetch(idx, type);
             });
         }
@@ -170,7 +175,7 @@ namespace DynamicWin.Utils
         /// </summary>
         /// <param name="idx">The index value of a specific country.</param>
         /// <returns>A string that contains both the latitude and longitude value.</returns>
-        static string LoadLatLong(int idx)
+        static string LoadLatLong(int idx, int idx2)
         {
             var countries = LoadCsv();
             var countryNames = countries.Select(c => c.country).Distinct().ToArray();
@@ -183,7 +188,7 @@ namespace DynamicWin.Utils
             if (RegisterWeatherWidgetSettings.saveData.cityIndex < 0 || RegisterWeatherWidgetSettings.saveData.cityIndex >= cities.Count())
                 return string.Empty;
 
-            var city = cities[RegisterWeatherWidgetSettings.saveData.cityIndex];
+            var city = cities[idx2];
             return $"{city.lat},{city.lng}";
         }
     }
