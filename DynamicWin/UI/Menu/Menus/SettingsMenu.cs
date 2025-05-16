@@ -31,7 +31,7 @@ namespace DynamicWin.UI.Menu.Menus
         {
             MainForm.onScrollEvent += (MouseWheelEventArgs x) => 
             {
-                yScrollOffset += x.Delta * 0.25f;
+                yScrollOffset += x.Delta * 0.50f;
             };
         }
 
@@ -631,10 +631,10 @@ namespace DynamicWin.UI.Menu.Menus
             MenuItem remove = new MenuItem() { Header = "Remove" };
             remove.Click += (x, y) => onEditRemoveWidget?.Invoke();
 
-            MenuItem pL = new MenuItem() { Header = "<- Push Left" };
+            MenuItem pL = new MenuItem() { Header = "Push Left" };
             pL.Click += (x, y) => onEditMoveWidgetLeft?.Invoke();
 
-            MenuItem pR = new MenuItem() { Header = "Push Right ->" };
+            MenuItem pR = new MenuItem() { Header = "Push Right" };
             pR.Click += (x, y) => onEditMoveWidgetRight?.Invoke();
 
             ctx.Items.Add(remove);
