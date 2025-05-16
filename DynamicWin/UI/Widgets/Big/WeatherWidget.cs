@@ -16,7 +16,7 @@ using Newtonsoft.Json.Linq;
 *   Author:                 Megan Park
 *   GitHub:                 https://github.com/59xa
 *   Implementation Date:    16 May 2024
-*   Last Modified:          16 May 2024 14:55 KST (UTC+9)
+*   Last Modified:          16 May 2024 16:05 KST (UTC+9)
 */
 
 namespace DynamicWin.UI.Widgets.Big
@@ -124,7 +124,7 @@ namespace DynamicWin.UI.Widgets.Big
                     {
                         if (capturedCountryIdx == 0) // If country index == 0, set default configurations
                         {
-                            selectLocationButton.Text.SetText(_countries[capturedCountryIdx]);
+                            selectLocationButton.Text.SetText("_countries[capturedCountryIdx]");
                             saveData.selectedLocation = _countries[capturedCountryIdx];
                             saveData.countryIndex = capturedCountryIdx;
                             return; // Breaks loop, does not prompt the second context menu
@@ -154,7 +154,8 @@ namespace DynamicWin.UI.Widgets.Big
                                 saveData.selectedLocation = city;
                                 saveData.countryIndex = capturedCountryIdx;
                                 saveData.cityIndex = capturedCityIdx;
-                                _w.Fetch(capturedCityIdx, "city");
+
+                                return;
                             };
                             cityContextMenu.Items.Add(cityMenuItem);
                         }
