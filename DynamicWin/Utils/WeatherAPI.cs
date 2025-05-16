@@ -3,63 +3,88 @@ using System.IO;
 using System.Net.Http;
 using System.Xml;
 using CsvHelper;
-using DynamicWin.Main;
 using DynamicWin.Resources;
 using DynamicWin.UI.Widgets.Big;
 using Newtonsoft.Json;
 
+/*
+*   Overview:
+*    - Implement new Weather API that allows the user to change their location and display its weather.
+*    - Allows user to easily access a list of countries and cities in a comma-separated value format.
+*    - Handles both IP address geo-location and user-configured weather forecast.
+*    
+*   Author:                 Megan Park
+*   GitHub:                 https://github.com/59xa
+*   Implementation Date:    16 May 2024
+*   Last Modified:          16 May 2024 15:00 KST (UTC+9)
+*/
+
 namespace DynamicWin.Utils
 {
+    // Initialise weather API class
     public class WeatherAPI
     {
-        private NewWeatherData _WeatherData = new NewWeatherData();
-        public NewWeatherData _Weather { get => _WeatherData; }
+        // Initialise WeatherData struct
+        private WeatherData _WeatherData = new WeatherData();
+        public WeatherData _Weather { get => _WeatherData; }
 
-        public Action<NewWeatherData>? _OnWeatherDataReceived;
+        public Action<WeatherData>? _OnWeatherDataReceived;
 
+        /// <summary>
+        /// Handles retrieval of forecast values from a specified city set by user.
+        /// </summary>
+        /// <param name="idx">The index that the function should use.</param>
+        /// <param name="type">Optional parameter that defines whether index value is "default" or "city"</param>
+        /// <returns>void</returns>
         public void Fetch(int idx, string? type)
         {
+            // Load required values
+            // MAINTAINER: "i feel like this could be implemented in a better way without compromising optimisation"
             string[] _c = LoadCountryNames();
             string[] _ct = LoadCityNames(RegisterWeatherWidgetSettings.saveData.countryIndex);
+            
+            // Asynchronous task to handle HTTP protocol calls
             Task.Run(async () =>
             {
                 using var httpClient = new HttpClient();
                 string response = string.Empty;
                 var lat = string.Empty; var lon = string.Empty;
-                NewLocation location = default;
+                Location location = default;
 
+                // If index is Default, fetch geo-location forecast instead
                 if (_c[idx] == "Default" && type == "default")
                 {
                     response = await httpClient.GetStringAsync("https://ipinfo.io/geo");
-                    location = JsonConvert.DeserializeObject<NewLocation>(response);
+                    location = JsonConvert.DeserializeObject<Location>(response);
 
                     lat = location.loc.Split(',')[0];
                     lon = location.loc.Split(',')[1];
                 }
-                else
+                else // Read preference set by user, then return requested values
                 {
                     var loc = LoadLatLong(RegisterWeatherWidgetSettings.saveData.countryIndex);
                     lat = loc.Split(',')[0];
                     lon = loc.Split(',')[1];
 
-                    location = _ct[idx] == "Default" ? new NewLocation { city = _c[idx], region = _c[idx], loc = loc } : new NewLocation { city = _ct[idx], region = _c[idx], loc = loc };
-
-                    Debug.WriteLine(loc);
+                    location = _ct[idx] == "Default" ? new Location { city = _c[idx], region = _c[idx], loc = loc } : new Location { city = _ct[idx], region = _c[idx], loc = loc };
                 }
 
                 string _t = null;
                 string _w = null;
 
+                // Initialise XML reader
                 XmlTextReader reader = null;
                 try
                 {
+                    // Concatenate retrieved latitude and longitude values to the URI
                     string _u = String.Format("https://tile-service.weather.microsoft.com/livetile/front/{0},{1}", lat, lon);
 
                     int _n = 0;
 
                     reader = new XmlTextReader(_u);
-                    reader.WhitespaceHandling = WhitespaceHandling.None;
+                    reader.WhitespaceHandling = WhitespaceHandling.None; // Ensure no whitespaces when fetching data
 
+                    // Read information fetched from the URI
                     while (reader.Read())
                     {
                         if (reader.NodeType == XmlNodeType.Text)
@@ -73,24 +98,26 @@ namespace DynamicWin.Utils
 
                 finally
                 {
-                    if (reader != null) reader.Close();
+                    if (reader != null) reader.Close(); // Ensure this is closed to prevent memory leaks
                 }
 
                 string _fahr = _t.Replace("°", "");
                 double _celc = (Double.Parse(_fahr) - 32.0) * (double)5 / 9;
                 string _celcText = _celc.ToString("#.#");
+                
+                Debug.WriteLine(String.Format("{0}, {1}F({2}°C), {3}", location.city, _t, _celcText, _w));
 
-                System.Diagnostics.Debug.WriteLine(String.Format("{0}, {1}F({2}°C), {3}", location.city, _t, _celcText, _w));
-
-                _WeatherData = new NewWeatherData() { city = location.city, region = location.region, celsius = _celcText + "°C", fahrenheit = _fahr + "F", weatherText = _w };
+                _WeatherData = new WeatherData() { city = location.city, region = location.region, celsius = _celcText + "°C", fahrenheit = _fahr + "F", weatherText = _w };
                 _OnWeatherDataReceived?.Invoke(_WeatherData);
 
-                Thread.Sleep(120000);
+                Thread.Sleep(120000); // Delay for two minutes before making another call
 
+                // Recursion
                 Fetch(idx, type);
             });
         }
 
+        // Initialise Country constructor
         public class Country
         {
             public string country { get; set; }
@@ -99,6 +126,7 @@ namespace DynamicWin.Utils
             public double lng { get; set; }
         }
 
+        // Logic to load provided comma-separated value file
         static List<Country> LoadCsv()
         {
             Country _defaultVal = new Country { country = "Default" };
@@ -106,18 +134,28 @@ namespace DynamicWin.Utils
             var csv = new CsvReader(reader, System.Globalization.CultureInfo.InvariantCulture);
             List<Country> records = csv.GetRecords<Country>().OrderBy(c => c.country).ToList();
 
+            // Inserts default option at the start of the list
             records.Insert(0, _defaultVal);
 
             return records;
         }
 
+        /// <summary>
+        /// Retrieves a list of countries from the given comma-separated value file.
+        /// </summary>
+        /// <returns>A list of country names.</returns>
         public static string[] LoadCountryNames()
         {
             var countries = LoadCsv();
-            var countryNames = countries.Select(c => c.country).Distinct().ToArray();
+            var countryNames = countries.Select(c => c.country).Distinct().ToArray(); // Ensure no duplicates when returning list data
             return countryNames;
         }
 
+        /// <summary>
+        /// Retrieves a list of cities from a country inside the comma-separated value file.
+        /// </summary>
+        /// <param name="idx">The index value of a specific country.</param>
+        /// <returns>A list of city names for a specific country.</returns>
         public static string[] LoadCityNames(int idx)
         {
             var countries = LoadCsv();
@@ -127,7 +165,12 @@ namespace DynamicWin.Utils
             return cities;
         }
 
-        public static string LoadLatLong(int idx)
+        /// <summary>
+        /// Retrieves the latitude and longitude values of a city's location.
+        /// </summary>
+        /// <param name="idx">The index value of a specific country.</param>
+        /// <returns>A string that contains both the latitude and longitude value.</returns>
+        static string LoadLatLong(int idx)
         {
             var countries = LoadCsv();
             var countryNames = countries.Select(c => c.country).Distinct().ToArray();
@@ -145,7 +188,8 @@ namespace DynamicWin.Utils
         }
     }
 
-    struct NewLocation
+    // Initialise Location structure
+    struct Location
     {
         public string city;
         public string region;
@@ -153,7 +197,8 @@ namespace DynamicWin.Utils
         public string loc;
     }
 
-    public struct NewWeatherData
+    // Initialise WeatherData structure
+    public struct WeatherData
     {
         public string city;
         public string region;
