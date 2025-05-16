@@ -897,7 +897,7 @@ namespace DynamicWin.UI.Menu.Menus
                 var ctx2 = new ContextMenu();
                 ctx2.Items.Add(new MenuItem()
                 {
-                    Header = "No Widgets Available.",
+                    Header = "No widgets available.",
                     IsEnabled = false
                 });
                 return ctx2;
