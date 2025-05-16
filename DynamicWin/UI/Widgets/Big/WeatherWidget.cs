@@ -268,8 +268,17 @@ namespace DynamicWin.UI.Widgets.Big
             var _countries = WeatherAPI.LoadCountryNames();
 
             // If country index is set to 0, display location based on user's IP address
-            if (_countries[RegisterWeatherWidgetSettings.saveData.countryIndex] == "Default") _WeatherAPI.Fetch(RegisterWeatherWidgetSettings.saveData.countryIndex, "default");
-            else _WeatherAPI.Fetch(RegisterWeatherWidgetSettings.saveData.cityIndex, "city"); // Trigger if user configures weather values apart from Default
+            if (_countries[RegisterWeatherWidgetSettings.saveData.countryIndex] == "Default")
+            {
+                Debug.WriteLine("WeatherWidget: FETCHED GEO-LOCATION FORECAST");
+                _WeatherAPI.Fetch(RegisterWeatherWidgetSettings.saveData.countryIndex, "default");
+            }
+
+            else
+            {
+                Debug.WriteLine("WeatherWidget: FETCHED USER-DEFINED FORECAST");
+                _WeatherAPI.Fetch(RegisterWeatherWidgetSettings.saveData.cityIndex, "city"); // Trigger if user configures weather values apart from Default
+            }
 
             // Handles logic if user configures widget to hide weather location
             _LocationTextReplacement.SilentSetActive(RegisterWeatherWidgetSettings.saveData.hideLocation);
