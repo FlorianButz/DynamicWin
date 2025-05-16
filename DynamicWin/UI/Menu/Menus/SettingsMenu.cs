@@ -185,13 +185,6 @@ namespace DynamicWin.UI.Menu.Menus
                 objects.Add(smallWidgetAdder);
             }
 
-            objects.Add(new DWText(island, " ", new Vec2(25, 0), UIAlignment.TopLeft)
-            {
-                Color = Theme.TextThird,
-                Anchor = new Vec2(0, 0.5f),
-                TextSize = 5
-            });
-
             {
                 var wTitle = new DWText(island, "Big widgets (right click to add/edit)", new Vec2(25, 15), UIAlignment.TopLeft);
                 wTitle.Font = Res.InterRegular;
