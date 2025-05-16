@@ -124,7 +124,7 @@ namespace DynamicWin.UI.Widgets.Big
                     {
                         if (capturedCountryIdx == 0) // If country index == 0, set default configurations
                         {
-                            selectLocationButton.Text.SetText("_countries[capturedCountryIdx]");
+                            selectLocationButton.Text.SetText(_countries[capturedCountryIdx]);
                             saveData.selectedLocation = _countries[capturedCountryIdx];
                             saveData.countryIndex = capturedCountryIdx;
                             return; // Breaks loop, does not prompt the second context menu
