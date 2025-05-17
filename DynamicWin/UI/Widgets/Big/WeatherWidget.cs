@@ -1,23 +1,27 @@
-﻿using DynamicWin.Main;
-using DynamicWin.Resources;
+﻿using DynamicWin.Utils;
 using DynamicWin.UI.Menu.Menus;
 using DynamicWin.UI.UIElements;
-using DynamicWin.Utils;
+using DynamicWin.Resources;
 using Newtonsoft.Json;
 using SkiaSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Xml;
-using static DynamicWin.UI.Widgets.Small.RegisterUsedDevicesOptions;
+using System.Diagnostics;
+using Newtonsoft.Json.Linq;
+
+/*
+*   Overview:
+*    - Implement new Weather API that allows the user to change their location and display its weather.
+*    - Migrates existing settings configured by user from the legacy WeatherWidget configuration.
+*    - Allows user to finally change weather location than locking them with their current IP address geo-location.
+*    
+*   Author:                 Megan Park
+*   GitHub:                 https://github.com/59xa
+*   Implementation Date:    16 May 2024
+*   Last Modified:          17 May 2024 08:38 KST (UTC+9)
+*/
 
 namespace DynamicWin.UI.Widgets.Big
 {
+    // Register widget
     class RegisterWeatherWidget : IRegisterableWidget
     {
         public bool IsSmallWidget => false;
@@ -29,294 +33,330 @@ namespace DynamicWin.UI.Widgets.Big
         }
     }
 
+    // Initialise widget configurations
     class RegisterWeatherWidgetSettings : IRegisterableSetting
     {
         public string SettingID => "weatherwidget";
-
-        public string SettingTitle => "Weather Widget";
-
+        public string SettingTitle => "Weather";
         public static WeatherWidgetSaveData saveData;
 
         public struct WeatherWidgetSaveData
         {
             public bool hideLocation;
-            public bool useCelcius;
+            public bool useCelsius;
+            public string selectedLocation;
+            public int countryIndex;
+            public int cityIndex;
+            public int totalCities;
+            public bool isSettingsMenuOpen;
         }
 
+        // Method to load existing configurations
         public void LoadSettings()
         {
             if (SaveManager.Contains(SettingID))
-                saveData = JsonConvert.DeserializeObject<WeatherWidgetSaveData>((string)SaveManager.Get(SettingID));
-            else
             {
-                saveData = new WeatherWidgetSaveData() { useCelcius = true };
+                string _j = (string)SaveManager.Get(SettingID);
+                JObject _o = JObject.Parse(_j);
+
+                // If a legacy widget configuration has been detected, migrate existing settings into the new configuration
+                if (_o.ContainsKey("useCelcius") && !_o.ContainsKey("useCelsius"))
+                {
+                    Debug.WriteLine("WeatherWidget contains old configuration from legacy widget, migrating.");
+                    _o["useCelsius"] = _o["useCelcius"];
+                    _o.Remove("useCelcius");
+
+                    // Include new defaults
+                    _o["selectedLocation"] = "Default";
+                    _o["countryIndex"] = 0;
+                }
+
+                saveData = JsonConvert.DeserializeObject<WeatherWidgetSaveData>(_o.ToString());
             }
+            else saveData = new WeatherWidgetSaveData() { useCelsius = true, countryIndex = 0, selectedLocation = "Default" };
         }
 
-        public void SaveSettings()
-        {
-            SaveManager.Add(SettingID, JsonConvert.SerializeObject(saveData));
-        }
+        // Save configuration settings
+        public void SaveSettings() { SaveManager.Add(SettingID, JsonConvert.SerializeObject(saveData)); }
 
+        // Define interface user can interact with to configure the widget
         public List<UIObject> SettingsObjects()
         {
             var objects = new List<UIObject>();
 
-            var hideLocationCheckbox = new Checkbox(null, "Hide current location", new Vec2(25, 0), new Vec2(25, 25), null, alignment: UIAlignment.TopLeft);
+            // Logic for hiding weather location
+            var hideLocationCheckbox = new Checkbox(null, "Hide location", new Vec2(25, 25), new Vec2(25, 25), null, alignment: UIAlignment.TopLeft);
             hideLocationCheckbox.IsChecked = saveData.hideLocation;
 
-            hideLocationCheckbox.clickCallback += () =>
+            hideLocationCheckbox.clickCallback += () => saveData.hideLocation = hideLocationCheckbox.IsChecked;
+
+            // Logic for toggling temperature measurement preference
+            var useCelsiusCheckbox = new Checkbox(null, "Use Celsius as temperature measurement", new Vec2(25, 0), new Vec2(25, 25), null, alignment: UIAlignment.TopLeft);
+            useCelsiusCheckbox.IsChecked = saveData.useCelsius;
+
+            useCelsiusCheckbox.clickCallback += () => saveData.useCelsius = useCelsiusCheckbox.IsChecked;
+
+            // Logic for changing weather location
+            var selectLocationText = new DWText(null, "Change weather location", new Vec2(0, 0), UIAlignment.TopLeft);
+
+            // Opens context menus for user to change the weather location
+            var selectLocationButton = new DWTextButton(null, saveData.selectedLocation, new Vec2(50, 25), new Vec2(150, 30), null, alignment: UIAlignment.TopLeft);
+            selectLocationButton.clickCallback += async () =>
             {
-                saveData.hideLocation = hideLocationCheckbox.IsChecked;
+                string[] _countries = await WeatherAPI.LoadCountryNamesAsync();
+                var contextMenu = new System.Windows.Controls.ContextMenu();
+
+                var countryTitle = new System.Windows.Controls.MenuItem
+                {
+                    Header = "Select Country",
+                    IsEnabled = false,
+                    FontWeight = System.Windows.FontWeights.Bold
+                };
+                contextMenu.Items.Add(countryTitle);
+
+                // Display a list of countries
+                for (int c = 0; c < _countries.Length; c++)
+                {
+                    var country = _countries[c];
+                    var menuItem = new System.Windows.Controls.MenuItem { Header = country };
+                    int capturedCountryIdx = c;
+                    menuItem.Click += async (s, e) =>
+                    {
+                        if (capturedCountryIdx == 0) // If country index == 0, set default configurations
+                        {
+                            selectLocationButton.Text.SetText(_countries[capturedCountryIdx]);
+                            saveData.selectedLocation = _countries[capturedCountryIdx];
+                            saveData.countryIndex = capturedCountryIdx;
+                            return; // Breaks loop, does not prompt the second context menu
+                        }
+
+                        var cities = await WeatherAPI.LoadCityNamesAsync(capturedCountryIdx);
+                        var cityContextMenu = new System.Windows.Controls.ContextMenu();
+
+                        var cityTitle = new System.Windows.Controls.MenuItem
+                        {
+                            Header = "Select City",
+                            IsEnabled = false,
+                            FontWeight = System.Windows.FontWeights.Bold
+                        };
+                        cityContextMenu.Items.Add(cityTitle);
+
+                        // Display a list of cities
+                        for (int cityIdx = 0; cityIdx < cities.Length; cityIdx++)
+                        {
+                            var city = cities[cityIdx];
+                            var cityMenuItem = new System.Windows.Controls.MenuItem { Header = city };
+                            int capturedCityIdx = cityIdx;
+                            var _w = new WeatherAPI();
+                            cityMenuItem.Click += (cs, ce) =>
+                            {
+                                selectLocationButton.Text.SetText(city);
+                                saveData.selectedLocation = city;
+                                saveData.countryIndex = capturedCountryIdx;
+                                saveData.cityIndex = capturedCityIdx;
+
+                                return;
+                            };
+                            cityContextMenu.Items.Add(cityMenuItem);
+                        }
+
+                        cityContextMenu.IsOpen = true;
+                        cityContextMenu.MaxHeight = 500f;
+                    };
+                    contextMenu.Items.Add(menuItem);
+                }
+
+                // Context menu display configuration
+                contextMenu.IsOpen = true;
+                contextMenu.MaxHeight = 500f;
+                contextMenu.VerticalOffset = selectLocationButton.Position.Y - 400;
+                contextMenu.HorizontalOffset = selectLocationButton.Position.X - 1100;
             };
 
+            // Add all objects
             objects.Add(hideLocationCheckbox);
-
-            var useCelciusCheckbox = new Checkbox(null, "Use Celsius as temperature measurement", new Vec2(25, 0), new Vec2(25, 25), null, alignment: UIAlignment.TopLeft);
-            useCelciusCheckbox.IsChecked = saveData.useCelcius;
-
-            useCelciusCheckbox.clickCallback += () =>
-            {
-                saveData.useCelcius = useCelciusCheckbox.IsChecked;
-            };
-
-            objects.Add(useCelciusCheckbox);
+            objects.Add(useCelsiusCheckbox);
+            objects.Add(selectLocationText);
+            objects.Add(selectLocationButton);
 
             return objects;
         }
     }
 
-    public class WeatherWidget : WidgetBase
+    // Widget interface logic for HomeMenu display
+    class WeatherWidget : WidgetBase
     {
-        DWText temperatureText;
-        DWText weatherText;
-        DWText locationText;
+        DWText _TemperatureText;
+        DWText _ForecastText;
+        DWText _LocationText;
 
-        UIObject locationTextReplacement;
+        UIObject _LocationTextReplacement;
 
-        static WeatherFetcher weatherFetcher;
+        static WeatherAPI _WeatherAPI;
 
-        DWImage weatherTypeIcon;
+        DWImage _ForecastIcon;
 
         public WeatherWidget(UIObject? parent, Vec2 position, UIAlignment alignment = UIAlignment.TopCenter) : base(parent, position, alignment)
         {
+            // Location icon
             AddLocalObject(new DWImage(this, Res.Location, new Vec2(20, 17.5f), new Vec2(12.5f, 12.5f), UIAlignment.TopLeft)
             {
                 Color = Theme.TextSecond,
-                allowIconThemeColor = true
+                allowIconThemeColor = true,
             });
 
-            locationText = new DWText(this, "--", new Vec2(32.5f, 17.5f), UIAlignment.TopLeft)
+            // Placeholder text if API is misconfigured or offline
+            _LocationText = new DWText(this, "--", new Vec2(32.5f, 17.5f), UIAlignment.TopLeft)
             {
                 TextSize = 15,
                 Anchor = new Vec2(0, 0.5f),
                 Color = Theme.TextSecond
             };
-            AddLocalObject(locationText);
 
-            locationTextReplacement = new UIObject(this, new Vec2(32.5f, 17.5f), new Vec2(75, 15), UIAlignment.TopLeft)
+            AddLocalObject(_LocationText);
+
+            // Displays current city as configured by user
+            _LocationTextReplacement = new UIObject(this, new Vec2(32.5f, 17.5f), new Vec2(75, 15), UIAlignment.TopLeft)
             {
                 roundRadius = 5f,
                 Anchor = new Vec2(0, 0.5f),
                 Color = Theme.TextSecond
             };
-            AddLocalObject(locationTextReplacement);
+            AddLocalObject(_LocationTextReplacement);
 
+            // Displays small version of the forecast icon
             AddLocalObject(new DWImage(this, Res.Weather, new Vec2(20, 37.5f), new Vec2(12.5f, 12.5f), UIAlignment.TopLeft)
             {
                 Color = Theme.TextThird,
                 allowIconThemeColor = true
             });
 
-            weatherText = new DWText(this, "--", new Vec2(32.5f, 37.5f), UIAlignment.TopLeft)
+            // Displays current forecast
+            _ForecastText = new DWText(this, "--", new Vec2(32.5f, 37.5f), UIAlignment.TopLeft)
             {
                 TextSize = 13,
                 Font = Res.InterBold,
                 Anchor = new Vec2(0, 0.5f),
                 Color = Theme.TextThird
             };
-            AddLocalObject(weatherText);
 
+            AddLocalObject(_ForecastText);
 
-            temperatureText = new DWText(this, "--", new Vec2(15, -27.5f), UIAlignment.BottomLeft)
+            // Displays city's current temperature value
+            _TemperatureText = new DWText(this, "--", new Vec2(15, -27.5f), UIAlignment.BottomLeft)
             {
                 TextSize = 34,
+                Font = Res.InterBold,
                 Anchor = new Vec2(0, 0.5f),
                 Color = Theme.TextMain
             };
-            AddLocalObject(temperatureText);
 
-            weatherTypeIcon = new DWImage(this, Res.Weather, new Vec2(0, 0), new Vec2(100, 100), UIAlignment.MiddleRight)
+            AddLocalObject(_TemperatureText);
+
+            // Displays large version of the forecast icon
+            _ForecastIcon = new DWImage(this, Res.Weather, new Vec2(0, 0), new Vec2(100, 100), UIAlignment.MiddleRight)
             {
                 Color = Theme.TextThird,
                 allowIconThemeColor = true
             };
 
-            if(weatherFetcher == null)
-                weatherFetcher = new WeatherFetcher();
+            // Initialises weather API
+            if (_WeatherAPI == null) _WeatherAPI = new WeatherAPI();
 
-            weatherFetcher.onWeatherDataReceived += OnWeatherDataReceived;
-            weatherFetcher.Fetch();
+            // Updates weather information display
+            _WeatherAPI._OnWeatherDataReceived += OnWeatherDataReceived;
+            string[] _countries = null;
 
-            locationTextReplacement.SilentSetActive(RegisterWeatherWidgetSettings.saveData.hideLocation);
-            locationText.SilentSetActive(!RegisterWeatherWidgetSettings.saveData.hideLocation);
-        }
-
-        public override ContextMenu? GetContextMenu()
-        {
-            var ctx = new ContextMenu();
-
-            var hideLocationItem = new MenuItem() { Header = "Hide Location", IsCheckable = true, IsChecked = RegisterWeatherWidgetSettings.saveData.hideLocation };
-            hideLocationItem.Click += (x, y) =>
+            _ = Task.Run(async () =>
             {
-                RegisterWeatherWidgetSettings.saveData.hideLocation = hideLocationItem.IsChecked;
+                _countries = await WeatherAPI.LoadCountryNamesAsync();
+                // If country index is set to 0, display location based on user's IP address
+                if (_countries[RegisterWeatherWidgetSettings.saveData.countryIndex] == "Default")
+                {
+                    Debug.WriteLine("WeatherWidget: FETCHED GEO-LOCATION FORECAST");
+                    _ = _WeatherAPI.Fetch(RegisterWeatherWidgetSettings.saveData.countryIndex, "default");
+                }
 
-                locationTextReplacement.SetActive(RegisterWeatherWidgetSettings.saveData.hideLocation);
-                locationText.SetActive(!RegisterWeatherWidgetSettings.saveData.hideLocation);
-
-                new RegisterWeatherWidgetSettings().SaveSettings();
-                SaveManager.SaveAll();
-            };
-
-            ctx.Items.Add(hideLocationItem);
-
-            return ctx;
+                else
+                {
+                    Debug.WriteLine("WeatherWidget: FETCHED USER-DEFINED FORECAST");
+                    _ = _WeatherAPI.Fetch(RegisterWeatherWidgetSettings.saveData.cityIndex, "city"); // Trigger if user configures weather values apart from Default
+                }
+                
+                // Handles logic if user configures widget to hide weather location
+                _LocationTextReplacement.SilentSetActive(RegisterWeatherWidgetSettings.saveData.hideLocation);
+                _LocationText.SilentSetActive(!RegisterWeatherWidgetSettings.saveData.hideLocation);
+            });
         }
+
 
         WeatherData lastWeatherData;
-
+        // Logic to handle weather display updates
         void OnWeatherDataReceived(WeatherData weatherData)
         {
             lastWeatherData = weatherData;
-            
-            weatherText.SetText(weatherData.weatherText);
-            locationText.SetText(weatherData.city);
+
+            _ForecastText.SetText(weatherData.weatherText);
+            _LocationText.SetText(weatherData.city);
 
             UpdateIcon(weatherData.weatherText);
         }
 
+        // Logic to handle forecast icon displays
+        void UpdateIcon(string weather)
+        {
+            string w = weather.ToLower();
+            switch (w)
+            {
+                case string s when s.Contains("sun") || s.Contains("clear"):
+                    _ForecastIcon.Image = Res.Sunny;
+                    break;
+                case string s when s.Contains("cloud") || s.Contains("overcast"):
+                    _ForecastIcon.Image = Res.Cloudy;
+                    break;
+                case string s when s.Contains("rain") || s.Contains("shower"):
+                    _ForecastIcon.Image = Res.Rainy;
+                    break;
+                case string s when s.Contains("thunder"):
+                    _ForecastIcon.Image = Res.Thunderstorm;
+                    break;
+                case string s when s.Contains("snow"):
+                    _ForecastIcon.Image = Res.Snowy;
+                    break;
+                case string s when s.Contains("sleet"):
+                    _ForecastIcon.Image = Res.Rainy;
+                    break;
+                case string s when s.Contains("fog") || s.Contains("haze") || s.Contains("mist"):
+                    _ForecastIcon.Image = Res.Foggy;
+                    break;
+                case string s when s.Contains("windy") || s.Contains("breezy"):
+                    _ForecastIcon.Image = Res.Windy;
+                    break;
+                default:
+                    _ForecastIcon.Image = Res.SevereWeatherWarning;
+                    break;
+            }
+        }
+
+        // Override logic for text animations when updating forecast values
         public override void Update(float deltaTime)
         {
             base.Update(deltaTime);
 
-            temperatureText.SetText(RegisterWeatherWidgetSettings.saveData.useCelcius ? lastWeatherData.temperatureCelcius : lastWeatherData.temperatureFahrenheit);
+            _TemperatureText.SetText(RegisterWeatherWidgetSettings.saveData.useCelsius ? lastWeatherData.celsius : lastWeatherData.fahrenheit);
         }
 
-        void UpdateIcon(string weather)
-        {
-            if (weather.ToLower().Contains("sun") || weather.ToLower().Contains("clear"))
-                weatherTypeIcon.Image = Res.Sunny;
-            else if (weather.ToLower().Contains("cloud") || weather.ToLower().Contains("overcast"))
-                weatherTypeIcon.Image = Res.Cloudy;
-            else if (weather.ToLower().Contains("rain") || weather.ToLower().Contains("shower"))
-                weatherTypeIcon.Image = Res.Rainy;
-            else if (weather.ToLower().Contains("thunder"))
-                weatherTypeIcon.Image = Res.Thunderstorm;
-            else if (weather.ToLower().Contains("snow"))
-                weatherTypeIcon.Image = Res.Snowy;
-            else if (weather.ToLower().Contains("sleet"))
-                weatherTypeIcon.Image = Res.Rainy;
-            else if (weather.ToLower().Contains("fog") || weather.ToLower().Contains("haze") || weather.ToLower().Contains("mist"))
-                weatherTypeIcon.Image = Res.Foggy;
-            else if (weather.ToLower().Contains("windy") || weather.ToLower().Contains("breezy"))
-                weatherTypeIcon.Image = Res.Windy;
-            else
-                weatherTypeIcon.Image = Res.SevereWeatherWarning;
-        }
-
+        // Override logic for widget aesthetics
         public override void DrawWidget(SKCanvas canvas)
         {
             base.DrawWidget(canvas);
 
-            var paint = GetPaint();
-            paint.Color = GetColor(Theme.WidgetBackground).Value();
-            canvas.DrawRoundRect(GetRect(), paint);
+            var _p = GetPaint();
+            _p.Color = GetColor(Theme.WidgetBackground).Value();
+            canvas.DrawRoundRect(GetRect(), _p);
 
             canvas.ClipRoundRect(GetRect(), SKClipOperation.Intersect, true);
-            weatherTypeIcon.DrawCall(canvas);
+            _ForecastIcon.DrawCall(canvas);
         }
-    }
-
-    public class WeatherFetcher
-    {
-        private WeatherData weatherData = new WeatherData();
-        public WeatherData Weather { get => weatherData; }
-
-        public Action<WeatherData> onWeatherDataReceived;
-
-        public void Fetch()
-        {
-            Task.Run(async () =>
-            {
-                var httpClient = new HttpClient();
-                var response = await httpClient.GetStringAsync("https://ipinfo.io/geo");
-                var location = JsonConvert.DeserializeObject<Location>(response);
-
-                var lat = location.loc.Split(',')[0];
-                var lon = location.loc.Split(',')[1];
-
-                System.Diagnostics.Debug.WriteLine($"Latitude: {lat}, Longitude: {lon}");
-
-                string temp = null;
-                string weather = null;
-
-                XmlTextReader reader = null;
-                try
-                {
-                    string sAddress = String.Format("https://tile-service.weather.microsoft.com/livetile/front/{0},{1}", lat, lon);
-
-                    int nCpt = 0;
-
-                    reader = new XmlTextReader(sAddress);
-                    reader.WhitespaceHandling = WhitespaceHandling.None;
-                    while (reader.Read())
-                    {
-                        if (reader.NodeType == XmlNodeType.Text)
-                        {
-                            if (nCpt == 1)
-                                temp = reader.Value;
-                            else if (nCpt == 2)
-                                weather = reader.Value;
-                            nCpt++;
-                        }
-                    }
-                }
-                finally
-                {
-                    if (reader != null)
-                        reader.Close();
-                }
-
-                string tempF = temp.Replace("°", "");
-                double tempC = (Double.Parse(tempF) - 32.0) * (double)5 / 9;
-                string tempCText = tempC.ToString("#.#");
-
-                System.Diagnostics.Debug.WriteLine(String.Format("{0}, {1}F({2}°C), {3}", location.city, temp, tempCText, weather));
-
-                weatherData = new WeatherData() { city = location.city, region = location.region, temperatureCelcius = tempCText + "°C", temperatureFahrenheit = tempF + "F", weatherText = weather };
-                onWeatherDataReceived?.Invoke(weatherData);
-
-                Thread.Sleep(120000);
-
-                Fetch();
-            });
-        }
-    }
-
-    struct Location
-    {
-        public string city;
-        public string region;
-        public string country;
-        public string loc;
-    }
-
-    public struct WeatherData
-    {
-        public string city;
-        public string region;
-        public string weatherText;
-        public string temperatureCelcius;
-        public string temperatureFahrenheit;
     }
 }

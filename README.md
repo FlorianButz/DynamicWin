@@ -10,10 +10,10 @@
   <img src="ReadmeFiles/IslandGif-1_Volume.gif" style="border-radius:15px" alt="animated" width="1000" height="auto" />
 </p>
 
-<p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://github.com/FlorianButz/DynamicWin">DynamicWin</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://github.com/FlorianButz">Florian Butz</a> is licensed under <a href="https://creativecommons.org/licenses/by-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-SA 4.0<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1" alt=""><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1" alt=""><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1" alt=""></a></p>
+<p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://github.com/FlorianButz/DynamicWin">DynamicWin</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://github.com/FlorianButz">Florian Butz</a> is licenced under <a href="https://creativecommons.org/licenses/by-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-SA 4.0<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1" alt=""><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1" alt=""><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1" alt=""></a></p>
 
 > [!NOTE]
-> This is a fork of DynamicWin from FlorianButz, while the main repository is discontinued for the time being, expect updates and features within this repository instead.
+> I am [59xa](https://github.com/59xa), the current maintainer and developer for DynamicWin. While [FlorianButz](https://github.com/FlorianButz) has discontinued this project for the time being, expect updates and features within my [repository](https://github.com/59xa/DynamicWin) instead before they get merged into the [main repository](https://github.com/FlorianButz/DynamicWin).
 
 ### What is it?
 A [Dynamic Island](https://support.apple.com/de-de/guide/iphone/iph28f50d10d/ios) inspired Windows App that brings in a bunch of features like widgets or a file tray that works like a clipboard.
@@ -28,16 +28,17 @@ To get started:
 git pull https://github.com/59xa/DynamicWin.git
 ```
 
-### Future plans
-If you want to support the development of this project you can create pull requests and contribute to it.<br>
-Feel free to open up a new issue if you encounter any bugs/flaws.
+### Future plans/continued support:
+- Despite FlorianButz abandoning DynamicWin for the time being, I am dedicated to implement more features to the best of my ability.
+- Your support truly means a lot to us to keep maintaining DynamicWin. Keep an eye out whenever a new release comes out.
+- Feel free to contribute to this project as you wish. Open any issues on the issues page if you encounter any bugs.
 <br>
 
 **Quick disclaimer**: The codebase is currently structured terribly and almost un-maintainable. A possible re-write of the entire codebase may happen some time in the future.
 
 # Features
 > [!NOTE]
-> Only the checked features are currently available. Unimplemented features will be introduced as time passes.
+> Only checkboxed features are currently available. Unimplemented features will be introduced as time passes.
 
 DynamicWin has a variety of features, currently including: <br>
 
@@ -78,13 +79,13 @@ Idea for the future: An implementation of a service like [SnapDrop](https://snap
 <br><br><br>
 
 ## Mod Support
-**Yes! You can add your own small widgets and big widgets by creating a custom extension!** <br>
+**We support mod extensions. You can add your own small widgets and big widgets by creating a custom extension.** <br>
 Loading an extension from someone else is very simple. You just need to drag the **Mod.dll** file in to the *Extensions* folder that is located in the `%appdata%/DynamicWin` directory. 
 
 > [!WARNING]
-> **Please never load a mod that is not tested to be safe!**
+> **Please never load a mod that is not tested to be safe.**
 
-Mods can contain malicious code that can mess up your system, so always check a mod's source code or let a trustworthy person check it for you.
+Mods may contain malicious code that can mess up your system, so always check a mod's source code or let a trustworthy person check it for you.
 
 ## Custom Themes
 
@@ -112,7 +113,7 @@ Too fast interactions might confuse the animation system and will result in an e
 # Creating an Extension
 To create an extension you need an IDE like [Visual Studio 2022](https://visualstudio.microsoft.com/de/vs/community/).
 - Create a new C# project of the type "Class Library". Ensure that the target framework is `.NET 8.0`.
-- You are required to add `DynamicWin.dll` and SkiaSharp DLLs as assembly dependencies to your project. [More information regarding this through here.](https://learn.microsoft.com/en-us/visualstudio/ide/how-to-add-or-remove-references-by-using-the-reference-manager?view=vs-2022)
+- It is required to add `DynamicWin.dll` and SkiaSharp DLLs as assembly dependencies to your project. [More information regarding this through here.](https://learn.microsoft.com/en-us/visualstudio/ide/how-to-add-or-remove-references-by-using-the-reference-manager?view=vs-2022)
 - Create a new C# class file, if it's not already there. Rename the class to something like "MyExtension".
 - All extensions must have a class that implements the `IDynamicWinExtension` interface.<br>
 
@@ -164,7 +165,7 @@ public class TestWidget : WidgetBase
 }
 ```
 
-DynamicWin needs to know what widgets are in your extension. To register the widget, create a new class that implements from the `IRegisterableWidget` class. For readability reasons I'll call mine `RegisterTestWidget`.
+DynamicWin needs to know what widgets are in your extension. To register the widget, create a new class that implements from the `IRegisterableWidget` class. We'll use `RegisterTestWidget` as our widget class name example.
 
 ```cs
 public class RegisterTestWidget : IRegisterableWidget

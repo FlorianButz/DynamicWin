@@ -29,7 +29,7 @@ namespace DynamicWin.UI.Widgets.Small
     {
         public string SettingID => "timewidget";
 
-        public string SettingTitle => "Time Widget";
+        public string SettingTitle => "Clock";
 
 
         public static TimeWidgetSave saveData;
