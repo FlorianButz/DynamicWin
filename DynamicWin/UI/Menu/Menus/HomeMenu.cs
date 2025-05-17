@@ -187,7 +187,7 @@ namespace DynamicWin.UI.Menu.Menus
                 RegisterWeatherWidgetSettings.saveData.isSettingsMenuOpen = true;
 
                 var _w = new WeatherAPI();
-                _ = _w.Fetch(0, "null", _ctk);
+                _ = _w.Fetch(0, "null", _ctk, _cts);
             },
             UIAlignment.MiddleRight);
             settingsButton.normalColor = Col.Transparent;
