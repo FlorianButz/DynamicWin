@@ -117,8 +117,17 @@ namespace DynamicWin.UI.Menu.Menus
             smallWidgetsContainer = new UIObject(island, Vec2.zero, IslandSize(), UIAlignment.Center);
             bigWidgetsContainer = new UIObject(island, Vec2.zero, IslandSize(), UIAlignment.Center);
 
-            // Create elements
+            CancellationTokenSource _cts = new CancellationTokenSource();
+            CancellationToken _ctk = _cts.Token;
 
+            // Check if weather widget exists in home menu
+            List<string> _w = Settings.bigWidgets;
+            if (_w.Exists(x => x.Contains("RegisterWeatherWidget")) && RegisterWeatherWidgetSettings.saveData.isSettingsMenuOpen == true)
+            {
+                RegisterWeatherWidgetSettings.saveData.isSettingsMenuOpen = false;
+            }
+
+            // Create elements
             topContainer = new UIObject(island, new Vec2(0, 30), new Vec2(island.currSize.X, 50))
             {
                 Color = Col.Transparent
@@ -172,8 +181,13 @@ namespace DynamicWin.UI.Menu.Menus
 
             var settingsButton = new DWImageButton(topContainer, Resources.Res.Settings, new Vec2(-20f, 0), new Vec2(20, 20), () =>
             {
-                //new SettingsWindow();
                 MenuManager.OpenMenu(new SettingsMenu());
+
+                System.Diagnostics.Debug.WriteLine("HOME MENU: SETTINGS MENU OPEN");
+                RegisterWeatherWidgetSettings.saveData.isSettingsMenuOpen = true;
+
+                var _w = new WeatherAPI();
+                _ = _w.Fetch(0, "null", _ctk);
             },
             UIAlignment.MiddleRight);
             settingsButton.normalColor = Col.Transparent;

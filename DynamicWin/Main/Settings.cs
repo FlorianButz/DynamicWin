@@ -88,7 +88,7 @@ namespace DynamicWin.Main
                     AllowAnimation = true;
                     AntiAliasing = true;
 
-                    Settings.Theme = 0;
+                    Theme = 0;
 
                     SaveManager.SaveData.Add("settings", 1);
                 }
