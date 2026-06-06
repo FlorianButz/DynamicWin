@@ -1,4 +1,4 @@
-﻿using LibreHardwareMonitor.Hardware;
+using LibreHardwareMonitor.Hardware;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -30,6 +30,8 @@ namespace DynamicWin.Utils
                 IsCpuEnabled = true // Enable CPU monitoring
             };
 
+            computer.Open();
+
             timer.Start();
         }
 
@@ -54,8 +56,6 @@ namespace DynamicWin.Utils
             try
             {
                 Debug.WriteLine($"HardwareMonitor BEFORE #{iCall}");
-
-                computer.Open();
 
                 foreach (var hardware in computer.Hardware)
                 {
@@ -96,8 +96,6 @@ namespace DynamicWin.Utils
                 }
 
                 usageString = $"CPU: {lastCpu}%    RAM: {lastRam}";
-
-                instance.computer.Close();
 
                 Debug.WriteLine($"HardwareMonitor AFTER #{iCall}");
             }

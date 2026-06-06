@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -48,7 +48,7 @@ namespace DynamicWin.Utils
             var json = JsonConvert.SerializeObject(data, Formatting.Indented);
 
             if (!File.Exists(fullPath))
-                File.Create(fullPath);
+                File.Create(fullPath).Close();
 
             File.WriteAllText(fullPath, json);
         }
