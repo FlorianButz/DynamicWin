@@ -1,4 +1,9 @@
+bin/
+obj/
 .vs/
-/DynamicWin/bin/
-/DynamicWin/obj/
-/DynamicWinSetup
+*.user
+*.log
+_reference/
+publish/
+.worktrees/
+.superpowers/
